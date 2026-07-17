@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'HappyOysterSDK'
-  s.version = '1.0.3'
+  s.version = '0.1.5'
   s.summary  = 'Happy Oyster iOS SDK.'
   s.description = 'Happy Oyster iOS SDK for real-time interactive video experiences.'
   s.homepage = 'https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios'
@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
 
   s.source = {
     :http => "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/#{s.version}/HappyOysterSDK-xcframeworks.zip",
-    :sha256 => '10d9848020591ee19d21c2efb56d245590dc80bd47b994f24dc09c8fbbc11d73'
+    :sha256 => '6705e281a484a662679f03a9034b2f53cd669b6100ca681bd48fc34cb74373f4'
   }
 
   s.platform = :ios, '15.0'
