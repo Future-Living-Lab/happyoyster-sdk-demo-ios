@@ -1,0 +1,542 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		026E1A17C6793AC97DBC42AA /* AppSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE9B2510A99303CA547FEEB /* AppSession.swift */; };
+		27FA562ED661B5F88CABB997 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FB45EDDC55168EF0D9347A /* AppDelegate.swift */; };
+		28927698C2544FAB8112B3C4 /* ScriptPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DCC116AA6E499BA1CAB706 /* ScriptPreset.swift */; };
+		A1B2C3D4E5F60718293A4B5C /* scriptlist_presets.json in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5C6D7 /* scriptlist_presets.json */; };
+		2BB6A681F4C4E5C7D0EC04A9 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A732ED46716A62AEC92F888D /* AppEnvironment.swift */; };
+		3254F58521A828552FACABDB /* HappyOysterPodExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C0CB5B82FECC603D1AE829 /* HappyOysterPodExampleApp.swift */; };
+		39C0C5C347BC8056071D059D /* LocalServerTrustDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E61E4B80441BA0402EA0F0 /* LocalServerTrustDelegate.swift */; };
+		3A14F63D27B326CEB1603042 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEFE4C8E47962AE460ABB3F /* TokenManager.swift */; };
+		3BBDEA75DBA07726F7EAFEAD /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68336C81ED50F7F519E826F /* ProfileView.swift */; };
+		487E6B9FF168437C8095A4DA /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E01C2089A4F41FCA3F44BAA /* JSONValue.swift */; };
+		4B76E7DB94A1A9F767A3FCA4 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D49E1BD77ECEC196040E93 /* APIError.swift */; };
+		51405601B8B23143DCEA8D85 /* ServerConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B4B3C0AB3CEC141CF282A6 /* ServerConfigView.swift */; };
+		591A6D1A4354EC823DBA1D42 /* TravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85E32CBBEF838424905A307 /* TravelView.swift */; };
+		5EBAE54993BB06D9367EE13D /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CF928795068DF4CD9FAEFD /* RootTabView.swift */; };
+		67B51E74CF0602F3BC0D167F /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA18D1BE19ECFD2ECF1D627F /* HTTPMethod.swift */; };
+		6AD4BDC8299C107DBE9702E2 /* SecondaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E9079C36E04AD51C2D30889 /* SecondaryView.swift */; };
+		6FA2C3C910EDC6EA288C1994 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BB711D4ED773F2FAB94D29A /* HistoryView.swift */; };
+		7971B098649BE8E888C1CE55 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B0D38E65C623812D8D92B /* MainView.swift */; };
+		97DAE9509C6176BC60381D4C /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DBA35C5559540C3D5B193F /* APIEndpoint.swift */; };
+		A75E5943B1C513DB8BD041E4 /* BailianResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A421BC72B3A277407C846E /* BailianResponse.swift */; };
+		B8E4407A99C21698AC14351C /* TempApiKeyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8BB64A39ADDB180C862157 /* TempApiKeyAPI.swift */; };
+		C043A2C6A14944AEA449C70C /* Pods_HappyOysterPodExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC44406171B7E00226B8CC3 /* Pods_HappyOysterPodExample.framework */; };
+		CA2C1DE77EAC5EE504EDB6F0 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544A2FA4A949352984D07873 /* APIClient.swift */; };
+		E246C7D4BD8A1BA6AD73DDAF /* AppNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670EBC937FDA24260A99337E /* AppNavigation.swift */; };
+		ED66E0D70165195068E0458F /* TravelAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CBEC83CEB4D5173C799804 /* TravelAPI.swift */; };
+		F27F2C4B129345F3EBFC6402 /* WorldAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98DE970110DD96DB1945646E /* WorldAPI.swift */; };
+		F74FCEFBB6FE3592C237329E /* TravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E49DABBE6B5DCCD22DE09B0 /* TravelViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1E9079C36E04AD51C2D30889 /* SecondaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryView.swift; sourceTree = "<group>"; };
+		1F8BB64A39ADDB180C862157 /* TempApiKeyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempApiKeyAPI.swift; sourceTree = "<group>"; };
+		1F9A21C743BB5362C5681570 /* Pods-HappyOysterPodExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HappyOysterPodExample.debug.xcconfig"; path = "Target Support Files/Pods-HappyOysterPodExample/Pods-HappyOysterPodExample.debug.xcconfig"; sourceTree = "<group>"; };
+		1FEFE4C8E47962AE460ABB3F /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
+		22E61E4B80441BA0402EA0F0 /* LocalServerTrustDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServerTrustDelegate.swift; sourceTree = "<group>"; };
+		28A421BC72B3A277407C846E /* BailianResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BailianResponse.swift; sourceTree = "<group>"; };
+		2BB711D4ED773F2FAB94D29A /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		33FB45EDDC55168EF0D9347A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		42DBA35C5559540C3D5B193F /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
+		544A2FA4A949352984D07873 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		62C0CB5B82FECC603D1AE829 /* HappyOysterPodExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HappyOysterPodExampleApp.swift; sourceTree = "<group>"; };
+		670EBC937FDA24260A99337E /* AppNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigation.swift; sourceTree = "<group>"; };
+		6E49DABBE6B5DCCD22DE09B0 /* TravelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelViewModel.swift; sourceTree = "<group>"; };
+		8CC44406171B7E00226B8CC3 /* Pods_HappyOysterPodExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HappyOysterPodExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		98DE970110DD96DB1945646E /* WorldAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldAPI.swift; sourceTree = "<group>"; };
+		4E01C2089A4F41FCA3F44BAA /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
+		99DCC116AA6E499BA1CAB706 /* ScriptPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptPreset.swift; sourceTree = "<group>"; };
+		B2C3D4E5F60718293A4B5C6D7 /* scriptlist_presets.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = scriptlist_presets.json; sourceTree = "<group>"; };
+		9D711AD8C8DD39A6EAB7EEE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A60190A7B0BC3BECF953D85A /* Pods-HappyOysterPodExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HappyOysterPodExample.release.xcconfig"; path = "Target Support Files/Pods-HappyOysterPodExample/Pods-HappyOysterPodExample.release.xcconfig"; sourceTree = "<group>"; };
+		A732ED46716A62AEC92F888D /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		B1D49E1BD77ECEC196040E93 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		B31B0D38E65C623812D8D92B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		B6CF928795068DF4CD9FAEFD /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
+		C3B4B3C0AB3CEC141CF282A6 /* ServerConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfigView.swift; sourceTree = "<group>"; };
+		C5CBEC83CEB4D5173C799804 /* TravelAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelAPI.swift; sourceTree = "<group>"; };
+		C68336C81ED50F7F519E826F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		CFE9B2510A99303CA547FEEB /* AppSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSession.swift; sourceTree = "<group>"; };
+		EA18D1BE19ECFD2ECF1D627F /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		F574789B889F7F6761F5E919 /* HappyOysterPodExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HappyOysterPodExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F85E32CBBEF838424905A307 /* TravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		499EC1F26925873D15272C5A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C043A2C6A14944AEA449C70C /* Pods_HappyOysterPodExample.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07BA856EA26899B08A93FD9E /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				A732ED46716A62AEC92F888D /* AppEnvironment.swift */,
+				CFE9B2510A99303CA547FEEB /* AppSession.swift */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		202A77E1F08D831CE111FD3E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F574789B889F7F6761F5E919 /* HappyOysterPodExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4A284FC59B6E3A262422C65E /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				942B81B08288B567B659DDA5 /* History */,
+				BC357AE76149E951161A68DB /* Main */,
+				C2EE5313011B8AA5AF738697 /* Profile */,
+				84691217FF373655898A14FF /* Secondary */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		4AD97A5EFC5069C17720CB6D /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				544A2FA4A949352984D07873 /* APIClient.swift */,
+				42DBA35C5559540C3D5B193F /* APIEndpoint.swift */,
+				B1D49E1BD77ECEC196040E93 /* APIError.swift */,
+				28A421BC72B3A277407C846E /* BailianResponse.swift */,
+				EA18D1BE19ECFD2ECF1D627F /* HTTPMethod.swift */,
+				22E61E4B80441BA0402EA0F0 /* LocalServerTrustDelegate.swift */,
+				1F8BB64A39ADDB180C862157 /* TempApiKeyAPI.swift */,
+				1FEFE4C8E47962AE460ABB3F /* TokenManager.swift */,
+				C5CBEC83CEB4D5173C799804 /* TravelAPI.swift */,
+				98DE970110DD96DB1945646E /* WorldAPI.swift */,
+				4E01C2089A4F41FCA3F44BAA /* JSONValue.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		50D4C2E722F7EBE60D2820C2 = {
+			isa = PBXGroup;
+			children = (
+				A1232EC4EA6A349CCAD26C4F /* HappyOysterPodExample */,
+				202A77E1F08D831CE111FD3E /* Products */,
+				857A3F440004530778F7B8EE /* Pods */,
+				9678BF7CB0419086DB2B71C8 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		52B9B557FE4C88411D599517 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				33FB45EDDC55168EF0D9347A /* AppDelegate.swift */,
+				670EBC937FDA24260A99337E /* AppNavigation.swift */,
+				B6CF928795068DF4CD9FAEFD /* RootTabView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		84691217FF373655898A14FF /* Secondary */ = {
+			isa = PBXGroup;
+			children = (
+				1E9079C36E04AD51C2D30889 /* SecondaryView.swift */,
+				F85E32CBBEF838424905A307 /* TravelView.swift */,
+				6E49DABBE6B5DCCD22DE09B0 /* TravelViewModel.swift */,
+			);
+			path = Secondary;
+			sourceTree = "<group>";
+		};
+		857A3F440004530778F7B8EE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1F9A21C743BB5362C5681570 /* Pods-HappyOysterPodExample.debug.xcconfig */,
+				A60190A7B0BC3BECF953D85A /* Pods-HappyOysterPodExample.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		942B81B08288B567B659DDA5 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				2BB711D4ED773F2FAB94D29A /* HistoryView.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		9678BF7CB0419086DB2B71C8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8CC44406171B7E00226B8CC3 /* Pods_HappyOysterPodExample.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1232EC4EA6A349CCAD26C4F /* HappyOysterPodExample */ = {
+			isa = PBXGroup;
+			children = (
+				62C0CB5B82FECC603D1AE829 /* HappyOysterPodExampleApp.swift */,
+				9D711AD8C8DD39A6EAB7EEE2 /* Info.plist */,
+				B2C3D4E5F60718293A4B5C6D7 /* scriptlist_presets.json */,
+				52B9B557FE4C88411D599517 /* App */,
+				07BA856EA26899B08A93FD9E /* Configuration */,
+				4A284FC59B6E3A262422C65E /* Features */,
+				4AD97A5EFC5069C17720CB6D /* Networking */,
+			);
+			path = HappyOysterPodExample;
+			sourceTree = "<group>";
+		};
+		BC357AE76149E951161A68DB /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				B31B0D38E65C623812D8D92B /* MainView.swift */,
+				99DCC116AA6E499BA1CAB706 /* ScriptPreset.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		C2EE5313011B8AA5AF738697 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				C68336C81ED50F7F519E826F /* ProfileView.swift */,
+				C3B4B3C0AB3CEC141CF282A6 /* ServerConfigView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F955393DFD4327DF73059887 /* HappyOysterPodExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B5BB462DF3344421DCBD2F1D /* Build configuration list for PBXNativeTarget "HappyOysterPodExample" */;
+			buildPhases = (
+				F825C1907C8A96C8FD1350EE /* [CP] Check Pods Manifest.lock */,
+				141AF9B6A12993A2DE9212F4 /* Sources */,
+				9A2B3C4D5E6F708192A3B4C5 /* Resources */,
+				499EC1F26925873D15272C5A /* Frameworks */,
+				97982876646E859200DE6686 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HappyOysterPodExample;
+			productName = HappyOysterPodExample;
+			productReference = F574789B889F7F6761F5E919 /* HappyOysterPodExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DC79A47B6A7D5D219925BEE1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					F955393DFD4327DF73059887 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 4D2D4DF795E23C3CBD1088D9 /* Build configuration list for PBXProject "HappyOysterPodExample" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 50D4C2E722F7EBE60D2820C2;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 202A77E1F08D831CE111FD3E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F955393DFD4327DF73059887 /* HappyOysterPodExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		97982876646E859200DE6686 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HappyOysterPodExample/Pods-HappyOysterPodExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HappyOysterPodExample/Pods-HappyOysterPodExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HappyOysterPodExample/Pods-HappyOysterPodExample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F825C1907C8A96C8FD1350EE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HappyOysterPodExample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		141AF9B6A12993A2DE9212F4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA2C1DE77EAC5EE504EDB6F0 /* APIClient.swift in Sources */,
+				97DAE9509C6176BC60381D4C /* APIEndpoint.swift in Sources */,
+				4B76E7DB94A1A9F767A3FCA4 /* APIError.swift in Sources */,
+				27FA562ED661B5F88CABB997 /* AppDelegate.swift in Sources */,
+				2BB6A681F4C4E5C7D0EC04A9 /* AppEnvironment.swift in Sources */,
+				E246C7D4BD8A1BA6AD73DDAF /* AppNavigation.swift in Sources */,
+				026E1A17C6793AC97DBC42AA /* AppSession.swift in Sources */,
+				A75E5943B1C513DB8BD041E4 /* BailianResponse.swift in Sources */,
+				67B51E74CF0602F3BC0D167F /* HTTPMethod.swift in Sources */,
+				3254F58521A828552FACABDB /* HappyOysterPodExampleApp.swift in Sources */,
+				6FA2C3C910EDC6EA288C1994 /* HistoryView.swift in Sources */,
+				39C0C5C347BC8056071D059D /* LocalServerTrustDelegate.swift in Sources */,
+				7971B098649BE8E888C1CE55 /* MainView.swift in Sources */,
+				487E6B9FF168437C8095A4DA /* JSONValue.swift in Sources */,
+				28927698C2544FAB8112B3C4 /* ScriptPreset.swift in Sources */,
+				3BBDEA75DBA07726F7EAFEAD /* ProfileView.swift in Sources */,
+				5EBAE54993BB06D9367EE13D /* RootTabView.swift in Sources */,
+				6AD4BDC8299C107DBE9702E2 /* SecondaryView.swift in Sources */,
+				51405601B8B23143DCEA8D85 /* ServerConfigView.swift in Sources */,
+				B8E4407A99C21698AC14351C /* TempApiKeyAPI.swift in Sources */,
+				3A14F63D27B326CEB1603042 /* TokenManager.swift in Sources */,
+				ED66E0D70165195068E0458F /* TravelAPI.swift in Sources */,
+				591A6D1A4354EC823DBA1D42 /* TravelView.swift in Sources */,
+				F74FCEFBB6FE3592C237329E /* TravelViewModel.swift in Sources */,
+				F27F2C4B129345F3EBFC6402 /* WorldAPI.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9A2B3C4D5E6F708192A3B4C5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60718293A4B5C /* scriptlist_presets.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		09D01D3BADA7623A86C0238C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1F9A21C743BB5362C5681570 /* Pods-HappyOysterPodExample.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = HappyOysterPodExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.aorizon.happyoyster.podexample;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		55DD8105A8689ACFCD23DFB5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		D5F821644DE5FF1982C9C732 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		E0A7BA1F87D2E357AAF32761 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A60190A7B0BC3BECF953D85A /* Pods-HappyOysterPodExample.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = HappyOysterPodExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.aorizon.happyoyster.podexample;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4D2D4DF795E23C3CBD1088D9 /* Build configuration list for PBXProject "HappyOysterPodExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D5F821644DE5FF1982C9C732 /* Debug */,
+				55DD8105A8689ACFCD23DFB5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B5BB462DF3344421DCBD2F1D /* Build configuration list for PBXNativeTarget "HappyOysterPodExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09D01D3BADA7623A86C0238C /* Debug */,
+				E0A7BA1F87D2E357AAF32761 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DC79A47B6A7D5D219925BEE1 /* Project object */;
+}

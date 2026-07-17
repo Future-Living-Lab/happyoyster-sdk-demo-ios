@@ -1,0 +1,40 @@
+# HappyOysterPodExample —— Happy Oyster iOS SDK 的 CocoaPods 集成示例（SwiftUI）。
+#
+# SDK 以预编译二进制（xcframework）按 subspec 分发，已发布到 CocoaPods 公开 Trunk，
+# 直接按版本号引入即可，无需本地 podspec 文件。升级 SDK 版本时改这里的版本号即可。
+#
+# 用法：
+#   pod install
+#   open HappyOysterPodExample.xcworkspace
+
+# HappyOysterSDK / AliVCSDK_ARTC 均发布在 CocoaPods 公开源。
+source 'https://cdn.cocoapods.org/'
+
+platform :ios, '15.0'
+use_frameworks!
+
+target 'HappyOysterPodExample' do
+  # 聚合入口（Core + World），import HappyOysterSDK 一行即用。
+  pod 'HappyOysterSDK', '1.0.3'
+  # 默认 UI 组件（视频视图、操控 HUD）。
+  pod 'HappyOysterSDK/UI', '1.0.3'
+  # 视频流 + AliRTC 引擎适配器（已依赖 Stream，无需单独声明）。
+  pod 'HappyOysterSDK/StreamAliRTC', '1.0.3'
+
+  # RTC 厂商二进制：SDK 弱引用、不随 SDK 分发，由集成方自行引入（CocoaPods 公开源）。
+  pod 'AliVCSDK_ARTC', '7.11.0'
+end
+
+# Xcode 15+ 兼容：DT_TOOLCHAIN_DIR 已废弃，替换为 TOOLCHAIN_DIR。
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      xcconfig_path = config.base_configuration_reference&.real_path
+      next unless xcconfig_path&.exist?
+      content = xcconfig_path.read
+      if content.include?('DT_TOOLCHAIN_DIR')
+        xcconfig_path.write(content.gsub('DT_TOOLCHAIN_DIR', 'TOOLCHAIN_DIR'))
+      end
+    end
+  end
+end

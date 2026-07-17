@@ -1,0 +1,4443 @@
+[
+  {
+    "id": "be_client_50732002314_s2v_r1669",
+    "name": "深夜温柔陪聊",
+    "scenario": "陪伴疗愈",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "苏念",
+          "type": "character",
+          "gender": "female",
+          "age": "少女",
+          "ethnicity": "东亚",
+          "appearance": "黑色中长直发偏分，圆润脸型，米白色针织上衣，二次元动漫风，干净线条",
+          "position": "画面中央，坐在浅色书桌前",
+          "voice": "温柔少女声，语速偏慢，音量适中"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "[character_1] 坐在浅色书桌前正对镜头，身体微微前倾，眼睛弯起轻声说「来啦，今晚也陪你坐一会儿，慢慢聊」",
+          "cameraType": "Push-in",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_1] 双手交叠放在桌上，轻轻点头说「先把今天那些烦心的事，都暂时放到一边吧」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] 微微歪头，表情温和地看着镜头，问「这一天过下来，你还好吗，累不累」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] 闭了一下眼又睁开，轻声说「我猜你也忙了一整天，连口气都没好好喘」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "[character_1] 嘴角上扬，手指轻点桌面，温柔地说「没关系，现在这会儿，就只属于我们俩」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] 注视镜头，眼神认真，轻声说「想说什么都可以，开心的、难过的，我都听着」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] 微微一笑，柔声说「就算什么都不说，安安静静坐着也很好」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_1] 轻轻歪头，温柔地问「我先来吧，你今天有没有遇到一点点开心的小事」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "[character_1] 身体微微后靠，神情放松地说「哪怕只是喝到一杯刚好的热水，也算」",
+          "cameraType": "Pull-out",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_1] 双手轻轻摊开，笑着说「我啊，今天看到窗台那盆小绿植冒了新芽，开心了好久」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] 眼睛弯起，轻声说「你看，再普通的一天，也总能找出一点点亮光」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_1] 微微前倾，认真地说「如果今天实在不顺，也别急着怪自己，好吗」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "[character_1] 轻轻点头，柔声说「有些日子就是这样，扛过去，就已经很了不起了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] 看着镜头，温柔地说「我知道有时候那种累，是说不清楚的累」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] 微微低头又抬眼，轻声说「不是身体累，是心里好像被什么压着」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] 神情柔和，缓缓说「这种时候，我们就一起慢慢呼吸，不着急」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "[character_1] 身体坐正，双手放在胸前，轻声说「来，跟着我，先深深吸一口气」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] 缓缓抬手示意，温柔地说「吸气……然后慢慢地，把它都吐出来」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] 轻轻吐气，微笑着说「对，就是这样，肩膀也放松下来一点」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_1] 眼睛弯起，柔声说「再来一次，这次更慢一点，没有人催你」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "[character_1] 双手轻轻交叠，温柔地说「感觉到了吗，心好像稍微松了那么一点点」",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_1] 注视镜头，认真地说「我们不用一下子就好起来，慢慢来就行」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] 微微一笑，轻声说「难过的时候，允许自己难过一会儿，也没关系」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_1] 歪了歪头，温柔地说「情绪来了就让它来，它待一会儿，自己会走的」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "[character_1] 身体微微后靠，神情放松地说「就像今晚的灯一样，亮着，等天慢慢亮」",
+          "cameraType": "Pull-out",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_1] 双手摊开，笑着说「说点别的吧，你最近有没有什么一直想做，又没空做的事」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] 眼睛发亮，轻声说「哪怕是想睡个不被打扰的懒觉，也很值得期待呀」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] 托着下巴，温柔地说「我啊，一直想找个晴天，去河边坐一整个下午」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "[character_1] 微微一笑，柔声说「等哪天你也得空，我们就一起去，好不好」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] 眼睛弯起，认真地说「你看，给自己留一个小小的盼头，日子就有奔头了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 31,
+          "content": "[character_1] 注视镜头，温柔地说「我一直觉得，你比自己以为的，要勇敢得多」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_1] 轻轻点头，柔声说「能撑到现在，本身就是很厉害的一件事」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "[character_1] 微微前倾，认真地说「所以别总盯着没做好的，多看看你已经走了多远」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] 神情温和，轻声说「明天的事，就交给明天，今晚先把自己照顾好」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_1] 身体坐正，温柔地说「等会儿记得喝口温水，被子也盖盖好」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] 双手交叠，笑着说「手机也放下吧，让眼睛和心，都歇一歇」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "[character_1] 眼睛弯起，柔声说「这些小事看着不起眼，可都是在好好爱自己」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 38,
+          "content": "[character_1] 微微歪头，温柔地说「我每天这个点都在，你随时回来都行」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] 注视镜头，认真地说「难熬的夜里，记得你从来都不是一个人」",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 40,
+          "content": "[character_1] 轻轻点头，柔声说「灯还亮着，我也还在，这就够了，对不对」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "[character_1] 微微一笑，温柔地说「好啦，今晚就先聊到这儿吧」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 42,
+          "content": "[character_1] 身体微微后靠，笑着说「该休息了，别再撑着熬夜啦」",
+          "cameraType": "Pull-out",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] 双手轻轻摊开，温柔地说「闭上眼之前，再深呼吸一次，把今天放下」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "[character_1] 朝镜头轻轻挥手，柔声说「晚安，做个安稳的好梦」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 45,
+          "content": "[character_1] 眼睛弯起，微笑收尾说「明天这个点，我还在这里等你，晚安」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480057953-b9bj25ssq96-origin.png"
+  },
+  {
+    "id": "be_client_52017506838_i2v_r556",
+    "name": "雨天咖啡馆独处",
+    "scenario": "陪伴疗愈",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "知夏",
+          "type": "character",
+          "gender": "female",
+          "age": "青年",
+          "ethnicity": "东亚",
+          "appearance": "黑色长直发披肩，安静细长眼，浅驼色高领毛衣，韩系条漫数字绘风、柔和粉彩",
+          "position": "靠窗座位中央",
+          "voice": "低柔女声，语速很慢，带回忆感"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "[character_1] 坐在窗边咖啡馆座位里，安静望向窗外，杯口热气缓缓升腾，玻璃外雨丝柔柔落下",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_1] 没有动，只有发丝被空调微风轻拂，她轻声说「又下雨了，和那天一样」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] 低头看着杯子，热气一缕缕升起，缓缓说「我一直以为，等久了就会习惯一个人」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] 抿了抿唇，目光落回窗外，轻声「可有些日子，怎么都熬不成习惯」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "镜头硬切到面部近景，背景灯泡极轻地一明一暗，[character_1] 安静地说「你以前总坐在对面，背对着窗」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] 抬眼望向空着的对座，轻声「那个位置，谁也坐不进来」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] 指尖轻摩杯壁，热气不停升起，她低声「你说想看一次这家店的雨天」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_1] 顿了顿，眼神黯了一下，轻声补一句「可惜你没等到」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "镜头硬切回靠窗中景，雨幕柔柔流动，[character_1] 端坐如初，她说「这半年我学会了一个人喝完一整杯」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_1] 望向窗外灯光晕开的街，轻声「外面的人撑着伞走得很快，好像谁都有要去的地方」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] 的肩膀几不可见地起伏，低声「只有我，好像还停在那一天」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_1] 缓缓吸气，目光垂下，轻声「他们都说我该放下了」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "镜头硬切到面部特写，灯泡极轻脉动一次，[character_1] 低声「可放下到底是什么意思呢」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] 垂眸看着杯里晃动的倒影，轻声「是忘记你，还是终于能笑着想起你」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] 缓了一拍，安静地说「我选后面那个，慢一点也没关系」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] 双手捧住温热的杯子，热气拂过脸颊，她轻声「今天来，是想跟这个位置好好告个别」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "镜头硬切回靠窗中景换机位，雨幕与热气持续柔动，[character_1] 望着对座说「谢谢你曾经坐在那里」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] 认真地补一句「陪我度过那么多个雨天」，眼神温柔",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] 嘴角浮起一丝笑意，轻声「我会记得，但不会再困住自己」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_1] 轻轻把杯子放下，安静地说「下次再来，我想点你最爱的那杯」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "镜头硬切到面部近景，背景雨势更柔，[character_1] 轻声「替你喝一口，好不好」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_1] 抬头望向镜头，眼神终于松了下来，轻声「好像，没那么沉了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] 望着窗玻璃上滑落的水痕，安静地说「每一滴都像走过的一天」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_1] 缓缓说「挺慢，但都过去了」，肩膀松松落下",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "镜头硬切回中景换机位，雨丝持续，[character_1] 轻声「你走以后，我把这家店来了一遍又一遍」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_1] 望着空座，低声「像在等一个不会来的人」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] 缓了缓，安静地说「等到后来我才懂，我等的其实是自己肯松手」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] 抬手轻拢耳边的发，轻声「这件高领毛衣还是你挑的，今天特意穿来」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "镜头硬切到面部近景，灯泡极轻脉动，[character_1] 低头看了看袖口，轻声「你说衬我，我记到现在」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] 缓缓说「好啦，不说这些会哭的」，轻轻吸了口气",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_1] 望向对座，轻柔而认真「我不会假装没难过」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_1] 双手收回膝上，肩膀放松，轻声「但我答应过会好好活」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "镜头硬切回靠窗中景，热气与雨幕柔动，[character_1] 望向窗外说「今天的雨，比那天的小多了」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] 轻声「也许明天，就该出太阳了吧」，神色渐渐柔和",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_1] 端坐着望向窗外，轻声「谢谢你，让我学会怎么想念一个人」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] 嘴角扬起一点温柔的弧度，安静地说「这座位，我替你坐到今天」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "镜头硬切到侧脸近景，背景灯光暖暖晕开，[character_1] 抬眼看向空座说「以后它空着也没关系」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_1] 认真地说「因为我已经能往前走了」，眼神清亮了一些",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] 深吸一口气，露出释然的微笑「那……我先走了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "[character_1] 轻声「照顾好自己，再见，也谢谢你」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "镜头硬切回靠窗中景换机位，雨幕柔柔流动，[character_1] 端坐如初，安静地理了理衣领",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "[character_1] 最后望了一眼对座，轻声「我会带着这些，好好走下去」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] 双手轻搭膝上，肩膀松松落下，热气最后一缕缓缓升起又散开",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "镜头硬切到面部特写，雨幕渐弱，[character_1] 安静地看着窗外，眼神平静",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 45,
+          "content": "[character_1] 端坐窗边没有起身，暖光柔柔铺在脸上，画面在柔粉光晕里缓缓收尾",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480681644-6ek7p7b5gx5-origin.png"
+  },
+  {
+    "id": "be_client_50732002314_s2v_r1652",
+    "name": "母女客厅温情",
+    "scenario": "家庭情感",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "林岚",
+          "type": "character",
+          "gender": "female",
+          "age": "青年",
+          "ethnicity": "东亚",
+          "appearance": "黑色中长直发偏分，圆润脸型淡妆，米白色针织上衣，温暖写实生活短剧动漫化",
+          "position": "画面右侧",
+          "voice": "温柔女声，语速中等，亲切"
+        },
+        {
+          "label": "[character_2]",
+          "name": "母亲",
+          "type": "character",
+          "gender": "female",
+          "age": "老年",
+          "ethnicity": "东亚",
+          "appearance": "短卷发素颜，面容温和，浅灰色开衫，温暖写实生活短剧动漫化",
+          "position": "画面左侧沙发",
+          "voice": "缓慢温和的长辈女声，略带沙哑"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "家庭客厅双人中景，[character_2] 安静坐在米色沙发边，[character_1] 半蹲在旁轻扶她的肩，窗外树影轻微晃动",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_1] 轻声说「妈，今天感觉怎么样，胃口好点没？」，[character_2] 微微点头",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_2] 缓缓开口「就是吃得少，没什么力气」，声音温和略带沙哑",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] 柔声「医生说恢复期要慢慢来，别急」，替她拢了拢开衫领口",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "镜头硬切到 [character_2] 面部近景，背景窗帘极轻飘动，她安静看着前方，眼神温和",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_2] 轻声「家里你忙里忙外，妈看着心疼」，缓缓眨了眨眼",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] 的声音在画外轻轻响起「您把身体养好，就是帮我了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_2] 唇角浮起一点笑意，低声「有你这句，我就踏实」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "镜头硬切回双人中景，窗光里浮尘缓缓飘动，[character_1] 轻轻握住 [character_2] 的手",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_1] 笑着说「那我们少食多餐，慢慢补回来」，[character_2] 轻轻嗯了一声",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_2] 转头看向 [character_1]，温和地说「有你在，我心里踏实」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_1] 回握紧了些「您就安心养着，家里有我」，背景树影轻晃",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "镜头硬切到 [character_1] 面部近景，她眼神柔软，轻声「您看您这气色，比上周好多了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] 又说「昨天还能自己走到阳台，这就是进步」，眼里带着笑",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_2] 的声音在画外轻轻应「是啊，腿脚比前阵子有劲了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] 点点头，轻声「您别急，咱一天比一天好」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "镜头硬切回双人中景换机位，两人靠得很近，窗帘轻摆，[character_2] 安静靠着沙发",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] 柔声说「累了就眯一会儿，我就在边上不走」，[character_2] 轻轻嗯了一声",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_2] 缓缓说「你小时候发烧，也是我这样守着你」，眼神温柔",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_1] 鼻子微微一酸，轻声「现在换我守着您了」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "镜头硬切到 [character_2] 面部特写，她缓缓合眼又睁开，唇角浮起安心的笑",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_2] 低声「妈这辈子最大的福气，就是你们」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] 的声音在画外轻轻响起「妈，您辛苦一辈子了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_1] 又说「现在该我们照顾您，您只管享福」，语气坚定温柔",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "镜头硬切回双人中景，窗外树影与浮尘持续轻动，[character_1] 把头轻轻靠在 [character_2] 肩上",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_1] 轻声「就这样坐着也挺好的」，[character_2] 抬手慢慢拍了拍她的背",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_2] 温和地说「好，妈陪你坐，哪也不去」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] 闭着眼轻轻笑「这样的下午，我能坐一整天」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "镜头硬切到两人交叠的手部近景，画面安静，背景光晕柔柔流动",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] 的声音在画外轻问「下午我做点您爱吃的软面，好不好」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_2] 应「好，听你的」，两只手轻轻收拢",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_1] 又说「多放点您爱的青菜，煮得软软的」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "镜头硬切回双人中景，窗帘轻摆，[character_1] 抬起头看向 [character_2]，眼神明亮",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] 认真地说「等您好利索了，咱去公园走走」，[character_2] 点头",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_2] 缓缓说「好，到时候你扶着妈」，语气里带着盼头",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] 笑着应「一定，我牵着您慢慢走」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "镜头硬切到 [character_1] 面部近景，她眼眶微暖，轻声「妈，您一定要好好的」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_2] 的声音在画外温和应「会的，妈答应你」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] 用力点头，把眼里的湿意眨了回去，轻声「那就拉钩」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "[character_2] 笑着伸出手指，两人轻轻拉了拉钩，画面温暖",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "镜头硬切回双人中景换机位，窗帘最后轻摆一下，[character_1] 替 [character_2] 掖好毛毯一角",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "[character_1] 轻声「您歇着，我在这」，[character_2] 安心地靠回沙发",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_2] 缓缓闭上眼，唇角带笑，[character_1] 守在一旁没有起身",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "镜头硬切到两人相依的中景，午后暖光柔柔铺满，浮尘缓缓飘动",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 45,
+          "content": "[character_1] 轻轻替母亲理了理鬓发，画面在柔和窗光里缓缓收尾",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480683937-th3we3pack-origin.png"
+  },
+  {
+    "id": "be_higgsfield_t2v_r1362",
+    "name": "沙龙理发治愈",
+    "scenario": "职场生活",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "顾客 苏苏",
+          "type": "character",
+          "gender": "female",
+          "age": "青年",
+          "ethnicity": "东亚",
+          "appearance": "深棕色长发披过肩，奶油色理发披肩，柔和动漫插画风",
+          "position": "椅子上，背对镜头",
+          "voice": "轻柔女声，语速偏慢"
+        },
+        {
+          "label": "[character_2]",
+          "name": "发型师 阿青",
+          "type": "character",
+          "gender": "female",
+          "age": "青年",
+          "ethnicity": "东亚",
+          "appearance": "利落黑色短发，简约白衬衫，柔和动漫插画风",
+          "position": "顾客身后偏侧",
+          "voice": "温和专业女声，语速中等"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "沙龙暖光中景，从背后拍 [character_1]，只见她肩膀与披过肩的长发，镜中只反出后脑；[character_2] 的手轻轻分起她颈后的发",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_2] 一边轻顺发丝一边问「今天想剪短一点，还是先保养一下？」，发丝随手势微微垂落",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] 背对镜头轻声答「先不剪了……最近想换个心情」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_2] 柔声「换心情好啊，头发养好了人也精神」，[character_1] 轻轻点头",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "镜头硬切到颈后发丝近景，[character_2] 的手指把一缕发别到一侧，暖黄灯光在发面流转",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] 轻声「这半年太累了，连照镜子都懒」，发丝随她说话微动",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_2] 安慰「慢慢来，今天就交给我」，指腹细致地理着发根",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_1] 低声「有人帮你弄头发的感觉，真好」，肩膀松了些",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "镜头硬切回背后中景，大理石台面上小瓶护理品反着柔光，[character_2] 顺着发丝梳理",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_2] 轻声「你这发质底子很好，就是缺点打理」，发梢随梳子滑落",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] 望着镜子（镜中仍只见后脑）轻声「以前总没空，今天难得放个假」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_2] 笑「假就该这么放，啥也不想」，[character_1] 轻轻嗯了一声",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "镜头硬切到 [character_2] 手部近景，她接好一缕同色长发，动作轻柔精准",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] 轻声「你手好稳，我都快睡着了」，发丝随话语微动",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_2] 柔声「那就闭眼歇会儿，剩下交给我」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] 低声「好久没人让我这么安心了」，肩膀彻底放松",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "镜头硬切回背后中景换机位，[character_1] 端坐如初，暖光与发面光泽柔柔流动",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_2] 顺着发轻声问「最近睡得怎么样？」，发丝随手势垂落",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] 背对镜头轻声答「不太好，总想着工作」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_2] 温柔地说「头皮放松了，睡眠也会跟着好一点」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "镜头硬切到颈后发丝近景，[character_2] 的指腹缓缓按了按发根，暖光在发面流转",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_1] 轻声「这样真的好舒服……好久没这么放空了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_2] 笑「那就多放空一会儿，时间还早」，发梢随梳子滑落",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_1] 轻声「来之前还犹豫，现在庆幸来了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "镜头硬切回背后中景，[character_1] 端坐着，台面护理品反着柔光，[character_2] 轻顺发尾",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_2] 轻声「你总把别人放前面，今天先顾顾自己」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] 顿了顿，轻声「被你说中了，我习惯了硬撑」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_2] 柔声「硬撑久了会断的，记得偶尔松一松」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "镜头硬切到 [character_2] 手部近景，她把发分成两股，指尖灵巧地编理",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] 轻声「你不光手艺好，话也暖」，发丝随话语微动",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_2] 笑「在这坐久了，听得多，也想得多」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_1] 低声「下次还来找你，连人带头发一起养」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "镜头硬切回背后中景换机位，[character_1] 端坐如初，暖光与发面光泽柔柔流动",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_2] 顺着发轻声「好了大半啦，最后给你顺一遍」，[character_1] 肩膀松松落下",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_1] 望着镜子轻声「这样就很好……谢谢你陪我聊这一会儿」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_2] 温柔地说「该谢的是你愿意对自己好一点」，发丝随手势垂落",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "镜头硬切到颈后发丝特写，发面在暖光里泛着柔和光泽，[character_2] 缓缓收尾",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_1] 轻声「照镜子终于不嫌烦了」，唇角的笑意藏在声音里",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_2] 笑「那就常来照，我陪你一起养回来」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "[character_1] 轻轻嗯了一声，肩膀彻底放松，发丝最后微微一动",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "镜头硬切回背后中景，[character_1] 端坐着，暖光柔柔铺满，[character_2] 取下披肩一角",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "[character_2] 柔声「下次再来，我帮你做个更养的」，[character_1] 轻轻嗯了一声",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] 缓缓起身的前一刻，轻声「今天真的谢谢你」，发丝垂落肩头",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "镜头硬切到背后近景，暖金光晕里 [character_1] 的长发柔柔垂着，画面安静",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 45,
+          "content": "[character_2] 在画外轻声「路上慢点，记得好好睡」，画面在暖金光里缓缓收尾",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480682506-jydaovgau9e-origin.png"
+  },
+  {
+    "id": "be_higgsfield_i2v_r1456",
+    "name": "书房释怀独白",
+    "scenario": "陪伴疗愈",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "晨晨",
+          "type": "character",
+          "gender": "male",
+          "age": "青年",
+          "ethnicity": "东亚",
+          "appearance": "短碎黑发，清秀脸型，浅灰针织衫，干净日系动漫风",
+          "position": "书桌前画面中央",
+          "voice": "低沉温和男声，语速偏慢"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "安静的书房，[character_1] 坐在书桌前望向镜头，窗外暖光斜照，桌上台灯的光晕极轻微地呼吸",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_1] 轻声开口「录这段，是想把一直没说出口的话讲完」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] 微微低头，手指在桌沿轻点，缓缓说「这一年我变了很多」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] 抬眼，轻声「变到有时候，自己都快认不出来」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "镜头硬切到面部近景，背景窗帘极轻飘动，[character_1] 说「以前总怕让别人失望，活得很紧」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] 望向窗外，轻声「连喘口气都觉得是浪费时间」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] 缓缓说「后来才懂，先把自己照顾好，才有余力对别人好」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_1] 轻轻吸气，肩膀几不可见地起伏，「这道理我用了很久才学会」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "镜头硬切回中景，台灯光晕轻轻呼吸，[character_1] 端坐如初，「说出来才发现，我已经走了这么远」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_1] 垂眸看了看桌上的旧笔记本，轻声「这上面记满了撑不下去的夜晚」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] 指尖轻碰本子边缘，「那时候只觉得，天怎么还不亮」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_1] 缓缓说「现在翻起来，竟然能笑了」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "镜头硬切到面部近景，台灯光晕轻轻一亮，[character_1] 安静地说「谢谢那个没放弃的自己」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] 轻声「也谢谢那些陪我熬过去的人」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] 顿了顿，低声「我欠他们一句，好好的，我做到了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] 看向镜头，轻声「如果你也在熬，请再撑一下」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "镜头硬切回中景换机位，浮尘在窗光里缓缓飘动，[character_1] 端坐如初，「真的会过去的」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] 抬眼望向镜头，眼神柔和「我不算什么榜样，只是个走过来的人」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] 轻声「走得磕磕绊绊，但总算走过来了」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_1] 微微一笑，「这就够了，对吧」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "镜头硬切到侧脸近景，背景暖光柔柔流动，[character_1] 深吸一口气「说完这些，心里轻了好多」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_1] 轻声「原来压着我的，从来不是事，是说不出口」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] 缓缓说「今天总算，把它放下了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_1] 轻轻合上笔记本，安静地说「这一页，今天就翻过去了」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "镜头硬切到双手特写，[character_1] 的指尖在封面上轻轻停了一下，台灯光晕缓缓流动",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_1] 的声音在画外轻轻响起「翻过去，不是忘记，是带着它往前走」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] 的手缓缓收回，「我会把它收好，当个念想」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] 指尖最后轻点了一下封面，画面安静",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "镜头硬切回中景，[character_1] 抬头望向窗外，「以前总觉得熬过去就好了」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] 轻声「其实是要学会跟自己和解」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_1] 低声「那些没人看见的努力，今天我自己替它们鼓个掌」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_1] 嘴角浮起一点笑，「也算没白熬」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "镜头硬切到面部近景，台灯光晕轻呼吸，[character_1] 看向镜头「答应我，也要好好对你自己」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] 轻声「别等撑不住了，才想起心疼自己」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_1] 认真地说「累了就停一停，没关系的」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] 望着镜头露出释然的笑「明天的事，明天再说」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "镜头硬切回中景换机位，浮尘在窗光里继续轻飘，[character_1] 神情放松了许多",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_1] 轻声「今天先好好睡一觉，这是我给自己的奖励」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] 缓缓伸了个懒腰，「好久没这么松快过了」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "[character_1] 看向镜头，轻声「谢谢你愿意听到这里」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "镜头硬切到面部特写，台灯光晕最后一次轻呼吸，[character_1] 安静地说「我们都会越来越好的」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "[character_1] 轻声补一句「这句话，也送给屏幕前的你」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] 露出一个温和的笑，目光柔软",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "镜头硬切回中景，[character_1] 端坐如初，伸手轻轻关小了台灯",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 45,
+          "content": "[character_1] 安静地看着镜头，窗外暖光渐淡，画面在柔光里缓缓收尾",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480682141-y1uvu31x22n-origin.png"
+  },
+  {
+    "id": "be_aishi_i2v_r40",
+    "name": "母亲节奇幻礼物",
+    "scenario": "家庭情感",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "Daniel",
+          "type": "character",
+          "gender": "male",
+          "age": "青年",
+          "ethnicity": "欧美",
+          "appearance": "messy brown hair, red hoodie, friendly round face, clean 2D cartoon style",
+          "position": "right side of frame",
+          "voice": "warm exasperated male voice, conversational"
+        },
+        {
+          "label": "[character_2]",
+          "name": "Eldric",
+          "type": "creature",
+          "gender": "male",
+          "age": "n/a",
+          "ethnicity": "n/a",
+          "appearance": "small felt puppet wizard, oversized pointy purple hat, long white yarn beard, googly eyes, clean 2D cartoon style",
+          "position": "left side of frame",
+          "voice": "high theatrical croaky puppet voice, dramatic"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "Cozy living room with a few hung decorations, locked frame. [character_1] is fixing a small banner and says \"alright, getting ready for Mother's Day—\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_2] pops up into frame, arms flailing, and cries \"DANIEL! IT IS TOO LATE!\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] turns, startled, \"what?! what's too late?!\" while the banner still sways behind him.",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_2] leans in gravely, hat wobbling, \"Mummy Day approaches... and we are UNPREPARED!\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "Cut to close on [character_1], a decoration swaying faintly behind him. He blinks, deadpan, \"...you mean Mother's Day.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_2] nods firmly, \"that is what I said. Mummy Day.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] rubs his temple, \"no... like moms. Mothers. The people who raised us.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_2] nods sagely, \"yes. Ancient preserved mothers, wrapped in cursed linens.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "Cut to a two-shot, both in frame, the candle flame flickering softly. [character_1] throws up his hands \"NO—NOT THOSE MUMMIES!\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_2] unrolls a tiny scroll, \"I have studied the traditions. We must present offerings.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] tilts his head, wary, \"offerings... to who, exactly?\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_2] declares \"to the Mummy. Or we face... eternal inconvenience.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "Cut to close on the puppet, the candle flame dancing. [character_2] lists \"mildly itchy curses. Slightly crooked furniture.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_2] continues, ominous, \"and uncomfortable silence in elevators. Forever.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] pauses, genuinely unsettled, \"...okay that last one does sound terrible.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] sighs, gathering himself, \"but that's not what this is. Let me explain.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "Cut to the two-shot, decoration swaying. [character_1] says gently \"Mother's Day is about your mom. You give her gifts.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_2] gasps, delighted, \"ahh... gifts for the mummy.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] groans, \"NO—not a mummy—your actual mother!\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_2], already committed, \"I have prepared. Bandages... sand... a jar labeled DO NOT OPEN.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "Cut to close on [character_1], candle flickering. He facepalms, \"why would you give your mom a cursed jar?!\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_2] shrugs, hat tilting, \"it builds character. She will thank me eventually.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] mutters, \"she will absolutely not thank you for a cursed jar.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_2] whispers, \"then... flowers? Flowers for the tomb?\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "Cut back to the two-shot, decoration still swaying. [character_1] snaps \"NO TOMB! Just flowers. Nice ones. In a vase.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_2] considers this, \"a vase... is that a small sarcophagus?\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1], patient now, \"it is just a vase. For flowers. That is all.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_2] thinks hard, brow furrowing, \"so... this Mummy Day... no curses?\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "Cut to close on the puppet, candle warm behind. [character_1] (off) answers \"no curses.\" [character_2], \"no ancient rituals?\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_2] presses on, hopeful, \"no summoning? Not even a little summoning?\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_1], firm from off-frame, \"definitely no summoning, Eldric.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_2] slumps, deflated, \"...this holiday is deeply disappointing.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "Cut to the two-shot, decoration swaying faintly. [character_1] laughs despite himself, \"it's normal! it's actually really sweet.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] softens, \"you just call your mom and say thank you. That's the whole thing.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_2] tilts his head, \"thank you... for what, specifically?\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] smiles, \"for everything. For putting up with you, mostly.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "Cut to close on [character_2], hat wobbling as he brightens. \"a thank-you. a small, polite, non-cursed thank-you.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_2] nods to himself, \"I can do that. I am, after all, extremely charming.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] (off), warm, \"there you go. See? Not so hard.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "[character_2] pauses, then sheepishly, \"...should I still throw out the jar?\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "Cut to the two-shot, candle flickering softly. [character_1] says flatly \"yes. throw out the jar.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "[character_2] sighs dramatically, \"fine. but I am keeping the bandages. For emergencies.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] laughs, shaking his head, \"...sure. keep the bandages.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "[character_2] puffs up proudly, \"then it is settled. I shall honor the Mummy—Mother—with a thank-you.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 45,
+          "content": "Cut to close on the two of them, candle soft and steady. [character_1] smiles, \"...there you go. You're already a great kid.\" The flame flickers as the scene settles.",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480683015-g0v43wd3w1-origin.png"
+  },
+  {
+    "id": "be_higgsfield_t2v_r1498",
+    "name": "晨间车内真心话",
+    "scenario": "陪伴疗愈",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "Marek",
+          "type": "character",
+          "gender": "male",
+          "age": "青年",
+          "ethnicity": "欧美",
+          "appearance": "light stubble, dark cap, grey hoodie, warm tired face, soft 2D anime style",
+          "position": "driver seat, center",
+          "voice": "low warm conspiratorial voice, slow with dramatic pauses"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "Interior of a parked car at morning, soft light through the windshield, blurred trees outside. [character_1] leans toward the lens and says \"hey, come here, I gotta tell you something.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_1] glances around like he's sharing a secret, \"good coffee... it doesn't have to cost a fortune.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] settles back, quiet, \"for years I overpaid—cafes, subscriptions, the whole thing.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] shrugs, \"and the worst part? I told myself that was just life.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "Cut to close, light shifting faintly on the dashboard. [character_1] says \"some mornings I'd sit right here before work, just... not ready.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] looks out the side window, \"engine off, phone down. Five minutes that were actually mine.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] turns back to the lens, \"this little routine is the one quiet thing nobody can take.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_1] half-smiles, \"funny how something this small holds a whole morning together.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "Cut to medium, the trees outside swaying faintly. [character_1] nods slowly, \"I used to think I needed more.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_1] taps the wheel gently, \"turns out I needed less. Just... better. Quieter.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] glances at the empty passenger seat, \"my dad drank his coffee black, same mug, thirty years.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_1] smiles to himself, \"I never got that. Now I kind of do.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "Cut to a profile close-up, light soft on his face. [character_1] breathes out, \"he wasn't a talker. Coffee was how he sat with himself.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] quiet, \"I think I spent years running from that kind of quiet.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] lowers his voice, \"and now? it's the best part of my day.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] looks down at his hands, \"weird how the boring stuff turns out to matter most.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "Cut to medium, trees swaying outside. [character_1] glances out the window, \"there's a guy who parks next to me every morning.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] smiles, \"never talked to him. Probably doing the exact same thing.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] muses, \"whole lot full of people, all just... gathering themselves before the day.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_1] shakes his head softly, \"and we all act like we're the only one who needs it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "Cut to close, light steady on his face. [character_1] leans in, \"so here's the secret I came to tell you... slow down. Just for a minute.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_1] warm, \"the day's gonna be loud enough. Give yourself the quiet first.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] half-smiles, \"and honestly? half the time I'm not telling you. I'm telling me.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_1] looks down, \"reminding myself the small things still count, even on the heavy days.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "Cut to medium, the trees drifting faintly. [character_1] settles, \"I had a heavy one yesterday. Sat here twice as long.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_1] quiet, \"didn't fix anything. Just made it carryable.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] taps the wheel, \"that's all this is, really. A place to set things down for a second.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] glances at the windshield, \"then you pick them back up and go. But lighter.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "Cut to a profile close-up, soft morning light. [character_1] breathes out, \"my mom always said: rest isn't quitting.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] smiles, \"took me about forty years to believe her.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_1] quiet, \"I'd call and tell her, but she'd just say 'I told you so.'\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_1] chuckles softly, \"...maybe I'll call her anyway. After this.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "Cut to medium, trees swaying outside. [character_1] turns back, gentle, \"so whatever your version of this is—find it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] nods, \"could be coffee. Could be a walk. Could be just sitting in your car like an idiot.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_1] grins, \"clearly I recommend the last one.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] softens, \"point is, make it yours. Protect it. Don't let the day steal it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "Cut to close, warm light still. [character_1] looks straight to the lens, \"because the day will try. It always tries.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_1] quiet, \"and five quiet minutes is how you win before it even starts.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] half-smiles, \"alright. that's my whole speech. For real this time.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "[character_1] settles back, \"go on, have a good one. I mean it.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "Cut to medium, trees drifting outside. [character_1] takes a slow breath, content in the quiet cabin.",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "[character_1] glances at the time, unhurried, \"okay. one more minute, then I'm in.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] smiles to himself, \"...maybe two.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "[character_1] gives a small nod to the lens, warm and easy, \"thanks for sitting with me.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 45,
+          "content": "Cut to a final close-up, the morning light warm and still on his face, [character_1] calm as the scene eases to a close.",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480682921-nptxf8qfgff-origin.png"
+  },
+  {
+    "id": "be_nexgenai_i2v_r749",
+    "name": "心理医生关怀",
+    "scenario": "陪伴疗愈",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "Dr. Janet",
+          "type": "character",
+          "gender": "female",
+          "age": "青年",
+          "ethnicity": "非裔",
+          "appearance": "neat shoulder-length hair, warm confident face, soft teal cardigan over a blouse, clean 2D anime style",
+          "position": "center, seated at a desk",
+          "voice": "warm reassuring female voice, clear and steady"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "A calm home-office, soft daylight, a small plant on the desk swaying faintly. [character_1] faces the lens and says warmly \"hi, I'm Dr. Janet. Got a minute?\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_1] folds her hands, \"a lot of people put off taking care of themselves. I get it—life is busy.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] leans in gently, \"but you shouldn't have to choose between your day and your health.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] nods, \"a cold, the flu, allergies—small things that pile up when we ignore them.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "Cut to close, the desk plant swaying softly. [character_1] smiles kindly, \"you can talk to a real provider in minutes, right from home.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] warm, \"no crowded waiting rooms. No long, exhausting lines.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] softens, \"and if you've been wanting to feel better in your own body—we can help with that too.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_1] reassuring, \"there's no embarrassment here. Just a conversation, and a plan.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "Cut to medium, the curtain edge drifting faintly. [character_1] gestures gently, \"a free first consultation, with someone who actually listens.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_1] nods, \"that's the whole idea. No catch, no script.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] leans in, \"I see it every week—people who waited too long because they thought they had to push through.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_1] sincere, \"you don't get extra points for suffering quietly. I promise.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "Cut to a softer close-up, light gentle and still. [character_1] says \"the hardest part is reaching out the first time.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] warm, \"after that, it's just two people figuring out a plan together.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] softens, \"you don't have to be brave about your own health. You just have to show up.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] smiles, \"and you don't have to have it all figured out. That's literally my job.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "Cut to medium, the plant swaying softly. [character_1] says \"I think we've made health feel like a test you can fail.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] shakes her head gently, \"it isn't. It's just maintenance. Like anything you care about.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] leans in, \"you'd take your car in for a weird noise. Give yourself the same courtesy.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_1] smiles, \"...okay, you're a lot more important than a car. But you get my point.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "Cut to close, warm light steady on her face. [character_1] says \"a lot of what I do is just reassurance.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_1] warm, \"telling someone 'that's normal, here's what we do' and watching them breathe again.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] softens, \"that relief? you deserve it too. Not just everyone you take care of.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_1] sincere, \"because I'd bet you're the one who never makes the appointment for yourself.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "Cut to medium, plant and curtain drifting faintly. [character_1] says \"so let's change that today. Just the first step.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_1] gentle, \"one short conversation. That's where every good plan starts.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] nods, \"no pressure, no judgment. Just a provider who's actually paying attention.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] warm, \"and if it turns out you're fine? wonderful. Now you know, instead of worrying.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "Cut to a softer close-up, light gentle and still. [character_1] says \"that peace of mind is worth a few minutes.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] sincere, \"I've never once had a patient say 'I wish I'd waited longer.'\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_1] smiles softly, \"it's always the opposite. 'I should've come sooner.'\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_1] warm, \"so let this be your sooner. Right now, while you're thinking about it.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "Cut to medium, the plant swaying softly. [character_1] says \"don't wait until it gets worse.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] gentle, \"the small thing today is so much easier than the big thing later.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_1] leans in, \"and you're allowed to take up space in your own life. Health included.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] nods, \"reaching out isn't weakness. It's just being a grown-up about it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "Cut to close, warm light steady. [character_1] smiles warmly, \"take care of you. You're worth the few minutes.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_1] sincere, \"the people who count on you need you well, not just running on empty.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] softens, \"so do this for them, if you won't do it for you. Either way, just do it.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "[character_1] warm, \"and then go be wonderful at everything else.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "Cut to medium, plant and curtain drifting faintly. [character_1] says \"that's it. That's the whole pep talk.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "[character_1] smiles, \"no pressure. We're here whenever you're ready.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] gentle, \"even if 'ready' is three weeks from now. We'll still be here.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "[character_1] gives a small reassuring nod, \"okay. take care of yourself. I mean it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 45,
+          "content": "Cut to a final close-up, the room calm and warm, the plant swaying faintly, [character_1] gentle as the scene eases to a close.",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480683191-3vcv52porqb-origin.png"
+  },
+  {
+    "id": "be_higgsfield_i2v_r1448",
+    "name": "暮色办公室坦白",
+    "scenario": "职场生活",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "Theo",
+          "type": "character",
+          "gender": "male",
+          "age": "青年",
+          "ethnicity": "欧美",
+          "appearance": "neat short hair, calm thoughtful face, navy crewneck, clean modern 2D anime style",
+          "position": "seated at an office desk, center",
+          "voice": "calm measured male voice, low and steady"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "A modern office at dusk, soft lamp light, a window blind edge drifting faintly. [character_1] sits at his desk and says quietly \"okay. last one in the building. good time to be honest.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 2,
+          "content": "[character_1] exhales, \"I've been telling everyone the project's fine. It's not, really.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] looks down at his hands, \"we're close, but close has a way of staying close for months.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] quiet, \"and I keep selling the version where it all works out.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "Cut to close, the lamp glow pulsing faintly. [character_1] says \"funny thing is, I'm not even scared of failing anymore.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] leans back slightly, \"I'm scared of how good I've gotten at pretending it's fine.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] half-smiles, grim, \"that's the part that should worry me. And it does.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_1] glances at the dark window, \"my mentor used to say: the lie you tell to look calm is the one that costs you.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "Cut to medium, the blind edge drifting. [character_1] says \"I didn't get it then. I get it tonight.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "[character_1] folds his hands, \"so tomorrow I'm going to walk in and just... say the real number.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] nods slowly, \"the real timeline. The real risk. No spin.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "[character_1] quiet, \"maybe they panic. Maybe they don't. But at least it'll be true.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "Cut to a profile close-up, lamp glow gentle. [character_1] says \"I keep thinking about the version of me that started here three years ago.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] half-smiles, \"that guy would've hated how careful I've become.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] quiet, \"he said what he thought. Sometimes too loud. But you knew where he stood.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] sighs, \"careful isn't the same as honest. I forgot that somewhere.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "Cut to medium, the blind edge drifting softly. [character_1] taps the desk once, \"alright. I'll write the email tonight while I still mean it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] looks to the lens, \"because by morning I'll have ten reasons to soften it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] firm, \"not this time. Send it raw, before the fear edits it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "[character_1] quiet, \"if you're sitting late somewhere too, telling yourself it's fine—maybe check if it actually is.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "Cut to close, warm light steady. [character_1] says \"I think we all have a number we won't say out loud.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_1] quiet, \"a deadline. A budget. A feeling. The true one, under the polished one.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] half-smiles, \"and the gap between them is exactly how tired you are.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "[character_1] breathes out, \"mine's been a big gap lately. Tonight I'm closing it.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "Cut to medium, the office calm and dim. [character_1] says \"that's the whole thought. Nothing dramatic.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_1] softens, \"I feel lighter already, and I haven't even sent it.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] looks down, then up, \"maybe that's the answer. Say the true thing, then breathe.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] quiet, \"everything I dreaded was the saying. Never the after.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "Cut to a profile close-up, lamp glow gentle. [character_1] says \"I should call the team in early. Tell them first, before the room.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] nods, \"they've been carrying the weight of my act. They deserve to hear it straight.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_1] quiet, \"thank the people who kept showing up while I was busy pretending.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_1] softens, \"they deserved the real me, not the calm act.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "Cut to medium, the blind edge drifting once more. [character_1] says \"tomorrow I start with the truth and an apology.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] settles, \"and then we fix it together, properly this time.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_1] thinks, \"no hero saving it at the last second. Just steady, boring honesty.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] half-smiles, \"turns out that's the brave version anyway.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "Cut to close, warm and still. [character_1] looks at the dark window a long beat, then back, \"funny how quiet a room gets when you stop lying in it.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_1] quiet, \"good quiet, though. The honest kind. I'd forgotten it.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] breathes out slowly, \"okay. now I'm really done talking myself into it.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "[character_1] reaches for the laptop, \"email first. Then home. Then actual sleep.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "Cut to medium from the original angle, lamp glow soft and pulsing faintly. [character_1] sits quietly, content.",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "[character_1] pauses over the lamp switch, \"...leave it on a minute. I like it here, finally.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] gives the lens one last small nod, \"see you tomorrow. The real one.\"",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "[character_1] looks down at the dim desk, shoulders loosening, the warm light holding still around him.",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 45,
+          "content": "Cut to a wider angle, the whole quiet office in soft lamplight, the blind edge drifting one final time, [character_1] small and still at his desk as the scene eases to a close.",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480682816-4b454ho845t-origin.png"
+  },
+  {
+    "id": "be_aishi_t2v_r159",
+    "name": "雨夜都市重逢",
+    "scenario": "都市剧情",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "林晚",
+          "type": "character",
+          "gender": "female",
+          "age": "青年",
+          "ethnicity": "东亚",
+          "appearance": "黑色齐肩短发微湿，鹅蛋脸，米白色风衣外搭，气质清冷，写实电影感",
+          "position": "画面中央偏左",
+          "voice": "低沉柔和女声，语速偏慢"
+        },
+        {
+          "label": "[character_2]",
+          "name": "陈默",
+          "type": "character",
+          "gender": "male",
+          "age": "青年",
+          "ethnicity": "东亚",
+          "appearance": "短寸黑发，棱角分明，深灰色长款外套，神情疲惫克制，写实电影感",
+          "position": "画面中央偏右",
+          "voice": "略带沙哑的男声，语速平稳"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "城市天桥夜景，雨后湿漉漉的栏杆映着霓虹，桥下车流拖出红黄光带，远处楼群隐在雨雾里，无人，建立第一处地点",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 2,
+          "content": "镜头缓缓掠过空荡的天桥面，积水倒映霓虹招牌，雨丝在路灯下细密斜落，桥面尽头一片暗影",
+          "cameraType": "Pan Right",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] 从桥的左侧快步走入画面，米白风衣被夜风掀动，她停在栏杆前回头四下张望",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] 扶着冰凉的栏杆，望向桥下流动的车河，呼出一口白气，眉头微蹙似在等谁",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "[character_2] 从桥的另一端缓缓走近，深灰外套领口竖起，脚步在湿地上踩出轻响，停在几步外",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "两人隔着几步距离对望，霓虹光在彼此脸上明灭，谁都没有先开口，雨声填满沉默",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "近景 [character_1] 的脸，她看着 [character_2]，声音被雨打湿，轻声说「你怎么会在这里」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 8,
+          "content": "近景 [character_2]，他微微低头又抬起，眼神疲惫，回答「我每天都从这里过，只是没敢叫住你」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 9,
+          "content": "镜头绕到两人侧后方，雨丝在霓虹下成帘，两人并肩站到栏杆边，肩膀间留着一道距离",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 10,
+          "content": "[character_1] 望着桥下车流，轻声说「这一年，我以为再也碰不到你了」，语气里有疲惫也有松动",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 11,
+          "content": "[character_2] 侧脸看她，喉结动了动，低声答「我也一样，只是一直没找到开口的理由」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 12,
+          "content": "镜头从两人身后拉远，整座湿漉的天桥与桥下霓虹车河尽收画面，两个身影在雨夜里渺小并立",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "地铁站台夜景，空旷站台只有冷白灯光，地面反光如镜，列车进站的风掀动广告布，建立第二处地点",
+          "cameraType": "Push-in",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "镜头沿着空站台缓缓平移，一排排座椅空着，电子屏闪着到站信息，整个空间冷而寂静",
+          "cameraType": "Pan Right",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] 独自站在站台黄线后，米白色风衣下摆被风吹动，望向幽深的隧道口",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 16,
+          "content": "近景 [character_1] 的侧脸，冷白灯光打在她湿润的眼睫上，她抿着唇似在权衡要不要回头",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "[character_2] 从扶梯方向走入画面，脚步放轻，停在 [character_1] 身后半米处，没有伸手",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_2] 看着 [character_1] 的背影，声音压低「上次没说完的话，我想现在说完」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] 没有回头，肩线微微一颤，轻声答「我在听，这次我哪也不去」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 20,
+          "content": "列车呼啸进站，灯光成排扫过两人的脸，车厢风把 [character_1] 的发吹乱，她终于缓缓转身",
+          "cameraType": "Pan Right",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "[character_1] 转过身正面对上 [character_2]，两人在站台中央对站，目光交叠，谁都没动",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_2] 看着她的眼睛，认真说「当年是我先松的手，这句对不起，我欠了你太久」",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] 眼眶泛红，却笑了一下，低声说「我没要你的对不起，我只想知道你还在不在」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 24,
+          "content": "列车门在两人身后开合，乘客模糊地穿行而过，他们却一动不动，像被时间隔开",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "列车驶离，风声渐息，站台重归冷寂，两人仍并肩立在原地，影子被灯光拉得很长",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 26,
+          "content": "旧公寓楼道夜景，昏黄声控灯忽明忽暗，斑驳墙面与铁皮信箱，狭窄楼梯向上延伸，建立第三处地点",
+          "cameraType": "Tilt Up",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 27,
+          "content": "镜头顺着楼梯向上摇，墙皮剥落处露出旧砖，声控灯应着脚步声一层层亮起又熄灭",
+          "cameraType": "Tilt Up",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] 走上楼梯，在某一层平台停下，手扶着扶手回望身后的台阶",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 29,
+          "content": "近景 [character_1] 扶着扶手，米白风衣沾了夜雨的潮气，她垂眼似在数自己走过的这些年",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 30,
+          "content": "[character_2] 跟着上来，停在低一阶的位置，仰头看着 [character_1]，喘息在安静楼道里清晰可闻",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 31,
+          "content": "[character_1] 低头看着 [character_2]，轻声问「如果重来一次，你还会走吗」，声音有些发抖",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "[character_2] 沉默两秒，声音放得很轻很稳「这次我不走了，我陪你走完这段楼梯」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 33,
+          "content": "声控灯忽然熄灭，楼道陷入短暂的黑，只剩窗外霓虹漏进的一道微光勾着两人轮廓",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 34,
+          "content": "灯又应声亮起，光线一明之间，[character_1] 向下走了一阶，与 [character_2] 站到同一台阶上",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 35,
+          "content": "两人在同一台阶上极近地站着，[character_1] 抬头看他，低声说「那我们，从这层开始」",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_2] 极轻地点头，回答「好，从这层开始，一层一层往上」，嘴角终于松开",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 37,
+          "content": "镜头从两人脚边缓缓后退，露出狭窄楼道与向上延伸的台阶，两人并肩立在昏黄灯下",
+          "cameraType": "Pull-out",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 38,
+          "content": "[character_1] 先迈步往上走，[character_2] 跟在半步之后，两人的脚步声在楼道里渐渐合拍",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 39,
+          "content": "镜头仰拍两人并肩拾级而上的剪影，声控灯一层层在他们前方亮起，像替他们引路",
+          "cameraType": "Tilt Up",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "两人在某层窗前停下，窗外是夜雨之城的霓虹海，[character_1] 望向远处那座天桥的方向",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 41,
+          "content": "近景 [character_1] 望向窗外，轻声说「我们今晚，把这座城走了一整圈」，眼里有光",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 42,
+          "content": "近景 [character_2] 也望向窗外，低声接「天桥、地铁、这里——以后还会有很多圈」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 43,
+          "content": "镜头从两人之间缓缓推向窗外，雨势渐歇，霓虹在湿玻璃上晕成柔和的光斑",
+          "cameraType": "Push-in",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "两人转身并肩，继续沿楼梯向上走去，背影没入忽明忽暗的灯光，相视一笑",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 45,
+          "content": "镜头从楼道天井升起俯拍，整座旧公寓的螺旋楼梯里两个小小身影并肩上行，画面定格于雨夜微光",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480684473-dcyqyupefm4-origin.png"
+  },
+  {
+    "id": "be_aishi_i2v_r137",
+    "name": "高台跳水与重生",
+    "scenario": "动作冒险",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "Kai",
+          "type": "character",
+          "gender": "male",
+          "age": "青年",
+          "ethnicity": "东亚",
+          "appearance": "Lean young man, short wet dark hair, barefoot, plain dark swim trunks, calm unreadable expression, cinematic realistic",
+          "position": "画面中央",
+          "voice": "Low steady male voice, sparse delivery"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "Rooftop high-dive board at night, city lights far below in deep black negative space, a single harsh purple light raking across wet concrete, no people. Establishing the first location",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 2,
+          "content": "The camera glides slowly along the empty diving board, purple flare smearing on the wet surface, the dark void of the city yawning beyond the edge",
+          "cameraType": "Tracking",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] walks out onto the board, bare feet on the cold wet rim, and stops at the very edge looking down into the dark",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 4,
+          "content": "Close on [character_1]'s face, eyes open and too calm for the height, purple flare bleeding across the lower frame",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "[character_1] curls his toes over the wet edge, exhales a slow breath of white vapor, and whispers, \"Not down. Through.\"",
+          "cameraType": "Tilt Up",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] raises his arms, his lean silhouette stark against the black sky, the whole city holding still beneath him",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] leans forward and dives off the board, body arcing against the black sky, the figure shrinking into darkness",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 8,
+          "content": "Wide of the empty board after he is gone, purple light still raking the wet concrete, the city lights flickering far below",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "Flooded subway tunnel, ankle-deep dark water mirroring purple emergency lights, tiled walls dripping, no people. Establishing the second location",
+          "cameraType": "Push-in",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "The camera drifts down the long flooded corridor, purple emergency lamps doubling in the black water, the only sound a slow steady drip",
+          "cameraType": "Tracking",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] stands waist-deep in the tunnel water, the same wet hair and calm face, staring down the dark corridor",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 12,
+          "content": "Close on [character_1]'s face under the purple wash, water beading on his skin, his expression unreadable as ever",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "[character_1] wades forward slowly through the black water, the camera tracking beside him down the tunnel",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "Close on [character_1]'s hand trailing along the wet tiled wall, a purple ghost outline pulsing once at his fingertips",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "[character_1] stops, looks back over his shoulder toward the camera, and says quietly, \"Still falling.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] turns and pushes deeper into the dark, the water rippling out behind him in slow purple rings",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "Wide of [character_1] alone in the long flooded tunnel, his reflection doubling him in the black water below",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] reaches a faint vertical seam of light at the tunnel's end and lifts a hand toward it, the purple grade thinning",
+          "cameraType": "Push-in",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "Close on [character_1]'s face tilting up into the seam of light, the first hint of warmth touching his cheek",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 20,
+          "content": "[character_1] steps through the seam, the dark water and purple lamps swallowed behind him into black",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "Dawn rooftop, the city emerging from night into cold grey-purple first light, shallow puddles on the concrete, no people. Establishing the third location",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "The camera pans slowly across the bare rooftop, the skyline a flat grey-purple band, the air still and cold before sunrise",
+          "cameraType": "Pan Right",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "[character_1] sits at the rooftop edge, soaked, legs over the void, the same diver, watching the horizon slowly lighten",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 24,
+          "content": "Close on [character_1]'s face turning toward the rising light, the purple grade slowly warming on his skin",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "[character_1] exhales a long breath and says quietly to the dawn, \"Now I come up.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_1] braces his hands on the ledge and pushes himself to his feet, the wet trunks dripping onto the concrete",
+          "cameraType": "Tilt Up",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] walks slowly along the rooftop edge, the same diver in full light now, the city waking below him",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 28,
+          "content": "Close on [character_1]'s wet hand resting on the rooftop rail, the purple ghost outline gone, ordinary morning light on his skin",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "[character_1] turns to face the camera directly and gives a small, tired nod, breaking nothing this time",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] looks back once over the rooftop edge at the drop below, then steps away from it for the first time",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "Wide of [character_1] alone on the dawn rooftop, the three falls behind him, the grade fully warm at last",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 32,
+          "content": "The first real sun breaks the horizon and floods the rooftop gold, [character_1] standing still in the new light",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "Close on [character_1]'s eyes closing into the sun, the tension finally gone from his face, breathing easy",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] opens his eyes and looks out over the waking city, then quietly says, \"All the way up.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "[character_1] walks toward the rooftop door, his wet footprints trailing behind him on the warm concrete",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 36,
+          "content": "Close on the drying footprints on the rooftop, the last of the night's water evaporating in the morning sun",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "[character_1] pauses at the door, hand on the frame, and looks back once at the edge he no longer needs",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "Close on [character_1]'s face in the doorway, calm and clear, the purple noir grade fully lifted into warm day",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] steps through the door, and for a beat the empty sunlit rooftop holds the frame alone",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 40,
+          "content": "The camera drifts back across the rooftop to the edge where he sat, only a faint damp mark left on the ledge",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "Wide of the rooftop and the bright skyline beyond, the city fully awake, no trace of the night's fall remaining",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "The camera tilts up from the rooftop to the clear morning sky, the last band of purple bleeding out of the grade",
+          "cameraType": "Tilt Up",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "A slow aerial drift over the rooftops as the sun climbs, the three locations of the night now all in daylight below",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 44,
+          "content": "The camera settles on the high-dive board far in the distance, empty and harmless now in the morning light",
+          "cameraType": "Push-in",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 45,
+          "content": "Final wide crane rising over the bright city, the night's three falls behind, the frame ending on open warm sky",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480684188-h614sgq781b-origin.png"
+  },
+  {
+    "id": "be_higgsfield_t2v_r1489",
+    "name": "黄纸条穿越城市",
+    "scenario": "都市剧情",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "The Commuter",
+          "type": "character",
+          "gender": "male",
+          "age": "中年",
+          "ethnicity": "欧美",
+          "appearance": "Tired man in his forties, grey overcoat, short greying hair, weary eyes, naturalistic documentary look",
+          "position": "右侧三分线",
+          "voice": "Quiet weary male voice"
+        },
+        {
+          "label": "[character_2]",
+          "name": "The Child",
+          "type": "character",
+          "gender": "female",
+          "age": "少女",
+          "ethnicity": "欧美",
+          "appearance": "Small girl around eight, red knit cardigan, brown ponytail, curious bright eyes, naturalistic documentary look",
+          "position": "画面中央",
+          "voice": "Light curious child voice"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "Quiet residential street at dawn, horizon in the lower third, long cold shadows, soft film grain, no people. Establishing the first location",
+          "cameraType": "Push-in",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 2,
+          "content": "The camera drifts down the empty street, parked cars and trimmed hedges in the soft dawn haze, a milk-pale sky overhead",
+          "cameraType": "Tracking",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] exits a house and closes the door, framed in the right third against vertical doorframe lines, buttoning his grey overcoat",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 4,
+          "content": "Close on [character_1]'s weary face as he checks his watch and sighs, breath fogging faintly in the cold morning air",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "A yellow note detaches from the door and falls in slow motion past [character_1], who does not notice as he walks off",
+          "cameraType": "Tilt Up",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "Extreme close-up of the yellow note landing on the path, paper fibres and soft reflections visible, the handwriting catching light",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 7,
+          "content": "[character_1] walks away down the street, growing small, his back to the note lying on the pavement behind him",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 8,
+          "content": "A gust lifts the yellow note off the path and tumbles it toward the street, the camera following it low",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 9,
+          "content": "Asphalt street, ground level, leading lines from the curb, the note drifting along the gutter. Establishing the second location",
+          "cameraType": "Tracking",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 10,
+          "content": "Camera ten centimetres above the asphalt following the note as it tumbles and skips along the empty morning street",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 11,
+          "content": "The note snags on a drain grate for a beat, trembling in the wind, the wet asphalt reflecting a pale sky",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 12,
+          "content": "The note blurred in the foreground while passersby cross the midground without ever looking down at it",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "A passing cyclist's wheel just misses the note, the gust of it flipping the paper over and onward down the block",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "The note tumbles around a corner out of the shadow, the light on the pavement growing warmer ahead",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "Sunlit street corner, a warm patch of light on the pavement, the note coming to rest in the glow. Establishing the third location",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 16,
+          "content": "The camera holds on the note glowing in the warm patch of sun, shop awnings and a quiet street behind it",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 17,
+          "content": "[character_2] walks into the sunlit patch, red cardigan bright in the light, and pauses when she sees the note",
+          "cameraType": "Push-in",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 18,
+          "content": "[character_2] crouches down, brown ponytail falling forward, and reaches a curious hand toward the yellow paper",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 19,
+          "content": "Extreme close-up of [character_2]'s small hands lifting the note, warm backlight and soft bokeh behind her fingers",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 20,
+          "content": "[character_2] reads the note aloud softly, mouthing the words, \"Don't forget — you can do this.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 21,
+          "content": "Close on [character_2]'s face as she looks up from the note, curiosity turning into a small determined smile",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 22,
+          "content": "[character_2] stands and looks around the corner, deciding which way the note's owner might have gone",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 23,
+          "content": "Rear view of [character_2] walking down the sidewalk holding the note, moving through alternating shadow and sunlight",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 24,
+          "content": "[character_2] reaches a bus stop where a line of tired commuters waits, and she scans their faces holding the note",
+          "cameraType": "Push-in",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 25,
+          "content": "Close on [character_2] spotting a grey overcoat through the bus window, recognition lighting her eyes",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 26,
+          "content": "[character_2] steps up toward the open bus doors, clutching the note to her chest, the morning light behind her",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 27,
+          "content": "Bus interior, cool muted light, condensation on the window, negative space on the left. Establishing the fourth location",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 28,
+          "content": "The camera moves slowly down the bus aisle past blurred shoulders, the cool light flat on the empty seats",
+          "cameraType": "Tracking",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 29,
+          "content": "[character_1] sits tired by the bus window, head leaning against the glass, the same grey overcoat, eyes half closed",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 30,
+          "content": "Close on [character_1]'s reflection ghosting in the condensation-fogged window, the city sliding past behind it",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 31,
+          "content": "[character_2] steps into the bus aisle and approaches [character_1], holding the yellow note out in front of her",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 32,
+          "content": "[character_2] stops beside his seat, tugs gently at his sleeve, and the tired man slowly opens his eyes",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 33,
+          "content": "[character_2] hands the note up to him and says brightly, \"Excuse me — I think you dropped this.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 34,
+          "content": "Close on [character_1] taking the note from her small hand, his weary eyes dropping to the handwriting",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 35,
+          "content": "Insert of the note in [character_1]'s hands, the words \"you can do this\" trembling slightly as his grip tightens",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 36,
+          "content": "Close on [character_1]'s face as recognition softens it, a slow breath leaving him, his eyes glistening",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 37,
+          "content": "[character_1] looks up at [character_2] and manages a small smile, \"Thank you. I really did need this today.\"",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 38,
+          "content": "[character_2] beams up at him, pleased with herself, rocking on her heels in the aisle light",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 39,
+          "content": "[character_2] gives him a little wave, says \"Have a good day,\" and hops back down the bus aisle",
+          "cameraType": "Tracking",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 40,
+          "content": "[character_2] hops off the bus at the next stop, the red cardigan vanishing into the bright street outside",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 41,
+          "content": "Two-shot space now empty beside [character_1], who looks down at the note again, alone but lighter",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 42,
+          "content": "Close on [character_1] carefully folding the note and tucking it into his breast pocket, over his heart",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 43,
+          "content": "[character_1] turns to the window, and for the first time this morning the tiredness lifts from his face",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 44,
+          "content": "The city slides past the fogged bus window, sunlight breaking through, [character_1] watching it go by quietly",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 45,
+          "content": "Final wide of the bus moving off down the bright avenue, one small yellow note having crossed the whole city to land",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480685790-rkb3btvh32m-origin.png"
+  },
+  {
+    "id": "synthetic_ck3_divination",
+    "name": "塔罗牌三牌占卜",
+    "scenario": "奇幻科幻",
+    "scriptList": {
+      "subjects": [
+        {
+          "label": "[character_1]",
+          "name": "占卜师·薇拉",
+          "type": "character",
+          "gender": "female",
+          "age": "中年",
+          "ethnicity": "欧美",
+          "appearance": "深色丝绒长袍，披深红头巾，手腕戴多串饰物，神情笃定神秘，烛光暖调",
+          "position": "画面中央，坐在占卜桌后",
+          "voice": "低沉沙哑女声，语速缓慢富有仪式感"
+        }
+      ],
+      "acts": [
+        {
+          "turn": 1,
+          "content": "昏暗的占卜室，桌上烛火摇曳，铺着深色绒布，一副塔罗牌整齐叠放在桌中央，[character_1] 端坐桌后，建立占卜场景",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 2,
+          "content": "镜头缓缓推近占卜桌，烛光在牌堆牌背的固定花纹上跳动，[character_1] 的轮廓在暖光里渐渐清晰",
+          "cameraType": "Push-in",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 3,
+          "content": "[character_1] 双手覆在牌堆上，闭眼低语「静下心来，让命运为你揭示三张牌」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 4,
+          "content": "[character_1] 缓缓洗牌，牌面始终朝下，指间的多串饰物随动作轻响，烛光在牌堆上明灭",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 5,
+          "content": "[character_1] 把牌摊成一道弧线铺在绒布上，抬眼看向求问者方向，沉声说「凭你的直觉，让我替你来抽」",
+          "cameraType": "Pan Right",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 6,
+          "content": "[character_1] 抽出第一张牌横置桌面，缓缓翻开，是「愚者」牌——画面应呈现塔罗牌库中既定的愚者牌图（悬崖边背行囊的旅人）",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 7,
+          "content": "近景定在愚者牌上停留，牌面悬崖、白狗、行囊的既定图样在烛光下纤毫毕现，[character_1] 的指尖轻轻点上牌缘",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 8,
+          "content": "[character_1] 沉声解读「愚者，代表你正站在一段全新旅程的起点」，目光从牌面缓缓抬起",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 9,
+          "content": "[character_1] 身体微微后靠，留白般顿了顿，补充「前方一片未知，但你心里其实并不害怕，对吗」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 10,
+          "content": "镜头拉开拍占卜桌全景，第一张愚者牌横陈桌面，[character_1] 的手伸向牌阵，准备抽第二张",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 11,
+          "content": "[character_1] 抽出第二张牌置于愚者牌右侧，翻开，是「恋人」牌——画面应呈现牌库中既定的恋人牌图（两人立于天使之下）",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 12,
+          "content": "近景定在恋人牌上，牌面天使、双人、背景山峦的既定图样在烛光里清晰，[character_1] 手指轻抚牌面",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 13,
+          "content": "[character_1] 缓缓说「恋人，意味着一个重要的选择，也意味着关系里的联结」，语气放得很慢",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 14,
+          "content": "[character_1] 微微侧头，目光深远，留白演绎道「你最近，是不是正在两条路之间犹豫不决」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 15,
+          "content": "镜头平移过愚者与恋人两张并陈的牌，再回到 [character_1] 抽牌的手上，烛火在桌沿投下晃动的影",
+          "cameraType": "Pan Right",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 16,
+          "content": "[character_1] 抽出第三张牌置于最右，翻开，是「塔」牌——画面应呈现牌库中既定的塔牌图（高塔遭雷击崩塌、人影坠落）",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 17,
+          "content": "近景定在塔牌上，牌面高塔、闪电、坠落人影、火舌的既定图样在烛光下灼灼，[character_1] 神情一凝",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 18,
+          "content": "[character_1] 压低声音「塔，预示旧的秩序将要崩塌，但崩塌之后，才有重建的可能」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 19,
+          "content": "[character_1] 抬眼，留白地补一句「别怕这张牌，它砸碎的，往往是早该松手的东西」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 20,
+          "content": "镜头拉远拍三张牌并列的全貌：愚者、恋人、塔，三张既定牌面在绒布上排成一道牌阵",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 21,
+          "content": "[character_1] 把手掌摊开覆在三张牌上方，缓缓总结「起点、抉择、瓦解——你的牌阵在说，破而后立」",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 22,
+          "content": "近景再次扫过愚者牌，[character_1] 指尖点在悬崖边旅人上，说「这趟旅程，你已经迈出了第一步」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 23,
+          "content": "近景移到恋人牌，[character_1] 续道「中途这个选择，关乎你最在意的那个人，别用脑子，用心」",
+          "cameraType": "Pan Right",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 24,
+          "content": "近景移到塔牌，[character_1] 沉声「至于这座塔，它倒下时，你要做的不是去扶，而是退后一步看清」",
+          "cameraType": "Pan Right",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 25,
+          "content": "[character_1] 抬眼直视镜头，烛光映亮半张脸，留白地问「这三张牌，你听懂了哪一张」",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 26,
+          "content": "镜头微微后退拍 [character_1] 与三张牌的关系，她双手交叠搁在桌沿，等待无声的回应",
+          "cameraType": "Pull-out",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 27,
+          "content": "[character_1] 拿起愚者牌对着烛火端详，牌面在火光里微微透亮，她轻声说「起点这张，最像现在的你」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 28,
+          "content": "[character_1] 把愚者牌放回原位，三张牌的次序丝毫未乱，她抚平绒布，动作仪式般郑重",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 29,
+          "content": "镜头从桌面缓缓上摇到 [character_1] 的脸，她阖眼片刻，像在替这趟牌阵收尾凝神",
+          "cameraType": "Tilt Up",
+          "shotSize": "Medium",
+          "cut": "long-take"
+        },
+        {
+          "turn": 30,
+          "content": "[character_1] 睁眼，目光重新落回牌阵，沉声说「命运给了你方向，但走不走，是你自己的事」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 31,
+          "content": "近景烛火被一阵气流吹得猛地一晃，三张牌的影子在桌面上摇动，[character_1] 抬手护住烛焰",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 32,
+          "content": "烛火稳住，[character_1] 低语「连风都来听这场牌了」，嘴角浮起一抹神秘的笑",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 33,
+          "content": "镜头拉开拍占卜室全景，三张牌、烛台、[character_1] 与昏暗的房间一同入画，气氛凝而不散",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 34,
+          "content": "[character_1] 伸手把三张牌缓缓收拢叠起，愚者、恋人、塔依次归入牌堆，牌面再次朝下",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 35,
+          "content": "近景 [character_1] 的手把整副牌轻轻磕齐，烛光在牌背固定花纹上重新跳动，仿佛一切归零",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 36,
+          "content": "[character_1] 把牌堆推回桌中央原位，抬眼看向求问者方向，缓缓说「这场，到此为止」",
+          "cameraType": "Push-in",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 37,
+          "content": "[character_1] 双手交叠搁在牌堆旁，留白地顿了顿，补一句「但有些话，牌没说完，你心里清楚」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 38,
+          "content": "镜头缓缓环绕到 [character_1] 的侧面，烛光勾出她头巾与长袍的轮廓，背景隐入深暗",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 39,
+          "content": "[character_1] 侧脸望向桌上跳动的烛火，低声说「记住今天这三张，往后你自会懂」",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 40,
+          "content": "镜头转回正面，[character_1] 端坐如初，整副牌静静叠在桌心，房间重归仪式般的安静",
+          "cameraType": "Static",
+          "shotSize": "Medium",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 41,
+          "content": "[character_1] 抬眼直视镜头，烛光在瞳孔里跳动，留白地问「现在，你愿意翻开属于自己的下一张牌吗」",
+          "cameraType": "Push-in",
+          "shotSize": "Close-up",
+          "cut": "long-take"
+        },
+        {
+          "turn": 42,
+          "content": "[character_1] 不再说话，只把一只手轻轻按在牌堆顶上，像在替这场占卜封缄",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 43,
+          "content": "镜头从占卜桌缓缓拉远，[character_1]、牌堆与摇曳烛火一同退入昏暗的占卜室深处",
+          "cameraType": "Pull-out",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        },
+        {
+          "turn": 44,
+          "content": "近景烛火最后一次明灭，火光在绒布与牌背花纹上投下温暖的余晕",
+          "cameraType": "Static",
+          "shotSize": "Close-up",
+          "cut": "hard-cut"
+        },
+        {
+          "turn": 45,
+          "content": "镜头定格在整张占卜桌的全景：牌堆居中、烛火摇曳、[character_1] 静坐其后，画面在暖调里收束",
+          "cameraType": "Static",
+          "shotSize": "Wide",
+          "cut": "long-take"
+        }
+      ]
+    },
+    "firstFrameImageUrl": "https://cdn.aorizon.com/images/img-1783480683843-hha8t7osj0f-origin.png"
+  }
+]

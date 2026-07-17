@@ -1,0 +1,21 @@
+.DS_Store
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Xcode
+build/
+DerivedData/
+**/xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+
+# CocoaPods
+Pods/
+Example/HappyOysterPodExample.xcworkspace/
+
+# Local binary dependencies
+Vendors/
+Example/Vendors/
