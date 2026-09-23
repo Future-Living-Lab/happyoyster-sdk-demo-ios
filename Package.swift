@@ -29,28 +29,28 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "HappyOysterCore",
-            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.5/HappyOysterCore.xcframework.zip",
-            checksum: "5403af8d9d150ca30e0dc884d22811fb563907aee6ab3f87378507d32e27572b"
+            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.6/HappyOysterCore.xcframework.zip",
+            checksum: "611ed26effa4e0a01841a4265feb97f59a9849ceaeb93ab1063f90d5dc016731"
         ),
         .binaryTarget(
             name: "HappyOysterWorld",
-            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.5/HappyOysterWorld.xcframework.zip",
-            checksum: "166825ce3ddd95065db8b8928a9f63c27505a50a835c35252d58b15953a0bbe9"
+            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.6/HappyOysterWorld.xcframework.zip",
+            checksum: "1e01d29b75ac7a3b70739ddd8ab65d436accbbaa161ff9e443ccc2f3a7ab0a5c"
         ),
         .binaryTarget(
             name: "HappyOysterStream",
-            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.5/HappyOysterStream.xcframework.zip",
-            checksum: "9867c8993bd84668b30e9b42f1f9910dd27e1d0a8ac860a156be0f10b71b3fce"
+            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.6/HappyOysterStream.xcframework.zip",
+            checksum: "b63326cc43fe6e16a15436b67c81472cbcc1ec41c973520bc8e8e12c76f145ab"
         ),
         .binaryTarget(
             name: "HappyOysterSDK",
-            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.5/HappyOysterSDK.xcframework.zip",
-            checksum: "9969d631354604b924c2aaa3fc35f489cb2245962380191507f421312b299572"
+            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.6/HappyOysterSDK.xcframework.zip",
+            checksum: "f7249c34bc2469df6bf4ba67fc3e6d207f41d788a650bcee5aad06c7941e8015"
         ),
         .binaryTarget(
             name: "HappyOysterUI",
-            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.5/HappyOysterUI.xcframework.zip",
-            checksum: "facb45c3955be18a23dcda6c4055bc542442d3159d1137ca408ad9bdaa84ae2d"
+            url: "https://github.com/Future-Living-Lab/happyoyster-sdk-demo-ios/releases/download/0.1.6/HappyOysterUI.xcframework.zip",
+            checksum: "f600fc01ad6c5311a065747c8fe167383ae965cb70e8a1958bcfcfff514f8e33"
         )
     ]
 )
