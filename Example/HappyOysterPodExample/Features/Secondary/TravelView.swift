@@ -2,8 +2,9 @@ import SwiftUI
 import HappyOysterSDK
 import HappyOysterUI
 
-/// 游玩全屏界面（横屏）。
-/// 进入时锁横屏，离开时解锁。所有退出路径均先调 endTravel 再关闭。
+/// Full-screen play view.
+/// On entry, locks orientation by the world's aspect ratio (acting defaults to portrait 9:16, others landscape); unlocks on leave.
+/// All exit paths call endTravel first, then close.
 @available(iOS 15.0, *)
 struct TravelView: View {
 
@@ -14,24 +15,26 @@ struct TravelView: View {
     @StateObject private var vm = TravelViewModel()
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isInstructFieldFocused: Bool
-    /// scriptlist 世界「更新剧本」编辑面板是否展示（覆盖层，独立于 vm 状态，纯本地 UI 开关）。
+    /// Focus of the paused-state "Back to N s" field (the number pad has no return key; dismissed by tapping blank video area or tapping "Rewind").
+    @FocusState private var isRewindFieldFocused: Bool
+    /// Whether the scriptlist world's "Update Script" editor panel is shown (an overlay, independent of vm state; a purely local UI toggle).
     @State private var isScriptEditorPresented = false
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            // 视频视图：start() 成功后才挂载，确保 SDK engine 已就绪、renderView 有真实 bounds
+            // Video view: mounted only after start() succeeds, ensuring the SDK engine is ready and renderView has real bounds
             //
-            // 点击收起键盘的手势挂在这一层（画面本体），而不是挂在整个根 ZStack 上：
-            // 它和上面 HUD 里的按钮 / Story 输入框 / Wander 摇杆是 ZStack 里的同级 sibling、不是它们的祖先，
-            // 命中测试按屏幕位置走——落在按钮/摇杆可点击区域的触摸会被那些叠在上层的视图先接住，
-            // 根本不会传到这一层；只有落在画面空白处的点击才会触发收键盘。
-            // 手势本身是无条件挂载的（不按 isInstructFieldFocused 条件挂/卸）——之前踩过条件挂载
-            // 导致 SwiftUI 视图身份变化、TextField 无法正常聚焦的坑；未聚焦时点一下只是把
-            // isInstructFieldFocused 置为 false 的空操作，不会有副作用。Wander 模式下摇杆区域
-            // 本身盖在这一层上面，摇杆的拖拽手势会被摇杆自己先接住，触摸根本不会穿透到这里，
-            // 天然不会跟摇杆产生竞争。
+            // The tap-to-dismiss-keyboard gesture is attached to this layer (the video itself), not to the whole root ZStack:
+            // it is a sibling in the ZStack of the HUD buttons / Story input field / Wander joysticks above, not their ancestor,
+            // and hit testing goes by screen position — touches landing on the tappable areas of buttons/joysticks are caught first by those views layered on top
+            // and never reach this layer; only taps on blank video area trigger keyboard dismissal.
+            // The gesture itself is mounted unconditionally (not mounted/unmounted based on isInstructFieldFocused) — we previously hit a pitfall where conditional mounting
+            // changed SwiftUI view identity and the TextField couldn't focus properly; a tap while unfocused merely sets
+            // isInstructFieldFocused to false as a no-op with no side effects. In Wander mode the joystick area
+            // sits on top of this layer, so the joystick's drag gesture is caught by the joystick first and touches never pass through here,
+            // so it naturally doesn't compete with the joystick.
             Group {
                 if vm.showVideo, let travel = vm.travel {
                     OysterVideoView(travel: travel)
@@ -42,9 +45,10 @@ struct TravelView: View {
             .ignoresSafeArea()
             .onTapGesture {
                 isInstructFieldFocused = false
+                isRewindFieldFocused = false
             }
 
-            // 主 HUD（顶部信息栏 + 底部操控区）
+            // Main HUD (top info bar + bottom control area)
             VStack {
                 topBar
                 Spacer()
@@ -53,8 +57,8 @@ struct TravelView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
 
-            // 右下角断线重连提示（不遮挡画面）：单独 `@ObservedObject` `vm.countdown`，
-            // 不经过 `vm` 本身，避免每秒 tick 带着这个覆盖层一起被 `TravelView.body` 重新 diff。
+            // Bottom-right reconnecting hint (doesn't cover the video): `@ObservedObject` `vm.countdown` separately,
+            // not via `vm` itself, so this overlay isn't re-diffed along with `TravelView.body` on every tick.
             TravelReconnectingOverlay(countdown: vm.countdown, status: vm.status)
 
             if vm.isStarting { loadingOverlay }
@@ -63,27 +67,35 @@ struct TravelView: View {
                 errorOverlay(err)
             }
 
-            // 非阻断性 toast（token 刷新进度、轻量提示）
+            // Non-blocking toast (token refresh progress, lightweight hints)
             if let toast = vm.toastMessage {
                 toastBanner(toast)
             }
         }
         .statusBar(hidden: true)
-        // scriptlist 世界「更新剧本」编辑面板：用 fullScreenCover 呈现而不是内联在 ZStack 里的 `if` 分支。
-        // `TravelView` 持有 `@StateObject var vm`，vm 的倒计时每秒 tick 一次都会让 `TravelView.body`
-        // 整体重新求值；若面板内联在同一棵视图树里，每次重新求值都会把它带入同一趟 diff，
-        // 个别系统版本上会连带把内部 `TextEditor` 的滚动位置重置回顶部（即“不停刷新回到原始位置”）。
-        // fullScreenCover 呈现的内容挂在独立的 hosting controller 上，只在自身状态变化或首次呈现时
-        // 重新构建，不再随外层每秒一次的重绘节拍被动跟着重新 diff，从源头切断这条重绘链路；
-        // 前面给 `TextEditor` 包的 `.equatable()` 继续保留作为兜底。
+        // scriptlist world "Update Script" editor panel: presented via fullScreenCover rather than an inline `if` branch in the ZStack.
+        // `TravelView` holds `@StateObject var vm`; each per-second countdown tick of vm causes `TravelView.body`
+        // to be fully re-evaluated; if the panel were inline in the same view tree, every re-evaluation would bring it into the same diff pass,
+        // and on some OS versions this would also reset the inner `TextEditor`'s scroll position back to the top (i.e. "keeps refreshing back to the original position").
+        // Content presented by fullScreenCover lives on its own hosting controller and is rebuilt only when its own state changes or on first presentation,
+        // no longer passively re-diffed with the outer once-per-second redraw cadence, cutting off this redraw chain at the source;
+        // the `.equatable()` wrapped around `TextEditor` earlier is kept as a fallback.
         .fullScreenCover(isPresented: $isScriptEditorPresented) {
             scriptUpdateEditorOverlay
         }
         .onAppear {
-            OrientationLock.shared.lock(toLandscape: true)
+            // Pre-lock once using the list's mode first to avoid a "landscape then portrait" jump; once start() gets the real
+            // aspectRatio, the onChange below corrects it (the server may deliver a 16:9 acting world).
+            OrientationLock.shared.lock(to: world.mode == .acting ? .portrait : .landscape)
             Task {
+                // happyoyster is split into different sub-models by mode; one initialize only serves worlds of one mode,
+                // while this demo's world list comes from the app's own backend with all three modes mixed. So before entering, switch the SDK
+                // to the model serving this world's mode (a no-op if already on the target model). It goes before vm.start
+                // because switching models does cleanup + initialize, which rebuilds the engine state checked in vm.start's Step 0.
+                await session.ensureModel(for: world.mode)
                 await vm.start(
                     encryptedWorldId: world.encryptedWorldId,
+                    mode: world.mode,
                     maxExperienceTimeSec: env.maxExperienceTimeSec,
                     client: env.apiClient,
                     tokenManager: session.tokenManager
@@ -91,18 +103,24 @@ struct TravelView: View {
             }
         }
         .onDisappear {
-            // 方向已在 onChange(shouldDismiss) 里 dismiss 前恢复，此处是兜底
-            OrientationLock.shared.lock(toLandscape: false)
+            // Orientation is already restored before dismiss in onChange(shouldDismiss); this is a fallback
+            OrientationLock.shared.lock(to: .unlocked)
         }
+        // The aspectRatio returned by enter-travel is authoritative: decide orientation by the `width:height` ratio,
+        // without enumerating values — if the server delivers 3:4 / 4:3 in the future, no change is needed here.
+        .onChange(of: vm.aspectRatio, perform: { ratio in
+            guard let ratio, let isPortrait = Self.isPortraitRatio(ratio) else { return }
+            OrientationLock.shared.lock(to: isPortrait ? .portrait : .landscape)
+        })
         .onChange(of: vm.shouldDismiss, perform: { should in
             if should {
-                // 先解锁方向，再 dismiss，确保旋转动画在退场动画之前触发
-                OrientationLock.shared.lock(toLandscape: false)
+                // Unlock orientation first, then dismiss, so the rotation animation fires before the exit animation
+                OrientationLock.shared.lock(to: .unlocked)
                 dismiss()
             }
         })
-        // 「更新剧本」请求结束（成功或失败）后 isUpdatingScript 回到 false：自动收起面板，
-        // 结果改用底层 toast 展示——面板本身在请求进行中保持打开、展示加载态。
+        // After the "Update Script" request ends (success or failure), isUpdatingScript goes back to false: auto-dismiss the panel,
+        // and show the result with the underlying toast — the panel itself stays open with a loading state while the request is in flight.
         .onChange(of: vm.isUpdatingScript, perform: { isUpdating in
             if !isUpdating && isScriptEditorPresented {
                 isScriptEditorPresented = false
@@ -114,45 +132,59 @@ struct TravelView: View {
 
     private var topBar: some View {
         HStack(alignment: .top) {
-            // 名称 + 状态胶囊 + 倒计时行：单独 `@ObservedObject` `vm.countdown`，
-            // 不经过 `vm` 本身，避免每秒 tick 带着整个 `TravelView.body` 一起重新 diff。
+            // Name + status pill + countdown row: `@ObservedObject` `vm.countdown` separately,
+            // not via `vm` itself, so a per-second tick doesn't re-diff the whole `TravelView.body`.
             TravelTopBarLeading(countdown: vm.countdown, worldName: world.name, status: vm.status)
             Spacer()
             HStack(spacing: 8) {
                 if vm.supportsPauseResume {
-                    if case .running = vm.status { pauseButton }
-                    else if case .paused = vm.status { resumeButton }
-                    else if case .pausing = vm.status { resumeButton }
+                    // Buttons are always present, neither hidden nor grayed out by state: the demo must be able to really send calls to the SDK at any moment
+                    // (including "reconnecting" and pause/resume confirmations in flight), letting the SDK's state gate produce the result,
+                    // rather than having the UI block them in advance — blocking would hide the SDK's real behavior at those moments.
+                    // Which one is shown depends only on the current state: resume when paused, pause otherwise (including prepare / pause confirming).
+                    if case .paused = vm.status { resumeButton } else { pauseButton }
                 }
                 closeButton
             }
         }
     }
 
-    // MARK: - 暂停 / 恢复按钮
+    // MARK: - Pause / resume buttons
 
     private var pauseButton: some View {
         Button { vm.pauseTravel() } label: {
             controlButtonLabel(systemName: "pause.fill")
         }
-        .disabled(vm.isPausing)
     }
 
     private var resumeButton: some View {
         Button { vm.resumeTravel() } label: {
             controlButtonLabel(systemName: "play.fill")
         }
-        .disabled(vm.isResuming)
     }
 
     private func controlButtonLabel(systemName: String) -> some View {
-        ZStack {
-            Circle()
-                .fill(Color.black.opacity(0.4))
-                .frame(width: 36, height: 36)
-            Image(systemName: systemName)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(.white)
+        ControlButtonLabel(systemName: systemName)
+    }
+
+    /// Split into a standalone view (instead of reading `@Environment(\.isEnabled)` directly in `controlButtonLabel`):
+    /// `.disabled(...)` only passes the `isEnabled` environment value to the button label's view hierarchy, but a solid circle background/icon
+    /// doesn't automatically fade along with it — with a fixed `Color.black.opacity(0.4)` / `.foregroundStyle(.white)`,
+    /// it looks the same whether disabled or not, just unresponsive to taps, so the user can't tell "resuming / finishing pause, button is locked".
+    private struct ControlButtonLabel: View {
+        let systemName: String
+        @Environment(\.isEnabled) private var isEnabled
+
+        var body: some View {
+            ZStack {
+                Circle()
+                    .fill(Color.black.opacity(isEnabled ? 0.4 : 0.2))
+                    .frame(width: 36, height: 36)
+                Image(systemName: systemName)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.white)
+            }
+            .opacity(isEnabled ? 1 : 0.4)
         }
     }
 
@@ -169,22 +201,46 @@ struct TravelView: View {
         }
     }
 
+    /// Parse `"width:height"` to determine portrait; returns nil for unrecognized formats (keep current orientation).
+    private static func isPortraitRatio(_ raw: String) -> Bool? {
+        let parts = raw.split(separator: ":").compactMap { Double($0) }
+        guard parts.count == 2, parts[0] > 0, parts[1] > 0 else { return nil }
+        return parts[0] < parts[1]
+    }
+
     // MARK: - Bottom bar
 
     @ViewBuilder
     private var bottomBar: some View {
-        if case .running = vm.status {
+        // The two "in-flight" branches must come before the status branches: the SDK only flips status once the state actually settles;
+        // during pause confirmation it's still .running publicly (would be covered by the control HUD below), and during resume, before `POST /resume`
+        // returns, it's still .paused (would show as "Paused") — feedback between the tap and the status flip can only rely on
+        // `isPausing` / `isResuming`, which become true the moment the tap happens.
+        if vm.isPausing {
+            inFlightHUD("Pausing…")
+        } else if vm.isResuming {
+            inFlightHUD("Resuming…")
+        } else if case .running = vm.status {
             if vm.isWanderMode {
-                // 双摇杆 HUD 整宽布局：左摇杆贴左、按键 + 右摇杆贴右
+                // Dual-joystick HUD full-width layout: left joystick on the left, buttons + right joystick on the right
                 WorldTravelControlsView { params in
                     vm.sendCommand(OysterAdventureCommand(params))
                 }
+            } else if vm.mode == .acting {
+                // acting supports text instructions only: it's not scriptlist (no need to wait for creationModel),
+                // and has no joystick (the SDK-side sendCommand rejects non-adventure worlds directly with 103003).
+                HStack(alignment: .bottom) {
+                    InstructInputView(isFocused: $isInstructFieldFocused) { text in
+                        vm.sendInstruct(text)
+                    }
+                    Spacer()
+                }
             } else if !vm.isCreationModelResolved {
-                // creationModel 还没查回来：不知道该展示文本指令框还是「更新剧本」入口，
-                // 先不展示，避免"先按 simple 展示、结果一回来又切换"的闪烁。
+                // creationModel hasn't come back yet: we don't know whether to show the text instruction field or the "Update Script" entry,
+                // so show nothing for now, avoiding the flicker of "show as simple first, then switch when the result arrives".
                 EmptyView()
             } else if vm.isScriptListMode {
-                // scriptlist 世界：不展示文本指令输入，改为「更新剧本」入口（与文本指令互斥）
+                // scriptlist world: no text instruction input; show the "Update Script" entry instead (mutually exclusive with text instructions)
                 HStack(alignment: .bottom) {
                     scriptUpdateEntryButton
                     Spacer()
@@ -199,48 +255,54 @@ struct TravelView: View {
             }
         } else if case .paused = vm.status {
             HStack(spacing: 12) {
-                Text("已暂停")
+                Text("Paused")
                     .font(.subheadline.bold())
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
                     .background(Color.white.opacity(0.15), in: Capsule())
 
-                // Story 模式下才显示回退按钮。单独 `@ObservedObject` `vm.countdown`
-                // 判断 `canRewind`（依赖 elapsedSec），不经过 `vm` 本身。
-                if !vm.isWanderMode {
-                    RewindButton(
+                // Rewind controls only in Story mode: neither wander nor acting supports rewind
+                // (for acting's restriction see the SDK's rewindableTravelVersions), so the entry must be hidden.
+                // `@ObservedObject` `vm.countdown` separately to evaluate `canRewind` (depends on elapsedSec),
+                // not via `vm` itself.
+                if vm.mode == .story {
+                    RewindControl(
                         countdown: vm.countdown,
-                        isWanderMode: vm.isWanderMode,
+                        isFocused: $isRewindFieldFocused,
+                        allowsRewind: vm.mode == .story,
                         status: vm.status,
                         isRewinding: vm.isRewinding,
-                        onTap: { vm.rewindBack10s() }
+                        onRewind: { sec in vm.rewind(toSec: sec) }
                     )
                 }
 
                 Spacer()
             }
-        } else if case .pausing = vm.status {
-            HStack {
-                ProgressView().tint(.white).scaleEffect(0.8)
-                Text("暂停中…")
-                    .font(.subheadline.bold())
-                    .foregroundStyle(.white)
-                Spacer()
-            }
-            .padding(.horizontal, 16)
         }
     }
 
-    // MARK: - 更新剧本（scriptlist 世界）
+    /// Bottom feedback while pause / resume is in flight (shown immediately on tap, until the SDK actually flips the status).
+    private func inFlightHUD(_ title: LocalizedStringKey) -> some View {
+        HStack {
+            ProgressView().tint(.white).scaleEffect(0.8)
+            Text(title)
+                .font(.subheadline.bold())
+                .foregroundStyle(.white)
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+    }
 
-    /// 底部 HUD 的「更新剧本」入口按钮，样式对齐回退 10s 按钮。
+    // MARK: - Update script (scriptlist worlds)
+
+    /// Bottom HUD "Update Script" entry button, styled like the rewind button.
     private var scriptUpdateEntryButton: some View {
         Button { isScriptEditorPresented = true } label: {
             HStack(spacing: 6) {
                 Image(systemName: "doc.text")
                     .font(.system(size: 13, weight: .semibold))
-                Text("更新剧本")
+                Text("Update Script")
                     .font(.subheadline.bold())
             }
             .foregroundStyle(.white)
@@ -250,15 +312,15 @@ struct TravelView: View {
         }
     }
 
-    /// 全屏半透明遮罩 + 居中编辑卡片；点/拖任意位置**只收起键盘、不关闭面板**——编辑内容不会
-    /// 因为误触丢失，必须点「取消」才真正退出。发送后面板不会立即关闭——请求进行中保持展示
-    /// 加载态，请求结束（成功/失败）由 `TravelView.body` 上的 `onChange(of: vm.isUpdatingScript)`
-    /// 自动收起，结果改用 toast 展示。作为 `fullScreenCover` 内容呈现，系统默认给 cover 一层
-    /// 不透明背景，这里用 `ClearFullScreenCoverBackground` 把它改成透明，保留遮罩后仍能看到
-    /// 底层画面被压暗的效果。收键盘手势改用 `KeyboardDismissAssistant`（见 `AppDelegate.swift`）：
-    /// 面板呈现时启动监听、消失时停止——启停时机绑在这个独立 hosting controller 自己的生命周期上，
-    /// 跟外层 `TravelView` 每秒一次的倒计时刷新无关，也不涉及任何 SwiftUI 条件挂载。这是目前
-    /// 项目内第一个接入这套新机制的入口，先在这个相对独立、风险最低的面板上验证。
+    /// Full-screen translucent scrim + centered editor card; tapping/dragging anywhere **only dismisses the keyboard, not the panel** — edits won't
+    /// be lost by accidental touches; you must tap "Cancel" to really exit. After sending, the panel does not close immediately — it stays in a
+    /// loading state while the request is in flight; when the request ends (success/failure), `onChange(of: vm.isUpdatingScript)` on `TravelView.body`
+    /// auto-dismisses it and the result is shown via toast. Presented as `fullScreenCover` content, which by default gets an
+    /// opaque system background; `ClearFullScreenCoverBackground` makes it transparent here so the dimmed underlying video
+    /// is still visible behind the scrim. Keyboard dismissal uses `KeyboardDismissAssistant` (see `AppDelegate.swift`):
+    /// monitoring starts when the panel appears and stops when it disappears — start/stop is bound to this standalone hosting controller's own lifecycle,
+    /// unrelated to the outer `TravelView`'s per-second countdown refresh, and involves no SwiftUI conditional mounting. This is currently
+    /// the first entry point in the project to adopt this new mechanism, validated first on this relatively isolated, lowest-risk panel.
     private var scriptUpdateEditorOverlay: some View {
         ZStack {
             Color.black.opacity(0.55).ignoresSafeArea()
@@ -278,7 +340,7 @@ struct TravelView: View {
     private var loadingOverlay: some View {
         VStack(spacing: 16) {
             ProgressView().tint(.white).scaleEffect(1.4)
-            Text("连接中…")
+            Text("Connecting…")
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.8))
         }
@@ -300,14 +362,14 @@ struct TravelView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxHeight: 240)
-            Button("关闭") { vm.endAndDismiss() }
+            Button("Close") { vm.endAndDismiss() }
                 .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black.opacity(0.75).ignoresSafeArea())
     }
 
-    /// 非阻断性 toast 横幅（顶部居中，3s 自动消失）。
+    /// Non-blocking toast banner (top center, auto-disappears after 3s).
     private func toastBanner(_ message: String) -> some View {
         VStack {
             HStack(spacing: 8) {
@@ -329,13 +391,13 @@ struct TravelView: View {
     }
 }
 
-// MARK: - Story 模式文字指令输入框
+// MARK: - Story mode text instruction input
 
-/// 横屏下适用的紧凑文字输入组件：TextField + 发送按钮。
-/// 发送后自动清空输入框，发送中禁用按钮防止重复提交。
+/// Compact text input component suited for landscape: TextField + send button.
+/// Clears the field automatically after sending; disables the button while sending to prevent duplicate submissions.
 @available(iOS 15.0, *)
 private struct InstructInputView: View {
-    /// 焦点状态由 `TravelView` 持有（供画面层的收键盘手势判断是否要挂载）。
+    /// Focus state is owned by `TravelView` (used by the video-layer keyboard-dismiss gesture to decide whether to mount).
     var isFocused: FocusState<Bool>.Binding
     let onSend: (String) -> Void
 
@@ -344,7 +406,7 @@ private struct InstructInputView: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            TextField("输入剧情指令…", text: $text)
+            TextField("Enter a story instruction…", text: $text)
                 .focused(isFocused)
                 .font(.subheadline)
                 .foregroundStyle(.white)
@@ -352,7 +414,8 @@ private struct InstructInputView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .background(Color.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 10))
-                .frame(width: 260)
+                // In portrait (acting 9:16) the screen is narrower and a fixed 260pt would squeeze out the send button: give an upper bound and let it adapt.
+                .frame(maxWidth: 260)
                 .submitLabel(.send)
                 .onSubmit { send() }
 
@@ -388,25 +451,19 @@ private struct InstructInputView: View {
         onSend(trimmed)
         text = ""
         isFocused.wrappedValue = false
-        // 给调用方一点时间异步完成，再恢复按钮状态
+        // Give the caller a moment to finish asynchronously, then restore the button state
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { isSending = false }
     }
 }
 
-// MARK: - 倒计时相关子视图（单独 `@ObservedObject` `TravelCountdownModel`）
+// MARK: - Countdown-related subviews (separately `@ObservedObject` `TravelCountdownModel`)
 //
-// 以下几个视图都只持有 `vm.countdown`（不是 `vm` 本身），每秒 tick 只会让它们各自的
-// body 重新求值，不会带着 `TravelView.body`（以及挂在它 body 里的 fullScreenCover 更新剧本
-// 面板）一起重绘。拆分之前，这几处直接读 `vm.xxx`，任何 `vm` 的 `@Published` 变化
-// （包括每秒一次的倒计时）都会让 `TravelView.body` 整体重新求值一次。
+// The views below hold only `vm.countdown` (not `vm` itself), so each per-second tick only re-evaluates their own
+// bodies, without redrawing `TravelView.body` (and the "Update Script" panel attached to its body via fullScreenCover)
+// along with them. Before the split, these places read `vm.xxx` directly, so any `@Published` change on `vm`
+// (including the once-per-second countdown) re-evaluated the whole `TravelView.body`.
 
-private func formatSeconds(_ sec: Int) -> String {
-    let m = sec / 60
-    let s = sec % 60
-    return String(format: "%d:%02d", m, s)
-}
-
-/// 顶部信息栏左侧：世界名 + 状态胶囊 + 倒计时行。
+/// Left side of the top info bar: world name + status pill + countdown row.
 @available(iOS 15.0, *)
 private struct TravelTopBarLeading: View {
     @ObservedObject var countdown: TravelCountdownModel
@@ -444,12 +501,12 @@ private struct TravelTopBarLeading: View {
 
     private var statusTitle: String {
         switch status {
-        case .idle: return "idle"
-        case .prepare: return countdown.timerStarted ? "reconnecting" : "connecting"
-        case .running: return "playing"
-        case .paused: return "paused"
-        case .ended: return "ended"
-        case .failed: return "failed"
+        case .idle: return String(localized: "idle")
+        case .prepare: return countdown.timerStarted ? String(localized: "reconnecting") : String(localized: "connecting")
+        case .running: return String(localized: "playing")
+        case .paused: return String(localized: "paused")
+        case .ended: return String(localized: "ended")
+        case .failed: return String(localized: "failed")
         @unknown default: return "—"
         }
     }
@@ -468,20 +525,24 @@ private struct TravelTopBarLeading: View {
 
     private var countdownRow: some View {
         HStack(spacing: 8) {
-            // 模式倒计时（wander 60s / story 180s，暂停时停止）
+            // ① Primary timeline (wander: remaining time countdown; story: story time count-up "xx/180") —
+            // which format it is has already been converged in `TravelViewModel` per `TravelCountdownRule`;
+            // this only displays `primaryText`/`primaryIsWarning` and doesn't care about the current mode.
+            // Stops counting while paused; always shown.
             HStack(spacing: 5) {
                 Image(systemName: "clock")
                     .font(.system(size: 11))
                     .foregroundStyle(.white.opacity(0.7))
-                Text(formatSeconds(countdown.modeCountdown))
+                Text(countdown.primaryText)
                     .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(countdown.modeCountdown <= 10 ? Color.orange : Color.white.opacity(0.85))
+                    .foregroundStyle(countdown.primaryIsWarning ? Color.orange : Color.white.opacity(0.85))
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
             .background(Color.black.opacity(0.35), in: Capsule())
 
-            // 总时长倒计时（300s，不受暂停影响）—— 仅暂停时显示
+            // ② Overall in-room time (360s, unaffected by pause, not calibrated, auto-ends at zero) — shown only while paused,
+            // shared by wander / story.
             if isPaused {
                 HStack(spacing: 5) {
                     Image(systemName: "timer")
@@ -499,7 +560,7 @@ private struct TravelTopBarLeading: View {
     }
 }
 
-/// 右下角断线重连提示（不遮挡画面，不阻塞点击）。
+/// Bottom-right reconnecting hint (doesn't cover the video, doesn't block taps).
 @available(iOS 15.0, *)
 private struct TravelReconnectingOverlay: View {
     @ObservedObject var countdown: TravelCountdownModel
@@ -526,7 +587,7 @@ private struct TravelReconnectingOverlay: View {
     private var badge: some View {
         HStack(spacing: 6) {
             ProgressView().tint(.white).scaleEffect(0.7)
-            Text("重连中…")
+            Text("Reconnecting…")
                 .font(.caption.bold())
                 .foregroundStyle(.white)
         }
@@ -536,45 +597,84 @@ private struct TravelReconnectingOverlay: View {
     }
 }
 
-/// 暂停态下的「回退 10s」按钮：`canRewind` 依赖 `elapsedSec`，需要单独观察 `countdown`。
+/// Paused-state "Back to [N] s + Rewind" control: the rewind API means go back to second N of the whole story (absolute position);
+/// N is entered manually by the user, valid range `[1, current story time)` (SDK requires N ≥ 1). `canRewind` depends on `elapsedSec`, so `countdown` must be observed separately.
 @available(iOS 15.0, *)
-private struct RewindButton: View {
+private struct RewindControl: View {
     @ObservedObject var countdown: TravelCountdownModel
-    let isWanderMode: Bool
+    var isFocused: FocusState<Bool>.Binding
+    /// Whether the current mode allows rewind (story only; false for both wander and acting).
+    let allowsRewind: Bool
     let status: OysterTravelStatus
     let isRewinding: Bool
-    let onTap: () -> Void
+    let onRewind: (Int) -> Void
+
+    /// Defaults to 5 seconds: the control is only mounted in paused state and recreated on every pause, so each pause resets to the default.
+    @State private var text = "5"
+
+    private var targetSec: Int? { Int(text.trimmingCharacters(in: .whitespaces)) }
+
+    private var isTargetValid: Bool {
+        guard let targetSec else { return false }
+        return targetSec >= 1 && targetSec < countdown.elapsedSec
+    }
 
     private var canRewind: Bool {
         guard case .paused = status else { return false }
-        return !isWanderMode && countdown.elapsedSec > 10 && !isRewinding
+        return allowsRewind && countdown.elapsedSec > 1 && !isRewinding && isTargetValid
     }
 
     var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 5) {
-                if isRewinding {
-                    ProgressView().tint(.white).scaleEffect(0.7)
-                } else {
-                    Image(systemName: "gobackward")
-                        .font(.system(size: 13, weight: .semibold))
-                }
-                Text("回退 10s")
-                    .font(.subheadline.bold())
+        HStack(spacing: 8) {
+            HStack(spacing: 4) {
+                Text("Back to")
+                TextField("1-\(max(countdown.elapsedSec - 1, 1))", text: $text)
+                    .focused(isFocused)
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.center)
+                    .tint(.white)
+                    .frame(width: 56)
+                    .padding(.vertical, 4)
+                    .background(Color.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 6))
+                    .onChange(of: text) { newValue in
+                        // Keep digits only, to prevent pasting non-numeric content
+                        let digits = newValue.filter(\.isNumber)
+                        if digits != newValue { text = digits }
+                    }
+                Text("s")
             }
-            .foregroundStyle(canRewind ? .white : .white.opacity(0.35))
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(Color.white.opacity(canRewind ? 0.15 : 0.07), in: Capsule())
+            .font(.subheadline.bold())
+            .foregroundStyle(.white)
+
+            Button {
+                guard let targetSec, canRewind else { return }
+                isFocused.wrappedValue = false
+                onRewind(targetSec)
+            } label: {
+                HStack(spacing: 5) {
+                    if isRewinding {
+                        ProgressView().tint(.white).scaleEffect(0.7)
+                    } else {
+                        Image(systemName: "gobackward")
+                            .font(.system(size: 13, weight: .semibold))
+                    }
+                    Text("Rewind")
+                        .font(.subheadline.bold())
+                }
+                .foregroundStyle(canRewind ? .white : .white.opacity(0.35))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Color.white.opacity(canRewind ? 0.15 : 0.07), in: Capsule())
+            }
+            .disabled(!canRewind)
         }
-        .disabled(!canRewind)
     }
 }
 
-// MARK: - iOS 15 兼容辅助
+// MARK: - iOS 15 compatibility helpers
 
-/// 让 `fullScreenCover` 内容透明、可见底层画面被压暗的效果——iOS 15 无 `.presentationBackground`（iOS 16.4+），
-/// 用这个常见的 UIViewRepresentable 技巧把 cover 所在的 presentation 容器背景改成 clear。
+/// Makes `fullScreenCover` content transparent so the dimmed underlying video is visible — iOS 15 has no `.presentationBackground` (iOS 16.4+),
+/// so this common UIViewRepresentable trick sets the background of the cover's presentation container to clear.
 private struct ClearFullScreenCoverBackground: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
@@ -588,8 +688,8 @@ private struct ClearFullScreenCoverBackground: UIViewRepresentable {
 }
 
 private extension View {
-    /// `TextEditor.scrollContentBackground(.hidden)` 仅 iOS 16+ 可用（PodExample 部署目标 iOS 15），
-    /// iOS 15 上退化为不隐藏系统滚动背景（TextEditor 默认底色会盖住外部深色背景，仅视觉降级，不影响功能）。
+    /// `TextEditor.scrollContentBackground(.hidden)` is only available on iOS 16+ (PodExample's deployment target is iOS 15);
+    /// on iOS 15 it falls back to not hiding the system scroll background (TextEditor's default background covers the outer dark background — a visual downgrade only, no functional impact).
     @ViewBuilder
     func hiddenScrollBackgroundIfAvailable() -> some View {
         if #available(iOS 16.0, *) {
@@ -600,18 +700,18 @@ private extension View {
     }
 }
 
-// MARK: - scriptlist 世界「更新剧本」编辑面板
+// MARK: - scriptlist world "Update Script" editor panel
 
-/// 独立包一层 `TextEditor` 并实现 `Equatable`，作为兜底：真正切断倒计时耦合的是
-/// `TravelViewModel.countdown`（见 `TravelViewModel.swift` 顶部的 `TravelCountdownModel`）——
-/// 之前倒计时四个字段直接是 `TravelViewModel` 的 `@Published` 属性，Combine 的 `objectWillChange`
-/// 不区分具体哪个属性变了，只要任意一个变化，所有持有 `@StateObject var vm` 的视图（`TravelView`
-/// 整体、以及它 `.fullScreenCover` 呈现的本面板）都会被标记为需要重新求值，于是每秒都被拖着
-/// 重新 diff 一次；个别系统版本上这会把 `TextEditor` 的滚动位置/光标重置回顶部，表现为
-/// 「选择模板后编辑器不停跳回起始位置」。拆到独立的 `TravelCountdownModel` 后，这四个字段的变化
-/// 只会触发它自己的 `objectWillChange`，不会转发给 `TravelViewModel`，从根上不再有这个耦合。
-/// 这里的 `.equatable()` 只是双保险：万一未来又有别的字段被错误地直接放回 `TravelViewModel`，
-/// 至少这个 `TextEditor` 不会跟着遭殃。
+/// Wraps `TextEditor` in its own layer and implements `Equatable` as a fallback: what really cuts the countdown coupling is
+/// `TravelViewModel.countdown` (see `TravelCountdownModel` at the top of `TravelViewModel.swift`) —
+/// previously the four countdown fields were `@Published` properties of `TravelViewModel` directly, and Combine's `objectWillChange`
+/// doesn't distinguish which property changed; whenever any of them changed, every view holding `@StateObject var vm` (the whole `TravelView`
+/// and this panel presented via its `.fullScreenCover`) was marked for re-evaluation, so it got dragged into
+/// a re-diff every second; on some OS versions this reset the `TextEditor`'s scroll position/cursor back to the top, appearing as
+/// "after choosing a template the editor keeps jumping back to the start". After moving to a separate `TravelCountdownModel`, changes to these four fields
+/// only trigger its own `objectWillChange` and aren't forwarded to `TravelViewModel`, eliminating this coupling at the root.
+/// The `.equatable()` here is just double insurance: if some other field is ever mistakenly put back directly on `TravelViewModel`,
+/// at least this `TextEditor` won't suffer for it.
 @available(iOS 15.0, *)
 private struct ScriptListTextEditor: View, Equatable {
     @Binding var text: String
@@ -630,11 +730,11 @@ private struct ScriptListTextEditor: View, Equatable {
             .padding(8)
             .frame(minHeight: 220, maxHeight: 340)
             .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
-            // 把这个输入框的真实 frame（`.global` 坐标，跟 window 坐标系一致）实时回填给
-            // `KeyboardDismissAssistant`，让它在点击落在这块范围内时直接拒收——不用猜测
-            // `touch.view` 的类型，直接用输入框自己汇报的精确范围。这个面板一旦消失，
-            // `scriptUpdateEditorOverlay` 的 `onDisappear` 会调用 `stop()` 清空这个范围，
-            // 不会遗留到下一次别的页面接入这套机制时误伤。
+            // Feed this input field's real frame (`.global` coordinates, matching the window coordinate system) back to
+            // `KeyboardDismissAssistant` in real time, so it rejects taps landing within this area — no need to guess
+            // the type of `touch.view`; just use the exact area reported by the input field itself. Once this panel disappears,
+            // `scriptUpdateEditorOverlay`'s `onDisappear` calls `stop()` to clear this area,
+            // so it doesn't linger and accidentally affect the next page that adopts this mechanism.
             .background(
                 GeometryReader { proxy in
                     Color.clear
@@ -647,11 +747,11 @@ private struct ScriptListTextEditor: View, Equatable {
     }
 }
 
-/// 与创建世界的 scriptlist 编辑器同构：模板下拉一键填入 + 完整 JSON 编辑器 + 发送。
-/// 校验规则与创建共用 `ScriptListJSONValidator`（见 `ScriptPreset.swift`），避免规则漂移。
+/// Same structure as the scriptlist editor for creating worlds: one-tap fill from a template dropdown + full JSON editor + send.
+/// Validation rules are shared with creation via `ScriptListJSONValidator` (see `ScriptPreset.swift`) to avoid rule drift.
 @available(iOS 15.0, *)
 private struct ScriptUpdateEditorView: View {
-    /// 请求进行中：按钮切到「发送中…」态，面板保持展示，不能重复点击。
+    /// Request in flight: the button switches to the "Sending…" state, the panel stays shown, and it can't be tapped again.
     let isSending: Bool
     let onSend: (JSONValue) -> Void
     let onCancel: () -> Void
@@ -668,24 +768,24 @@ private struct ScriptUpdateEditorView: View {
     private var sendDisabled: Bool { isSending || isTextEmpty }
 
     var body: some View {
-        // 中间内容不用 ScrollView 包：`TextEditor` 嵌在 `ScrollView` 里实测会导致它的高度
-        // 塌陷（`.frame(minHeight:maxHeight:)` 不生效），输入框直接"消失"、点不到光标、
-        // 编辑不了内容——比"横屏+键盘遮住部分内容"更严重，所以固定高度的写法保留，
-        // 不为了防溢出牺牲编辑功能本身。收键盘不依赖 `.toolbar(placement: .keyboard)`：
-        // 这个面板是 `fullScreenCover` 弹出的独立视图，没有自己的 `NavigationView`，键盘
-        // 工具栏机制挂不上去；补一层 `NavigationView` 又会带来它自带的不透明背景，把
-        // "暗色遮罩+悬浮卡片"这层透明效果切出一道实色分割。收键盘改用 `KeyboardDismissAssistant`
-        // （随 `scriptUpdateEditorOverlay` 的呈现/消失启停，键盘弹出时挂在 `keyWindow` 上，
-        // `cancelsTouchesInView = false`，点/拖整个面板任意位置都能收键盘，且不影响
-        // `TextEditor`/`Menu`/`Button` 自身的触摸处理）。
+        // The middle content isn't wrapped in a ScrollView: embedding `TextEditor` in a `ScrollView` was observed to collapse its height
+        // (`.frame(minHeight:maxHeight:)` has no effect), so the field effectively "disappears", the cursor can't be placed,
+        // and content can't be edited — worse than "landscape + keyboard covering part of the content", so the fixed-height approach is kept
+        // rather than sacrificing editing itself to prevent overflow. Keyboard dismissal doesn't rely on `.toolbar(placement: .keyboard)`:
+        // this panel is a standalone view presented by `fullScreenCover` without its own `NavigationView`, so the keyboard
+        // toolbar mechanism can't attach; adding a `NavigationView` would bring its own opaque background, cutting a solid-color seam into
+        // the transparent "dark scrim + floating card" effect. Keyboard dismissal uses `KeyboardDismissAssistant` instead
+        // (started/stopped with the presentation/dismissal of `scriptUpdateEditorOverlay`; attached to `keyWindow` when the keyboard shows,
+        // `cancelsTouchesInView = false`, so tapping/dragging anywhere on the panel dismisses the keyboard without affecting
+        // the touch handling of `TextEditor`/`Menu`/`Button` themselves).
         VStack(alignment: .leading, spacing: 14) {
-            Text("更新剧本")
+            Text("Update Script")
                 .font(.headline)
                 .foregroundStyle(.white)
 
-            // 发送中整块锁定（模板选择 + JSON 编辑器都不可交互），避免用户以为编辑会影响
-            // 已经发出去的这次请求；`.disabled` 对 `Menu`/`TextEditor` 都生效，同时用透明度
-            // 给出"已锁定"的视觉反馈。
+            // While sending, lock the whole block (template picker + JSON editor are both non-interactive), so the user doesn't think edits
+            // will affect the request already sent; `.disabled` works for both `Menu`/`TextEditor`, and opacity
+            // gives "locked" visual feedback.
             Group {
                 if !presets.isEmpty {
                     presetPicker
@@ -705,7 +805,7 @@ private struct ScriptUpdateEditorView: View {
 
             HStack(spacing: 12) {
                 Spacer()
-                Button("取消") {
+                Button("Cancel") {
                     isEditorFocused = false
                     onCancel()
                 }
@@ -752,21 +852,21 @@ private struct ScriptUpdateEditorView: View {
     }
 
     private var selectedPresetLabel: String {
-        presets.first(where: { $0.id == selectedPresetId })?.label ?? "选择模板…（可选，也可直接编辑下方 JSON）"
+        presets.first(where: { $0.id == selectedPresetId })?.label ?? String(localized: "Choose a template… (optional; you can also edit the JSON below directly)")
     }
 
-    /// 自定义样式而不是 `.buttonStyle(.borderedProminent)`：系统禁用态是在原色上叠一层半透明灰，
-    /// 在这个深色卡片背景（`Color(white: 0.12)`）上叠出来的颜色和背景太接近，几乎看不出按钮存在。
-    /// 这里按"未就绪"（文本为空）/"发送中"/"可发送"三态分别给明确的背景色，保证任何状态下
-    /// 按钮轮廓和文字都跟深色背景有足够对比度。
+    /// Custom style instead of `.buttonStyle(.borderedProminent)`: the system disabled state overlays a translucent gray on the original color,
+    /// which on this dark card background (`Color(white: 0.12)`) ends up too close to the background, making the button nearly invisible.
+    /// Here the three states "not ready" (empty text) / "sending" / "ready to send" each get an explicit background color, ensuring
+    /// the button outline and text have enough contrast against the dark background in every state.
     private var sendButton: some View {
         Button(action: send) {
             HStack(spacing: 6) {
                 if isSending {
                     ProgressView().tint(.white).scaleEffect(0.75)
-                    Text("发送中…")
+                    Text("Sending…")
                 } else {
-                    Text("发送")
+                    Text("Send")
                 }
             }
             .font(.subheadline.bold())

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SecondaryView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @EnvironmentObject private var navigation: AppNavigation
 
     @State private var worlds: [WorldListItem] = []
     @State private var isLoading = false
@@ -11,10 +12,12 @@ struct SecondaryView: View {
     @State private var worldToDelete: WorldListItem?
     @State private var isDeleting = false
     @State private var worldToShowDetail: WorldListItem?
-    /// nil = 全部；有值时只展示对应模式
-    @State private var filterMode: ServerWorldMode? = nil
+    /// The world mode currently shown. **There is no "All"**: since models are split by mode, the world
+    /// list request must carry one concrete mode (the server uses it to pick the gateway route), so "All" can't be expressed.
+    /// How it is passed is a convention of this demo's server; see `APIClient.modeHeaderField`.
+    @State private var filterMode: ServerWorldMode = .wander
 
-    // MARK: 分页
+    // MARK: Pagination
     private let pageSize = 20
     @State private var currentPage = 1
     @State private var hasMore = false
@@ -38,7 +41,7 @@ struct SecondaryView: View {
                     gridView
                 }
             }
-            .navigationTitle("游玩")
+            .navigationTitle("Play")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -54,25 +57,35 @@ struct SecondaryView: View {
                     }
                 }
             }
-            .task { await loadWorlds() }
+            // First appearance: consume the mode requested by the create flow before fetching, to avoid a wasted fetch with the old mode.
+            .task {
+                consumePendingPlayMode()
+                await loadWorlds()
+            }
+            // When this page is already alive (TabView keeps pages it has built) and we jump here from the create page, this path runs.
+            .onChange(of: navigation.pendingPlayMode) { _ in
+                guard consumePendingPlayMode() else { return }
+                Task { await loadWorlds() }
+            }
         }
         .navigationViewStyle(.stack)
+    }
+
+    /// Takes the display mode requested by the create flow and resets it to nil (one-shot; see `AppNavigation.pendingPlayMode`).
+    /// Returns whether the filter actually changed; if not, the list doesn't need to be refetched.
+    @discardableResult
+    private func consumePendingPlayMode() -> Bool {
+        guard let pending = navigation.pendingPlayMode else { return false }
+        navigation.pendingPlayMode = nil
+        guard pending != filterMode else { return false }
+        filterMode = pending
+        return true
     }
 
     // MARK: - Filter picker
 
     private var filterPicker: some View {
         Menu {
-            Button {
-                guard filterMode != nil else { return }
-                filterMode = nil
-                Task { await loadWorlds() }
-            } label: {
-                HStack {
-                    Text("全部")
-                    if filterMode == nil { Image(systemName: "checkmark") }
-                }
-            }
             Button {
                 guard filterMode != .wander else { return }
                 filterMode = .wander
@@ -93,13 +106,23 @@ struct SecondaryView: View {
                     if filterMode == .story { Image(systemName: "checkmark") }
                 }
             }
+            Button {
+                guard filterMode != .acting else { return }
+                filterMode = .acting
+                Task { await loadWorlds() }
+            } label: {
+                HStack {
+                    Text("Acting")
+                    if filterMode == .acting { Image(systemName: "checkmark") }
+                }
+            }
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: "line.3.horizontal.decrease.circle")
-                Text(filterMode == nil ? "全部" : (filterMode == .wander ? "Wander" : "Story"))
+                Text(filterMode.badgeLabel)
                     .font(.subheadline)
             }
-            .foregroundStyle(filterMode == nil ? AnyShapeStyle(.secondary) : AnyShapeStyle(Color.accentColor))
+            .foregroundStyle(Color.accentColor)
         }
     }
 
@@ -125,13 +148,13 @@ struct SecondaryView: View {
                             Button {
                                 worldToShowDetail = world
                             } label: {
-                                Label("世界信息", systemImage: "info.circle")
+                                Label("World Info", systemImage: "info.circle")
                             }
                             Divider()
                             Button(role: .destructive) {
                                 worldToDelete = world
                             } label: {
-                                Label("删除世界", systemImage: "trash")
+                                Label("Delete World", systemImage: "trash")
                             }
                         }
                 }
@@ -150,16 +173,16 @@ struct SecondaryView: View {
             TravelView(world: world)
                 .environmentObject(env)
         }
-        .alert("删除世界", isPresented: Binding(
+        .alert("Delete World", isPresented: Binding(
             get: { worldToDelete != nil },
             set: { if !$0 { worldToDelete = nil } }
         ), presenting: worldToDelete) { world in
-            Button("删除", role: .destructive) {
+            Button("Delete", role: .destructive) {
                 Task { await deleteWorld(world) }
             }
-            Button("取消", role: .cancel) {}
+            Button("Cancel", role: .cancel) {}
         } message: { world in
-            Text("确定要删除「\(world.name ?? world.encryptedWorldId.prefix(12).description)」吗？此操作不可撤销。")
+            Text("Are you sure you want to delete “\(world.name ?? world.encryptedWorldId.prefix(12).description)”? This action cannot be undone.")
         }
         .sheet(item: $worldToShowDetail) { world in
             WorldDetailSheet(world: world)
@@ -172,7 +195,7 @@ struct SecondaryView: View {
     private var loadingView: some View {
         VStack(spacing: 16) {
             ProgressView()
-            Text("加载中…")
+            Text("Loading…")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -184,10 +207,10 @@ struct SecondaryView: View {
             Image(systemName: "globe.desk")
                 .font(.system(size: 52))
                 .foregroundStyle(.tertiary)
-            Text("暂无世界")
+            Text("No worlds yet")
                 .font(.title3)
                 .fontWeight(.medium)
-            Text("在「创建」页生成你的第一个世界")
+            Text("Generate your first world on the Create tab")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -205,7 +228,7 @@ struct SecondaryView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-            Button("重试") { Task { await loadWorlds() } }
+            Button("Retry") { Task { await loadWorlds() } }
                 .buttonStyle(.bordered)
         }
         .padding(.horizontal, 40)
@@ -214,7 +237,7 @@ struct SecondaryView: View {
 
     // MARK: - Load
 
-    /// 重置到第一页（下拉刷新、切换筛选时调用）
+    /// Reset to the first page (called on pull-to-refresh and filter changes)
     @MainActor
     private func loadWorlds() async {
         isLoading = true
@@ -232,7 +255,7 @@ struct SecondaryView: View {
         }
     }
 
-    /// 加载下一页（滚动到底部时调用）
+    /// Load the next page (called when scrolling to the bottom)
     @MainActor
     private func loadMoreWorlds() async {
         guard hasMore, !isLoadingMore, !isLoading else { return }
@@ -243,14 +266,14 @@ struct SecondaryView: View {
             let result = try await env.apiClient.listWorlds(
                 page: nextPage, pageSize: pageSize, mode: filterMode
             )
-            // 去重后追加，防止刷新与加载更多并发时重复
+            // Deduplicate before appending, to avoid duplicates when refresh and load-more run concurrently
             let existingIds = Set(worlds.map(\.encryptedWorldId))
             let newItems = result.items.filter { !existingIds.contains($0.encryptedWorldId) }
             worlds.append(contentsOf: newItems)
             currentPage = nextPage
             hasMore = result.pagination.hasMore
         } catch {
-            // 加载更多失败不覆盖已有列表，保留 hasMore 以便下次重试
+            // A failed load-more doesn't replace the existing list; keep hasMore so it can retry next time
         }
     }
 
@@ -260,10 +283,10 @@ struct SecondaryView: View {
     private func deleteWorld(_ world: WorldListItem) async {
         worldToDelete = nil
         do {
-            _ = try await env.apiClient.deleteWorld(encryptedWorldId: world.encryptedWorldId)
+            _ = try await env.apiClient.deleteWorld(encryptedWorldId: world.encryptedWorldId, mode: world.mode)
             worlds.removeAll { $0.encryptedWorldId == world.encryptedWorldId }
         } catch {
-            errorMessage = "删除失败：\(error.localizedDescription)"
+            errorMessage = String(localized: "Delete failed: \(error.localizedDescription)")
         }
     }
 }
@@ -283,7 +306,7 @@ private struct WorldCard: View {
         .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
     }
 
-    // MARK: Preview（previewUrl 当前通常为 null，展示占位渐变）
+    // MARK: Preview (previewUrl is usually null for now; show a placeholder gradient)
 
     private var previewArea: some View {
         ZStack(alignment: .topTrailing) {
@@ -308,23 +331,19 @@ private struct WorldCard: View {
 
     private var placeholderGradient: some View {
         LinearGradient(
-            colors: world.mode == .wander
-                ? [Color(hue: 0.55, saturation: 0.6, brightness: 0.7),
-                   Color(hue: 0.65, saturation: 0.5, brightness: 0.5)]
-                : [Color(hue: 0.08, saturation: 0.6, brightness: 0.75),
-                   Color(hue: 0.03, saturation: 0.5, brightness: 0.5)],
+            colors: world.mode.cardGradientColors,
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
         .overlay {
-            Image(systemName: world.mode == .wander ? "wind" : "book.pages")
+            Image(systemName: world.mode.cardIconName)
                 .font(.system(size: 28))
                 .foregroundStyle(.white.opacity(0.5))
         }
     }
 
     private var modeBadge: some View {
-        Text(world.mode == .wander ? "Wander" : "Story")
+        Text(world.mode.badgeLabel)
             .font(.system(size: 10, weight: .semibold))
             .foregroundStyle(.white)
             .padding(.horizontal, 7)
@@ -377,9 +396,9 @@ private struct WorldCard: View {
 
     private var statusLabel: String {
         switch world.status {
-        case .ready:      return "就绪"
-        case .generating: return "生成中"
-        case .failed:     return "失败"
+        case .ready:      return String(localized: "Ready")
+        case .generating: return String(localized: "Generating")
+        case .failed:     return String(localized: "Failed")
         }
     }
 
@@ -408,7 +427,7 @@ private struct WorldDetailSheet: View {
         NavigationView {
             Group {
                 if isLoading {
-                    ProgressView("加载中…")
+                    ProgressView("Loading…")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let msg = errorMessage {
                     VStack(spacing: 12) {
@@ -426,7 +445,7 @@ private struct WorldDetailSheet: View {
                     detailContent(d)
                 }
             }
-            .navigationTitle("世界信息")
+            .navigationTitle("World Info")
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
@@ -435,24 +454,27 @@ private struct WorldDetailSheet: View {
 
     private func detailContent(_ d: WorldDetailResponse) -> some View {
         List {
-            Section("基本信息") {
-                row(label: "名称",   value: d.name ?? "—")
+            Section("Basic Info") {
+                row(label: String(localized: "Name"), value: d.name ?? "—")
                 row(label: "ID",    value: d.encryptedWorldId)
-                row(label: "模式",  value: d.mode == .wander ? "Wander" : "Story")
-                row(label: "状态",  value: statusLabel(d.status))
+                row(label: String(localized: "Mode"), value: d.mode.badgeLabel)
+                if let aspectRatio = d.aspectRatio {
+                    row(label: String(localized: "Aspect Ratio"), value: aspectRatio)
+                }
+                row(label: String(localized: "Status"), value: statusLabel(d.status))
             }
             if let prompt = d.prompt, !prompt.isEmpty {
-                Section("创建描述") {
+                Section("Creation Prompt") {
                     Text(prompt)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
             if d.previewUrl != nil || d.createdAt != nil || d.updatedAt != nil {
-                Section("其他") {
-                    if let url = d.previewUrl  { row(label: "预览图", value: url) }
-                    if let at = d.createdAt    { row(label: "创建时间", value: at) }
-                    if let at = d.updatedAt    { row(label: "更新时间", value: at) }
+                Section("Other") {
+                    if let url = d.previewUrl  { row(label: String(localized: "Preview Image"), value: url) }
+                    if let at = d.createdAt    { row(label: String(localized: "Created At"), value: at) }
+                    if let at = d.updatedAt    { row(label: String(localized: "Updated At"), value: at) }
                 }
             }
         }
@@ -476,9 +498,9 @@ private struct WorldDetailSheet: View {
 
     private func statusLabel(_ status: ServerWorldStatus) -> String {
         switch status {
-        case .ready:      return "就绪"
-        case .generating: return "生成中"
-        case .failed:     return "失败"
+        case .ready:      return String(localized: "Ready")
+        case .generating: return String(localized: "Generating")
+        case .failed:     return String(localized: "Failed")
         }
     }
 
@@ -487,7 +509,7 @@ private struct WorldDetailSheet: View {
         isLoading = true
         defer { isLoading = false }
         do {
-            detail = try await env.apiClient.worldDetail(encryptedWorldId: world.encryptedWorldId)
+            detail = try await env.apiClient.worldDetail(encryptedWorldId: world.encryptedWorldId, mode: world.mode)
         } catch {
             errorMessage = error.localizedDescription
         }

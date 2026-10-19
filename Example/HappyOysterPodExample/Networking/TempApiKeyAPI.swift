@@ -2,11 +2,11 @@ import Foundation
 
 // MARK: - Request / Response models
 
-/// POST /server-api/temp-api-key 请求体。
-/// 服务端接受 JSON body expire_in_seconds / expireInSeconds，或 query expire_in_seconds。
-/// 本客户端采用 JSON body，字段用 snake_case 与服务端对齐。
+/// Request body for POST /server-api/temp-api-key.
+/// The server accepts expire_in_seconds / expireInSeconds in the JSON body, or expire_in_seconds as a query parameter.
+/// This client uses the JSON body, with snake_case field names to match the server.
 private struct TempApiKeyRequest: Encodable {
-    /// 临时 Key 有效期（秒），取值 1...1800；nil 时不传该字段，使用服务端默认 TTL。
+    /// Temporary key lifetime (seconds), range 1...1800; when nil the field is omitted and the server default TTL is used.
     let expireInSeconds: Int?
 
     enum CodingKeys: String, CodingKey {
@@ -21,13 +21,13 @@ private struct TempApiKeyRequest: Encodable {
     }
 }
 
-/// POST /server-api/temp-api-key 响应体。
-/// 服务端透传百炼 POST /api/v1/tokens 的返回，字段为 snake_case。
-/// JSONDecoder 配置了 convertFromSnakeCase，此处用驼峰命名。
+/// Response body for POST /server-api/temp-api-key.
+/// The server passes through the response of Bailian POST /api/v1/tokens; fields are snake_case.
+/// JSONDecoder is configured with convertFromSnakeCase, so camelCase is used here.
 public struct TempApiKeyResponse: Decodable, Sendable {
-    /// 临时 API Key（access token 字符串，如 st-***）。
+    /// Temporary API key (access token string, e.g. st-***).
     public let token: String
-    /// 过期时间戳（Unix 秒），与百炼响应的 expires_at 对应。
+    /// Expiry timestamp (Unix seconds), corresponding to expires_at in the Bailian response.
     public let expiresAt: Int
 }
 
@@ -35,14 +35,14 @@ public struct TempApiKeyResponse: Decodable, Sendable {
 
 extension APIClient {
 
-    /// 向本地服务器请求临时百炼 API Key。
+    /// Requests a temporary Bailian API key from the local server.
     ///
-    /// 服务端使用主 DASHSCOPE_API_KEY 调百炼 /api/v1/tokens，为不可信客户端（本 app）
-    /// 签发短生命周期的临时 Key，避免主 Key 下端。
+    /// The server uses the master DASHSCOPE_API_KEY to call Bailian /api/v1/tokens and issues a
+    /// short-lived temporary key to the untrusted client (this app), so the master key never reaches the device.
     ///
-    /// - Parameter expireInSeconds: 有效期（秒），合法范围 1...1800。
-    ///   超出范围会被 clamp 到边界。nil 时不传，使用服务端默认 TTL（百炼默认约 1800 秒）。
-    /// - Returns: 临时 Key 响应，含 token 字符串与过期时间戳。
+    /// - Parameter expireInSeconds: Lifetime (seconds), valid range 1...1800.
+    ///   Out-of-range values are clamped to the bounds. When nil it is omitted and the server default TTL is used (Bailian defaults to about 1800 seconds).
+    /// - Returns: Temporary key response, containing the token string and expiry timestamp.
     func fetchTempApiKey(expireInSeconds: Int? = nil) async throws -> TempApiKeyResponse {
         let clamped: Int?
         if let raw = expireInSeconds {
@@ -56,7 +56,7 @@ extension APIClient {
             path: "/server-api/temp-api-key",
             method: .post,
             body: TempApiKeyRequest(expireInSeconds: clamped),
-            skipAuth: true  // 本接口本身用于获取 token，不能携带 token（循环依赖）
+            skipAuth: true  // This endpoint itself fetches the token, so it must not carry one (circular dependency)
         )
         return try await request(endpoint)
     }

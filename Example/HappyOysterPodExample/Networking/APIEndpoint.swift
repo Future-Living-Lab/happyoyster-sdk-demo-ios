@@ -1,26 +1,34 @@
 import Foundation
 
-/// 请求目标：决定使用哪个 base URL 构造请求。
+/// Request target: decides which base URL is used to build the request.
 enum APITarget {
-    /// 本地局域网服务器（地址从 AppEnvironment.localServerBaseURL 获取）。
+    /// Local LAN server (address taken from AppEnvironment.localServerBaseURL).
     case local
-    /// 公网服务（地址从 AppEnvironment.publicServiceBaseURL 获取）。
+    /// Public service (address taken from AppEnvironment.publicServiceBaseURL).
     case publicService
 }
 
-/// 单个 API 请求的完整描述，与具体的 URLSession / 业务逻辑解耦。
+/// Full description of a single API request, decoupled from URLSession / business logic.
 struct APIEndpoint {
     let target: APITarget
     let path: String
     let method: HTTPMethod
-    /// URL query 参数（key-value 均为 String）。
+    /// URL query parameters (both key and value are String).
     var queryItems: [URLQueryItem]
-    /// 请求体（任意 Encodable；nil 表示无 body）。
+    /// Request body (any Encodable; nil means no body).
     var body: (any Encodable)?
-    /// 额外 HTTP headers（会与默认 headers 合并，优先级更高）。
+    /// Extra HTTP headers (merged with the default headers, taking precedence).
     var headers: [String: String]
-    /// true 时跳过自动 Bearer token 注入（fetchTempApiKey 等获取 token 的接口使用）。
+    /// When true, skips automatic Bearer token injection (used by token-fetching endpoints such as fetchTempApiKey).
     var skipAuth: Bool
+    /// The world mode this request belongs to. The server uses it to pick which Bailian gateway app route
+    /// to call (models are split by mode), so every `/server-api` request must carry it except
+    /// `temp-api-key` (a pure token exchange, unrelated to models).
+    ///
+    /// This demo writes it into the `X-Happy-Oyster-Mode` request header (value is `rawValue`: 1=adventure /
+    /// 2=directing / 3=acting) — **this is only a convention of this demo's companion server; your own server can use any form**,
+    /// see `APIClient.modeHeaderField`. When nil, the header is not written.
+    var mode: ServerWorldMode?
 
     init(
         target: APITarget,
@@ -29,7 +37,8 @@ struct APIEndpoint {
         queryItems: [URLQueryItem] = [],
         body: (any Encodable)? = nil,
         headers: [String: String] = [:],
-        skipAuth: Bool = false
+        skipAuth: Bool = false,
+        mode: ServerWorldMode? = nil
     ) {
         self.target = target
         self.path = path
@@ -38,5 +47,6 @@ struct APIEndpoint {
         self.body = body
         self.headers = headers
         self.skipAuth = skipAuth
+        self.mode = mode
     }
 }

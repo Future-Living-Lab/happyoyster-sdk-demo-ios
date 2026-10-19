@@ -39,9 +39,9 @@ platform :ios, '15.0'
 use_frameworks!
 
 target 'HappyOysterPodExample' do
-  pod 'HappyOysterSDK', '1.0.3'               # aggregate entry (Core + World), one import and you're ready
-  pod 'HappyOysterSDK/UI', '1.0.3'            # default UI components (video view, control HUD)
-  pod 'HappyOysterSDK/StreamAliRTC', '1.0.3'  # video streaming + AliRTC engine adapter
+  pod 'HappyOysterSDK'               # aggregate entry (Core + World), one import and you're ready
+  pod 'HappyOysterSDK/UI'            # default UI components (video view, control HUD)
+  pod 'HappyOysterSDK/StreamAliRTC'  # video streaming + AliRTC engine adapter
 
   pod 'AliVCSDK_ARTC', '7.11.0'      # RTC vendor binary, weakly referenced, provided by the integrator, from the public CocoaPods source
 end

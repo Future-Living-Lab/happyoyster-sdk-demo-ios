@@ -1,44 +1,46 @@
 import Foundation
 
-/// app 侧网络层错误，完全独立于 SDK 的 OysterError。
+/// App-side networking error, fully independent of the SDK's OysterError.
 enum APIError: Error, LocalizedError {
-    /// 本地服务器地址未配置（AppEnvironment.localServerBaseURL 无效）。
+    /// Local server address is not configured (AppEnvironment.localServerBaseURL is invalid).
     case missingBaseURL
-    /// URL 构造失败（path / query 非法）。
+    /// Failed to build the URL (invalid path / query).
     case invalidURL
-    /// 请求体编码失败。
+    /// Failed to encode the request body.
     case encoding(underlying: Error)
-    /// 网络层传输失败（URLError）。
+    /// Transport-level network failure (URLError).
     case network(underlying: Error)
-    /// HTTP 非 2xx 响应。
+    /// Non-2xx HTTP response.
     case http(statusCode: Int, data: Data)
-    /// 响应体解码失败。
+    /// Failed to decode the response body.
     case decoding(underlying: Error)
-    /// 百炼业务错误：HTTP 200 但 output.code != 0。
+    /// Bailian business error: HTTP 200 but output.code != 0.
     case business(code: Int, message: String?, requestId: String?)
-    /// 百炼代理 / 网关层错误（code 为字符串，如 ServiceUnavailable）。
+    /// Bailian proxy / gateway-level error (code is a string, e.g. ServiceUnavailable).
     case gateway(code: String, message: String?, requestId: String?)
 
     var errorDescription: String? {
         switch self {
         case .missingBaseURL:
-            return "本地服务器地址未配置，请在个人页设置 HOST / PORT。"
+            return String(localized: "Local server address is not configured. Set HOST / PORT on the Profile page.")
         case .invalidURL:
-            return "请求 URL 构造失败，请检查 HOST / PORT 配置。"
+            return String(localized: "Failed to build the request URL. Check the HOST / PORT settings.")
         case .encoding(let e):
-            return "请求编码失败：\(e.localizedDescription)"
+            return String(localized: "Request encoding failed: \(e.localizedDescription)")
         case .network(let e):
-            return "网络错误：\(e.localizedDescription)"
+            return String(localized: "Network error: \(e.localizedDescription)")
         case .http(let code, _):
-            return "HTTP 错误 \(code)"
+            return String(localized: "HTTP error \(code)")
         case .decoding(let e):
-            return "响应解析失败：\(e.localizedDescription)"
+            return String(localized: "Failed to parse response: \(e.localizedDescription)")
         case .business(let code, let msg, let rid):
             let ridSuffix = rid.map { " [req:\($0)]" } ?? ""
-            return "业务错误 \(code)：\(msg ?? "（无描述）")\(ridSuffix)"
+            let text = msg ?? String(localized: "(no description)")
+            return String(localized: "Business error \(code): \(text)\(ridSuffix)")
         case .gateway(let code, let msg, let rid):
             let ridSuffix = rid.map { " [req:\($0)]" } ?? ""
-            return "网关错误 \(code)：\(msg ?? "（无描述）")\(ridSuffix)"
+            let text = msg ?? String(localized: "(no description)")
+            return String(localized: "Gateway error \(code): \(text)\(ridSuffix)")
         }
     }
 }

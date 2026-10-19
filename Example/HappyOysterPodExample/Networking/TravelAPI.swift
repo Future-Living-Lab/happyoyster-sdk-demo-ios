@@ -1,8 +1,8 @@
 import Foundation
 
-// MARK: - 枚举 / 公共类型
+// MARK: - Enums / shared types
 
-/// 漫游状态。
+/// Travel status.
 enum TravelStatus: String, Codable {
     case `init`
     case pending
@@ -12,12 +12,12 @@ enum TravelStatus: String, Codable {
     case paused
 }
 
-// MARK: - 响应模型
+// MARK: - Response models
 
-/// POST /server-api/travel-credential 响应。
+/// Response of POST /server-api/travel-credential.
 struct TravelCredentialResponse: Decodable {
     let ticket: String
-    /// 凭证有效期（秒），默认 1800。
+    /// Credential lifetime (seconds), default 1800.
     let expiresIn: Int
     let encryptedWorldId: String
 }
@@ -30,6 +30,30 @@ struct TravelListItem: Decodable {
     let durationSec: Int?
     let createdAt: String?
     let endedAt: String?
+    /// Failure reason error code (provided by the server when `status == .failed`).
+    let errorCode: String?
+    /// Failure reason message, shown to the user as-is.
+    let errorMessage: String?
+
+    /// Display string for the error code: an empty string is treated as absent.
+    var errorCodeText: String? {
+        guard let code = errorCode, !code.isEmpty else { return nil }
+        return code
+    }
+
+    /// Whether there is displayable failure info (either a message or an error code exists).
+    var hasFailureInfo: Bool {
+        if let msg = errorMessage, !msg.isEmpty { return true }
+        return errorCodeText != nil
+    }
+
+    /// Failure info display text: prefers `errorMessage`, falls back to the error code when missing.
+    var failureText: String? {
+        if let msg = errorMessage, !msg.isEmpty {
+            return msg
+        }
+        return errorCodeText.map { String(localized: "Error code \($0)") }
+    }
 }
 
 struct TravelArtifactVideo: Decodable {
@@ -42,17 +66,17 @@ struct TravelArtifactVideo: Decodable {
 
 struct TravelArtifactsResponse: Decodable {
     let encryptedTravelId: String
-    /// 整体合成状态："ready" | "processing" | "failed" | nil
+    /// Overall compose status: "ready" | "processing" | "failed" | nil
     let composeStatus: String?
-    /// 产物 map，键如 "original" / "withWatermark" / "withInstruction" / "withInstructionAndWatermark"
+    /// Artifact map, with keys such as "original" / "withWatermark" / "withInstruction" / "withInstructionAndWatermark"
     let video: [String: TravelArtifactVideo]?
 }
 
-/// `POST /server-api/travels/update-script` 请求体：`creationModel=scriptlist` 世界游玩中，
-/// 用一份新剧本整体替换当前播放的剧本，与文本指令（`sendInstruct`）互斥，仅 scriptlist 世界可调用。
+/// Request body of `POST /server-api/travels/update-script`: while playing a `creationModel=scriptlist` world,
+/// replaces the currently playing script wholesale with a new one. Mutually exclusive with text instructions (`sendInstruct`); only callable for scriptlist worlds.
 struct UpdateScriptRequest: Encodable {
     let encryptedTravelId: String
-    /// 结构化剧本对象，原样透传（同创建时 `ScriptListWorldRequest.scriptList`）。
+    /// Structured script object, passed through verbatim (same as `ScriptListWorldRequest.scriptList` at creation).
     let scriptList: JSONValue
 }
 
@@ -65,27 +89,33 @@ struct UpdateScriptResponse: Decodable {
 
 extension APIClient {
 
-    // MARK: 获取漫游凭证
+    // MARK: Fetch travel credential
     /// `POST /server-api/travel-credential`
-    /// 为已 ready 的世界签发一次性 accessToken。
-    func travelCredential(encryptedWorldId: String) async throws -> TravelCredentialResponse {
+    /// Issues a one-time accessToken for a world that is ready.
+    /// `mode` is required: the ticket is issued under the gateway route for that mode and must match the route
+    /// referenced by the SDK's `OysterConfig.model`, otherwise `travel.start()` fails on the gateway side.
+    func travelCredential(encryptedWorldId: String, mode: ServerWorldMode) async throws -> TravelCredentialResponse {
         struct Body: Encodable { let encryptedWorldId: String }
         let endpoint = APIEndpoint(
             target: .local,
             path: "/server-api/travel-credential",
             method: .post,
-            body: Body(encryptedWorldId: encryptedWorldId)
+            body: Body(encryptedWorldId: encryptedWorldId),
+            mode: mode
         )
         return try await requestBailian(endpoint)
     }
 
-    // MARK: 漫游列表
+    // MARK: Travel list
     /// `GET /server-api/travels`
+    /// `mode` is required: the server uses it to decide which gateway route to query. This demo passes it via the `X-Happy-Oyster-Mode` header;
+    /// your own server can use any form (see `APIClient.modeHeaderField`).
     func listTravels(
         page: Int = 1,
         pageSize: Int = 20,
         status: TravelStatus? = nil,
-        encryptedWorldId: String? = nil
+        encryptedWorldId: String? = nil,
+        mode: ServerWorldMode
     ) async throws -> PaginatedResponse<TravelListItem> {
         var items: [URLQueryItem] = [
             URLQueryItem(name: "page", value: String(page)),
@@ -94,32 +124,35 @@ extension APIClient {
         if let s = status            { items.append(URLQueryItem(name: "status", value: s.rawValue)) }
         if let w = encryptedWorldId  { items.append(URLQueryItem(name: "encryptedWorldId", value: w)) }
 
-        let endpoint = APIEndpoint(target: .local, path: "/server-api/travels", method: .get, queryItems: items)
+        let endpoint = APIEndpoint(target: .local, path: "/server-api/travels", method: .get,
+                                   queryItems: items, mode: mode)
         return try await requestBailian(endpoint)
     }
 
-    // MARK: 查产物
+    // MARK: Query artifacts
     /// `GET /server-api/travels/artifacts?encryptedTravelId=...`
-    /// 返回解码结果 + 原始响应 JSON（拆包/解码前的完整字符串），供产物详情页底部直接展示，
-    /// 排查产物结构问题不用再翻控制台日志。
-    func travelArtifactsWithRaw(encryptedTravelId: String) async throws -> (value: TravelArtifactsResponse, rawJSON: String) {
+    /// Returns the decoded result + the raw response JSON (the full string before unwrapping/decoding), shown directly at the bottom of the artifact detail page,
+    /// so diagnosing artifact structure issues doesn't require digging through console logs.
+    func travelArtifactsWithRaw(encryptedTravelId: String, mode: ServerWorldMode) async throws -> (value: TravelArtifactsResponse, rawJSON: String) {
         let endpoint = APIEndpoint(
             target: .local,
             path: "/server-api/travels/artifacts",
             method: .get,
-            queryItems: [URLQueryItem(name: "encryptedTravelId", value: encryptedTravelId)]
+            queryItems: [URLQueryItem(name: "encryptedTravelId", value: encryptedTravelId)],
+            mode: mode
         )
         return try await requestBailianWithRaw(endpoint)
     }
 
-    // MARK: 更新剧本（ScriptList 模式）
-    /// `POST /server-api/travels/update-script`：`creationModel=scriptlist` 世界游玩中整体替换当前剧本。
-    func updateScript(_ body: UpdateScriptRequest) async throws -> UpdateScriptResponse {
+    // MARK: Update script (ScriptList mode)
+    /// `POST /server-api/travels/update-script`: replaces the current script wholesale while playing a `creationModel=scriptlist` world.
+    func updateScript(_ body: UpdateScriptRequest, mode: ServerWorldMode) async throws -> UpdateScriptResponse {
         let endpoint = APIEndpoint(
             target: .local,
             path: "/server-api/travels/update-script",
             method: .post,
-            body: body
+            body: body,
+            mode: mode
         )
         return try await requestBailian(endpoint)
     }

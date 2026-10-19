@@ -6,19 +6,19 @@ struct RootTabView: View {
     var body: some View {
         TabView(selection: $navigation.selectedTab) {
             MainView()
-                .tabItem { Label("创建", systemImage: "plus.circle.fill") }
+                .tabItem { Label("Create", systemImage: "plus.circle.fill") }
                 .tag(AppNavigation.Tab.create.rawValue)
 
             SecondaryView()
-                .tabItem { Label("游玩", systemImage: "gamecontroller.fill") }
+                .tabItem { Label("Play", systemImage: "gamecontroller.fill") }
                 .tag(AppNavigation.Tab.play.rawValue)
 
             HistoryView()
-                .tabItem { Label("历史", systemImage: "clock.arrow.circlepath") }
+                .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
                 .tag(AppNavigation.Tab.history.rawValue)
 
             ProfileView()
-                .tabItem { Label("配置", systemImage: "gearshape.fill") }
+                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
                 .tag(AppNavigation.Tab.config.rawValue)
         }
     }

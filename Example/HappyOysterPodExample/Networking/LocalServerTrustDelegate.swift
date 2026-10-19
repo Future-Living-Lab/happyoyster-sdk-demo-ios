@@ -1,12 +1,12 @@
 import Foundation
 
-/// URLSessionDelegate：仅对 AppEnvironment 中配置的本地 host 放行自签名证书。
-/// 用于开发期通过自签名 HTTPS 连接局域网服务器。生产环境不使用本类。
+/// URLSessionDelegate: accepts self-signed certificates only for the local host configured in AppEnvironment.
+/// Used during development to reach a LAN server over self-signed HTTPS. Not used in production.
 final class LocalServerTrustDelegate: NSObject, URLSessionDelegate {
 
     private let trustedHost: () -> String
 
-    /// - Parameter trustedHost: 闭包动态读取当前配置的本地 host（跟随 AppEnvironment 变化）。
+    /// - Parameter trustedHost: Closure that dynamically reads the currently configured local host (follows AppEnvironment changes).
     init(trustedHost: @escaping () -> String) {
         self.trustedHost = trustedHost
     }

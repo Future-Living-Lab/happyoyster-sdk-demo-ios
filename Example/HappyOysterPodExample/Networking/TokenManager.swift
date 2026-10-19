@@ -3,30 +3,30 @@ import HappyOysterSDK
 
 // MARK: - TokenInfo
 
-/// validToken / invalidateAndRefresh 的返回值：token 字符串 + 过期时间戳。
+/// Return value of validToken / invalidateAndRefresh: token string + expiry timestamp.
 struct TokenInfo {
     let token: String
     let expiresAt: Date
 }
 
-/// 维护百炼临时 API Key 的有效性：
-/// - token 到期前（expiry - leeway）自动静默刷新（autoRefreshEnabled == true 时）
-/// - 鉴权失败后主动失效并立即刷新
+/// Keeps the temporary Bailian API key valid:
+/// - Silently refreshes automatically before the token expires (expiry - leeway) (when autoRefreshEnabled == true)
+/// - Proactively invalidates and refreshes immediately after an auth failure
 ///
-/// 设计为 actor，所有状态变更都在 actor 隔离域内进行，调用方无需加锁。
+/// Designed as an actor: all state changes happen inside the actor's isolation domain, so callers need no locking.
 actor TokenManager {
 
-    // MARK: - Config（可运行时更新）
+    // MARK: - Config (updatable at runtime)
 
-    /// 提前多少秒触发刷新（token 剩余时间 <= leeway 时视为"即将过期"）。
+    /// How many seconds in advance to refresh (the token is considered "about to expire" when remaining time <= leeway).
     private var leeway: TimeInterval
 
-    /// 是否开启自动刷新。关闭时不再调度定时刷新任务。
+    /// Whether auto refresh is enabled. When disabled, no scheduled refresh task is created.
     private var autoRefreshEnabled: Bool
 
     // MARK: - Dependencies
 
-    /// 实际发起网络请求的闭包，解耦 APIClient 依赖。
+    /// Closure that performs the actual network request, decoupling the APIClient dependency.
     private let fetchToken: () async throws -> TempApiKeyResponse
 
     // MARK: - State
@@ -48,7 +48,7 @@ actor TokenManager {
 
     // MARK: - Public interface
 
-    /// 当前缓存的 token 信息（不触发网络请求）。nil 表示尚未获取或已被清除。
+    /// Currently cached token info (does not trigger a network request). nil means not fetched yet or already cleared.
     var currentInfo: TokenInfo? {
         guard let t = stored else { return nil }
         return TokenInfo(
@@ -57,11 +57,11 @@ actor TokenManager {
         )
     }
 
-    /// 返回当前有效的 token 信息。
-    /// 缓存有效时直接返回；缓存不存在或即将过期时按"自动刷新"开关决定是否重取。
-    /// - autoRefreshEnabled == true：缓存失效时自动重取。
-    /// - autoRefreshEnabled == false：不主动刷新，直接返回已有缓存（即使已过期）；
-    ///   仅在从未获取过 token 时才发起首次获取。
+    /// Returns the currently valid token info.
+    /// Returns the cache directly when valid; when the cache is missing or about to expire, the "auto refresh" switch decides whether to refetch.
+    /// - autoRefreshEnabled == true: refetches automatically when the cache is invalid.
+    /// - autoRefreshEnabled == false: does not refresh proactively and returns the existing cache as-is (even if expired);
+    ///   only performs the initial fetch when no token has ever been fetched.
     func validToken() async throws -> TokenInfo {
         if let t = stored, isValid(t) {
             return TokenInfo(
@@ -78,7 +78,7 @@ actor TokenManager {
         return try await performRefresh()
     }
 
-    /// 鉴权失败时调用：立即清除缓存并重新获取 token。
+    /// Called on auth failure: clears the cache immediately and fetches a new token.
     @discardableResult
     func invalidateAndRefresh() async throws -> TokenInfo {
         stored = nil
@@ -87,22 +87,22 @@ actor TokenManager {
         return try await performRefresh()
     }
 
-    /// 仅清除缓存（不立即刷新，下次 `validToken()` 时懒刷）。
-    /// 适用于退出登录等主动清理场景。
+    /// Only clears the cache (no immediate refresh; lazily refreshed on the next `validToken()`).
+    /// Intended for proactive cleanup such as logging out.
     func invalidate() {
         stored = nil
         scheduledRefreshTask?.cancel()
         scheduledRefreshTask = nil
     }
 
-    /// 更新提前刷新间隔，并用新值重新调度下次刷新。
+    /// Updates the early-refresh leeway and reschedules the next refresh with the new value.
     func updateLeeway(_ newLeeway: TimeInterval) {
         leeway = newLeeway
         if let stored { scheduleRefresh(for: stored) }
     }
 
-    /// 更新自动刷新开关。
-    /// 关闭时取消已有调度；开启时立即补调度（如有缓存 token）。
+    /// Updates the auto refresh switch.
+    /// Disabling cancels any existing schedule; enabling schedules immediately (if a cached token exists).
     func setAutoRefresh(_ enabled: Bool) {
         autoRefreshEnabled = enabled
         if !enabled {
@@ -125,7 +125,7 @@ actor TokenManager {
         let result = try await fetchToken()
         stored = result
         scheduleRefresh(for: result)
-        // SDK HTTP 鉴权 token 同步注入，后续所有 SDK API 请求均自动携带
+        // Also inject the token into SDK HTTP auth, so all subsequent SDK API requests carry it automatically
         let token = result.token
         Task { @MainActor in HappyOysterEngine.shared.updateToken(token) }
         return TokenInfo(
@@ -138,13 +138,13 @@ actor TokenManager {
         guard autoRefreshEnabled else { return }
         scheduledRefreshTask?.cancel()
         let expiry = Date(timeIntervalSince1970: TimeInterval(token.expiresAt))
-        // 到期前 leeway 秒触发；如果 delay 为负（token 已几乎过期）则立即重取
+        // Fires leeway seconds before expiry; if delay is negative (token nearly expired), refetch immediately
         let delay = max(expiry.timeIntervalSinceNow - leeway, 1)
         scheduledRefreshTask = Task { [weak self] in
             do {
                 try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
             } catch {
-                return  // Task 被取消（logout / invalidate），正常退出
+                return  // Task was cancelled (logout / invalidate); exit normally
             }
             guard !Task.isCancelled else { return }
             _ = try? await self?.performRefresh()

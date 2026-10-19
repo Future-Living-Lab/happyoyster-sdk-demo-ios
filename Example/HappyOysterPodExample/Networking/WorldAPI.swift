@@ -1,22 +1,75 @@
 import Foundation
+import SwiftUI
 
-// MARK: - 枚举 / 公共类型
+// MARK: - Enums / shared types
 
-/// 世界模式（服务端数值类型码，1=wander，2=story）。
-/// 注意：SDK 内部也有 WorldMode（adventure/directing），此处用 ServerWorldMode 避免命名冲突。
-enum ServerWorldMode: Int, Codable {
+/// World mode (server-side numeric type code, 1=wander, 2=story, 3=acting).
+/// Note: the SDK also has an internal WorldMode (adventure/directing/acting); ServerWorldMode is used here to avoid a naming conflict.
+///
+/// This type is the single authoritative representation of "world mode" in the demo: create-request encoding (it is itself the Int wire value),
+/// list/history display, and parsing the SDK's raw mode string during play (see `init(sdkRawValue:)`) all go through it,
+/// instead of ad-hoc strings or bare Int checks scattered around.
+enum ServerWorldMode: Int, Codable, CaseIterable {
     case wander = 1
     case story  = 2
+    case acting = 3
+
+    /// Short English badge word used in lists / history.
+    var badgeLabel: String {
+        switch self {
+        case .wander: return "Wander"
+        case .story:  return "Story"
+        case .acting: return "Acting"
+        }
+    }
+
+    /// Placeholder icon for world cards (wander=wind, story=book, acting=person+sound waves).
+    var cardIconName: String {
+        switch self {
+        case .wander: return "wind"
+        case .story:  return "book.pages"
+        case .acting: return "person.wave.2"
+        }
+    }
+
+    /// Placeholder gradient for world cards: wander blue-purple, story warm orange, acting teal.
+    var cardGradientColors: [Color] {
+        switch self {
+        case .wander:
+            return [Color(hue: 0.55, saturation: 0.6, brightness: 0.7),
+                    Color(hue: 0.65, saturation: 0.5, brightness: 0.5)]
+        case .story:
+            return [Color(hue: 0.08, saturation: 0.6, brightness: 0.75),
+                    Color(hue: 0.03, saturation: 0.5, brightness: 0.5)]
+        case .acting:
+            return [Color(hue: 0.45, saturation: 0.55, brightness: 0.7),
+                    Color(hue: 0.5, saturation: 0.45, brightness: 0.5)]
+        }
+    }
+
+    /// Parses from the SDK's `OysterModeValue.rawValue` (returned by enter-travel, already mapped to a semantic string by the decoding layer).
+    /// Covers every value that has historically appeared, plus `3` / `acting` for acting; returns nil when unrecognized,
+    /// leaving the fallback display to the caller.
+    init?(sdkRawValue raw: String) {
+        switch raw.lowercased() {
+        case "1", "wander", "adventure", "vendor": self = .wander
+        case "2", "directing":                     self = .story
+        case "3", "acting":                        self = .acting
+        default:
+            guard let value = Int(raw), let mode = ServerWorldMode(rawValue: value) else { return nil }
+            self = mode
+        }
+    }
 }
 
-/// 世界构建状态（服务端字符串值）。
+/// World build status (server-side string values).
 enum ServerWorldStatus: String, Codable {
     case generating
     case ready
     case failed
 }
 
-// MARK: - 响应模型
+// MARK: - Response models
 
 struct WorldListItem: Decodable, Identifiable {
     var id: String { encryptedWorldId }
@@ -52,9 +105,11 @@ struct WorldDetailResponse: Decodable {
     let previewUrl: String?
     let createdAt: String?
     let updatedAt: String?
-    /// 世界创建方式：`simple`（默认）/ `scriptlist`；仅 `mode=2` 剧情下可能为 `scriptlist`。
-    /// SDK 的 `enter-travel` 不带该字段，游玩中靠这里单独查一次决定体验页 UI
-    /// （见 `TravelViewModel.fetchCreationModel`）。`scriptlist` 世界的 `prompt` 固定为 `null`。
+    /// Aspect ratio (`9:16` / `16:9`). Only set for `mode=3` digital-human worlds; null for other modes.
+    let aspectRatio: String?
+    /// How the world was created: `simple` (default) / `scriptlist`; can only be `scriptlist` under `mode=2` story.
+    /// The SDK's `enter-travel` does not include this field, so during play it is queried separately here to decide the experience page UI
+    /// (see `TravelViewModel.fetchCreationModel`). `prompt` is always `null` for `scriptlist` worlds.
     let creationModel: String?
 }
 
@@ -63,11 +118,39 @@ struct DeleteWorldResponse: Decodable {
     let deleted: Bool
 }
 
-// MARK: - 请求体
+// MARK: - Request bodies
 
-/// 图片引用（仅透传 URL，图片上传及获取逻辑由调用方自行实现）。
+/// Image reference: either `url` (remote address, passed through) or `base64` (local image; the server decodes it, stores it temporarily and then re-uploads it,
+/// so the client doesn't need to upload to OSS itself). Within one object the two must not both be non-empty, otherwise the server returns `400000` —
+/// two named `init`s guarantee mutual exclusion at construction time, with no way to build one that has both `url` and `base64`.
+/// Applicable fields: `firstFrameImage` / `sceneImage` / `roleImage` / `inputImages[]` /
+/// `scriptList.subjects[].refImage`.
+/// The API also supports an optional `referenceType`; this demo doesn't need to distinguish reference types, and omitting it lets the server
+/// fill in `default` itself, so this struct does not include that field.
 struct ImageRef: Encodable {
-    let url: String
+    let url: String?
+    let base64: String?
+
+    /// Remote URL reference.
+    init(url: String) {
+        self.url = url
+        self.base64 = nil
+    }
+
+    /// Local image as base64: prepends the `data:image/png;base64,` prefix. **This prefix is not for the server
+    /// to parse the image format** — it is a business marker recognized by the gateway, used to exempt such requests from the body size limit (related to
+    /// the previously investigated 413 Request Entity Too Large: base64 encoding itself inflates size by ~33%, more noticeably with multiple images,
+    /// easily hitting the gateway's default body size limit; this marker makes the gateway relax the limit). So the `image/png` in the prefix is
+    /// fixed and does not reflect the original image's real format — local image picking allows any format natively supported by iOS (JPEG/PNG/HEIC/
+    /// GIF/TIFF/BMP…), there's no need to distinguish the MIME type by actual format, and the server's parsing of the image content does not depend on this prefix.
+    ///
+    /// The `base64` argument is a raw base64 string already encoded by the caller (original file data, not transcoded or compressed);
+    /// this only concatenates strings and does not re-encode. The 10MB decoded size limit is validated by the caller when picking images
+    /// (see `LocalImageLimit`) and is not re-validated here.
+    init(base64: String) {
+        self.url = nil
+        self.base64 = "data:image/png;base64,\(base64)"
+    }
 }
 
 struct CreateWorldRequest: Encodable {
@@ -76,42 +159,53 @@ struct CreateWorldRequest: Encodable {
     let prompt: String?
     let eventStyle: String?
     let refWorldId: String?
-    // Wander 通用
+    // Wander common
     let perspective: String?
     let uploadMode: String?
-    // Wander first_frame
+    // First-frame image: shared by wander first_frame / story simple mode (1 image) / acting first_frame
     let firstFrameImage: ImageRef?
     // Wander scenario_role
     let sceneImage: ImageRef?
     let scenePrompt: String?
     let roleImage: ImageRef?
     let rolePrompt: String?
-    // Story 参数
+    // Reference image list: shared by story simple mode (≥2 images) and acting multi_ref. Under story it is mutually exclusive with
+    // `creationModel=scriptlist` (including this field in a scriptlist request body yields 400000;
+    // `ScriptListWorldRequest` deliberately lacks this field), and it is either-or with `firstFrameImage` —
+    // 1 selected image goes to `firstFrameImage`, ≥2 all go here; see `MainView.storyImageFields`.
+    // Under acting, `uploadMode` decides which one takes effect (`multi_ref` submits here, `first_frame` submits
+    // `firstFrameImage`; the other is ignored). Each array item has its own `url`/`base64`, and they can be mixed.
+    let inputImages: [ImageRef]?
+    // Story / Acting parameters (`resolution` used by both; `layout` Story only)
     let resolution: String?
     let layout: String?
-    let narrative: String?
+    /// Aspect ratio: **only effective for `mode=3`**, `9:16` (default) / `16:9`. For mode=1/2 the server ignores it;
+    /// the demo simply doesn't send it, keeping the request body consistent with each mode's whitelist.
+    let aspectRatio: String?
 
     enum CodingKeys: String, CodingKey {
         case mode
         case async_ = "async"
         case prompt, eventStyle, refWorldId, perspective, uploadMode
         case firstFrameImage, sceneImage, scenePrompt, roleImage, rolePrompt
-        case resolution, layout, narrative
+        case inputImages
+        case resolution, layout
+        case aspectRatio
     }
 }
 
-/// Story `creationModel=scriptlist` 独立请求体：结构化剧本创建，走独立结构而不复用
-/// `CreateWorldRequest`——按接口文档，传 prompt/layout/narrative/inputImages/perspective/
-/// uploadMode/scene*/role* 任一均 400000，故不含这些字段。
+/// Standalone request body for Story `creationModel=scriptlist`: structured script creation uses its own struct instead of reusing
+/// `CreateWorldRequest` — per the API docs, passing any of prompt/layout/narrative/inputImages/perspective/
+/// uploadMode/scene*/role* yields 400000, so these fields are not included.
 struct ScriptListWorldRequest: Encodable {
     let mode: Int
-    /// 必须显式带 `async: true`，对齐 `CreateWorldRequest.async_` 的语义，后续走轮询。
+    /// Must explicitly carry `async: true`, matching the semantics of `CreateWorldRequest.async_`; polling follows.
     let asyncFlag: Bool
     let creationModel: String
     let resolution: String
-    /// 仅 `{url}`，直接复用为世界首帧，跳过 AI 首帧生成。
+    /// `{url}` only; reused directly as the world's first frame, skipping AI first-frame generation.
     let firstFrameImage: ImageRef
-    /// 用户编辑的原始剧本 JSON，原样透传（键名/大小写不做转换）。
+    /// The user-edited raw script JSON, passed through verbatim (no key name / casing conversion).
     let scriptList: JSONValue
 
     enum CodingKeys: String, CodingKey {
@@ -125,71 +219,80 @@ struct ScriptListWorldRequest: Encodable {
 
 extension APIClient {
 
-    // MARK: 世界列表
+    // MARK: World list
     /// `GET /server-api/worlds`
+    /// `mode` is required: it is both the list filter and what decides which gateway route the server queries, so "all" cannot be expressed.
+    /// This demo passes it via the `X-Happy-Oyster-Mode` header; your own server can use any form
+    /// (see `APIClient.modeHeaderField`).
     func listWorlds(
         page: Int = 1,
         pageSize: Int = 20,
         status: ServerWorldStatus? = nil,
-        mode: ServerWorldMode? = nil
+        mode: ServerWorldMode
     ) async throws -> PaginatedResponse<WorldListItem> {
         var items: [URLQueryItem] = [
             URLQueryItem(name: "page", value: String(page)),
             URLQueryItem(name: "pageSize", value: String(pageSize)),
         ]
         if let s = status { items.append(URLQueryItem(name: "status", value: s.rawValue)) }
-        if let m = mode   { items.append(URLQueryItem(name: "mode", value: String(m.rawValue))) }
-        let endpoint = APIEndpoint(target: .local, path: "/server-api/worlds", method: .get, queryItems: items)
+        items.append(URLQueryItem(name: "mode", value: String(mode.rawValue)))
+        let endpoint = APIEndpoint(target: .local, path: "/server-api/worlds", method: .get,
+                                   queryItems: items, mode: mode)
         return try await requestBailian(endpoint)
     }
 
-    // MARK: 创建世界
+    // MARK: Create world
     /// `POST /server-api/worlds`
     func createWorld(_ body: CreateWorldRequest) async throws -> CreateWorldResponse {
-        let endpoint = APIEndpoint(target: .local, path: "/server-api/worlds", method: .post, body: body)
+        let endpoint = APIEndpoint(target: .local, path: "/server-api/worlds", method: .post,
+                                   body: body, mode: ServerWorldMode(rawValue: body.mode))
         return try await requestBailian(endpoint)
     }
 
-    // MARK: 创建世界（Story 结构化剧本 scriptlist 子模式）
-    /// `POST /server-api/worlds`（`creationModel=scriptlist`，独立请求体，见 `ScriptListWorldRequest`）
+    // MARK: Create world (Story structured-script scriptlist sub-mode)
+    /// `POST /server-api/worlds` (`creationModel=scriptlist`, standalone request body; see `ScriptListWorldRequest`)
     func createScriptListWorld(_ body: ScriptListWorldRequest) async throws -> CreateWorldResponse {
-        let endpoint = APIEndpoint(target: .local, path: "/server-api/worlds", method: .post, body: body)
+        let endpoint = APIEndpoint(target: .local, path: "/server-api/worlds", method: .post,
+                                   body: body, mode: ServerWorldMode(rawValue: body.mode))
         return try await requestBailian(endpoint)
     }
 
-    // MARK: 查构建状态
+    // MARK: Query build status
     /// `GET /server-api/worlds/build-status?encryptedWorldId=...`
-    func worldBuildStatus(encryptedWorldId: String) async throws -> BuildStatusResponse {
+    func worldBuildStatus(encryptedWorldId: String, mode: ServerWorldMode) async throws -> BuildStatusResponse {
         let endpoint = APIEndpoint(
             target: .local,
             path: "/server-api/worlds/build-status",
             method: .get,
-            queryItems: [URLQueryItem(name: "encryptedWorldId", value: encryptedWorldId)]
+            queryItems: [URLQueryItem(name: "encryptedWorldId", value: encryptedWorldId)],
+            mode: mode
         )
         return try await requestBailian(endpoint)
     }
 
-    // MARK: 世界详情
+    // MARK: World detail
     /// `GET /server-api/worlds/detail?encryptedWorldId=...`
-    func worldDetail(encryptedWorldId: String) async throws -> WorldDetailResponse {
+    func worldDetail(encryptedWorldId: String, mode: ServerWorldMode) async throws -> WorldDetailResponse {
         let endpoint = APIEndpoint(
             target: .local,
             path: "/server-api/worlds/detail",
             method: .get,
-            queryItems: [URLQueryItem(name: "encryptedWorldId", value: encryptedWorldId)]
+            queryItems: [URLQueryItem(name: "encryptedWorldId", value: encryptedWorldId)],
+            mode: mode
         )
         return try await requestBailian(endpoint)
     }
 
-    // MARK: 删除世界
+    // MARK: Delete world
     /// `POST /server-api/worlds/delete`
-    func deleteWorld(encryptedWorldId: String) async throws -> DeleteWorldResponse {
+    func deleteWorld(encryptedWorldId: String, mode: ServerWorldMode) async throws -> DeleteWorldResponse {
         struct Body: Encodable { let encryptedWorldId: String }
         let endpoint = APIEndpoint(
             target: .local,
             path: "/server-api/worlds/delete",
             method: .post,
-            body: Body(encryptedWorldId: encryptedWorldId)
+            body: Body(encryptedWorldId: encryptedWorldId),
+            mode: mode
         )
         return try await requestBailian(endpoint)
     }

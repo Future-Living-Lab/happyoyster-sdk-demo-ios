@@ -1,34 +1,34 @@
 import Foundation
 
-/// 结构化剧本（scriptList）预置模型。`scriptListJSON` 为完整 `scriptList` 对象的
-/// JSON 字符串，供编辑器预填与提交时解析。
+/// Preset model for structured scripts (scriptList). `scriptListJSON` is the JSON string of the full `scriptList`
+/// object, used to prefill the editor and parsed on submit.
 struct ScriptPreset: Identifiable {
     let id: String
     let name: String
-    /// 业务场景标签（来自 `scriptlist_presets.json` 的 `scenario` 字段，可选）。
+    /// Business scenario tag (from the `scenario` field of `scriptlist_presets.json`, optional).
     let scenario: String?
     let scriptListJSON: String
-    /// 预置自带的首帧图 URL（可选，选中预置时同步灌入首帧图输入框）。
+    /// The preset's own first-frame image URL (optional; filled into the first-frame image field when the preset is selected).
     let firstFrameImageUrl: String?
 
-    /// 下拉展示文案：`名称 · 场景`。
+    /// Dropdown display text: `name · scenario`.
     var label: String {
         if let scenario, !scenario.isEmpty { return "\(name) · \(scenario)" }
         return name
     }
 }
 
-// MARK: - scriptList 结构化模型（按官方接口文档字段定义，Codable）
+// MARK: - scriptList structured models (fields per the official API docs, Codable)
 //
-// 用结构体而非 JSONValue 字典解析模板：
-// 1. 字段名/类型（`turn: Int?` 等）在解析期就有强约束，模板数据本身有误时能立刻报错，
-//    不必等到提交时才被服务端拒绝。
-// 2. `Encodable` 合成实现按属性声明顺序写出 JSON 键——顺序在此处是确定的、可控的，
-//    不像 `[String: JSONValue]` 字典本身无序、只能靠字母序或手工指定优先级顺序模拟。
-// 用户在编辑器里的自由编辑仍走 `JSONValue`（见 `WorldAPI.swift`/`MainView.validateScriptList`），
-// 该类型只负责“已知结构的模板”这一路径。
+// Templates are parsed with structs rather than JSONValue dictionaries:
+// 1. Field names/types (`turn: Int?`, etc.) are strictly enforced at parse time, so bad template data fails
+//    immediately instead of being rejected by the server on submit.
+// 2. The synthesized `Encodable` writes JSON keys in property declaration order -- deterministic and controllable
+//    here, unlike an unordered `[String: JSONValue]` dictionary that can only emulate order via alphabetical or manual priority.
+// Free-form edits in the editor still go through `JSONValue` (see `WorldAPI.swift`/`MainView.validateScriptList`);
+// these types only handle the "template with known structure" path.
 
-/// `scriptList` 对象（World 级 + subjects + acts）。
+/// `scriptList` object (world level + subjects + acts).
 private struct ScriptListTemplate: Codable {
     var synopsis: String?
     var videoTitle: String?
@@ -69,7 +69,7 @@ private struct ScriptListAct: Codable {
     var cut: String?
 }
 
-/// `scriptlist_presets.json` 单条记录（wire 结构）。
+/// A single record in `scriptlist_presets.json` (wire structure).
 private struct ScriptListPresetFileEntry: Decodable {
     let id: String
     let name: String
@@ -78,61 +78,61 @@ private struct ScriptListPresetFileEntry: Decodable {
     let firstFrameImageUrl: String?
 }
 
-// MARK: - scriptList JSON 结构校验（创建 / 游玩中更新剧本共用同一套规则）
+// MARK: - scriptList JSON structure validation (same rules for creation and in-play script updates)
 
-/// scriptList JSON 结构校验结果。校验通过时把已解析的 `JSONValue` 一并带出，
-/// 提交时直接复用，不再 parse 第二次。
+/// Result of scriptList JSON structure validation. On success, the parsed `JSONValue` is carried along
+/// so it can be reused on submit without parsing a second time.
 enum ScriptListJSONValidation {
     case success(scriptList: JSONValue)
     case failure(message: String)
 }
 
-/// 校验用户输入的 scriptList JSON 文本是否满足服务端结构要求（接口文档 §2.1 / §2.11）。
-/// 创建世界（`MainView`）与游玩中更新剧本（`TravelView`）共用同一份规则，避免两处校验逻辑各自维护、逐渐漂移。
+/// Validates whether the user's scriptList JSON text meets the server's structural requirements (API docs §2.1 / §2.11).
+/// World creation (`MainView`) and in-play script updates (`TravelView`) share the same rules, so the two validations don't drift apart.
 enum ScriptListJSONValidator {
     static func validate(text: String) -> ScriptListJSONValidation {
         guard let data = text.data(using: .utf8),
               let parsed = try? JSONDecoder().decode(JSONValue.self, from: data),
               case .object(let root) = parsed else {
-            return .failure(message: "剧本 JSON 格式有误")
+            return .failure(message: String(localized: "Invalid script JSON format"))
         }
 
         guard let synopsis = root["synopsis"]?.stringValue,
               !synopsis.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            return .failure(message: "请填写故事梗概 synopsis")
+            return .failure(message: String(localized: "Please fill in the story synopsis (synopsis)"))
         }
 
         if let subjects = root["subjects"] {
             guard let subjectsArr = subjects.arrayValue else {
-                return .failure(message: "subjects 需为数组")
+                return .failure(message: String(localized: "subjects must be an array"))
             }
             guard subjectsArr.count <= 6 else {
-                return .failure(message: "角色最多 6 个")
+                return .failure(message: String(localized: "At most 6 characters are allowed"))
             }
         }
 
         guard let actsValue = root["acts"], let acts = actsValue.arrayValue else {
-            return .failure(message: "缺少 acts")
+            return .failure(message: String(localized: "Missing acts"))
         }
         guard (1...45).contains(acts.count) else {
-            return .failure(message: "acts 数量需在 1–45 之间")
+            return .failure(message: String(localized: "The number of acts must be between 1 and 45"))
         }
 
         var seenTurns = Set<Int>()
         for act in acts {
             guard let actObj = act.objectValue else {
-                return .failure(message: "每一拍 act 需为对象")
+                return .failure(message: String(localized: "Each act must be an object"))
             }
             guard let content = actObj["content"]?.stringValue,
                   !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                return .failure(message: "每一拍 act 的 content 不能为空")
+                return .failure(message: String(localized: "The content of each act cannot be empty"))
             }
             if let turnValue = actObj["turn"] {
                 guard let turn = turnValue.intValue, (1...45).contains(turn) else {
-                    return .failure(message: "turn 序号越界或重复")
+                    return .failure(message: String(localized: "turn number is out of range or duplicated"))
                 }
                 guard seenTurns.insert(turn).inserted else {
-                    return .failure(message: "turn 序号越界或重复")
+                    return .failure(message: String(localized: "turn number is out of range or duplicated"))
                 }
             }
         }
@@ -141,7 +141,7 @@ enum ScriptListJSONValidator {
     }
 }
 
-/// 预置剧本提供方：优先读 App Bundle 内 `scriptlist_presets.json`，失败回落内置兜底。
+/// Preset script provider: reads `scriptlist_presets.json` from the app bundle first, falling back to the built-in default on failure.
 struct ScriptPresetProvider {
     private static let bundleFileName = "scriptlist_presets"
 
@@ -171,8 +171,8 @@ struct ScriptPresetProvider {
         }
     }
 
-    /// 结构体按声明顺序编码（synopsis/videoTitle/... /subjects/acts），`acts` 天然排最后，
-    /// 不需要像字典那样额外指定字段优先级来避免用户只看到 acts 就以为其余字段没填入。
+    /// Structs encode in declaration order (synopsis/videoTitle/... /subjects/acts), so `acts` naturally comes last;
+    /// unlike a dictionary, no extra field priority is needed to keep users from seeing only acts and assuming the other fields weren't filled.
     private static func jsonString(_ template: ScriptListTemplate) -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted]
@@ -183,7 +183,7 @@ struct ScriptPresetProvider {
         return text
     }
 
-    /// 内置兜底（仅 bundle 读取失败时使用）。
+    /// Built-in fallback (used only if reading from the bundle fails). Its content is preset data sent to the backend and is intentionally not localized.
     static let builtIn: [ScriptPreset] = [
         ScriptPreset(
             id: "midnight-visitor",

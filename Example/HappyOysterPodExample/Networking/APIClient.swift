@@ -1,14 +1,31 @@
 import Foundation
 
-/// App 侧基础网络客户端，基于 URLSession + async/await。
-/// 完全独立于 SDK 的 OysterAPIClient / OysterHTTPClient——SDK 管百炼网关，
-/// 本客户端管示例自有的本地局域网服务器与公网服务接口。
+/// App-side base networking client, built on URLSession + async/await.
+/// Fully independent of the SDK's OysterAPIClient / OysterHTTPClient — the SDK handles the Bailian gateway,
+/// while this client handles the example's own local LAN server and public service endpoints.
 ///
-/// token 注入策略：
-/// - `tokenManager` 由 `AppSession.configure` 注入后，`send()` 对所有请求自动加
-///   `Authorization: Bearer <token>`，并在鉴权失败时自动重试一次。
-/// - `skipAuth == true` 的请求（如 `fetchTempApiKey`）跳过注入，避免循环依赖。
+/// Token injection strategy:
+/// - Once `tokenManager` is injected by `AppSession.configure`, `send()` automatically adds
+///   `Authorization: Bearer <token>` to every request, and retries once automatically on auth failure.
+/// - Requests with `skipAuth == true` (e.g. `fetchTempApiKey`) skip injection to avoid a circular dependency.
 final class APIClient {
+
+    /// World mode request header.
+    ///
+    /// **This is a convention of this demo's companion server — not an SDK contract, nor an open-platform contract.**
+    /// Passing it as a header, this name, and the values 1/2/3 are all just what this demo agreed on with its `/server-api`
+    /// server. When you build your own server you are completely free in how you tell your backend the mode — a query parameter,
+    /// a request body field, separate per-mode paths, or not passing it at all and letting the backend look up the world's mode from `encryptedWorldId`.
+    ///
+    /// Only two things are truly non-negotiable, regardless of the transport form:
+    /// 1. Your server must ultimately call the Bailian gateway with **the model matching that world's mode** (since models are split by mode,
+    ///    `happyoyster-1.0-adventure` / `-directing` / `-acting` are each an independent gateway app route,
+    ///    and the ticket is issued under one of them);
+    /// 2. The client SDK's `OysterConfig.model` must match the route that issued the ticket,
+    ///    otherwise `travel.start()` fails on the gateway side (see the `start()` section of the SDK API Reference).
+    ///
+    /// The value is `ServerWorldMode.rawValue`: 1=adventure, 2=directing, 3=acting.
+    static let modeHeaderField = "X-Happy-Oyster-Mode"
 
     private let environment: AppEnvironment
     private let session: URLSession
@@ -20,7 +37,7 @@ final class APIClient {
         return d
     }()
 
-    /// 由 AppSession.configure 注入，注入后所有请求自动携带 Bearer token。
+    /// Injected by AppSession.configure; once injected, every request automatically carries the Bearer token.
     var tokenManager: TokenManager?
 
     init(environment: AppEnvironment) {
@@ -33,7 +50,7 @@ final class APIClient {
 
     // MARK: - Public interface
 
-    /// 发起请求并将响应体解码为指定类型。
+    /// Sends the request and decodes the response body into the given type.
     func request<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T {
         let data = try await send(endpoint)
         do {
@@ -43,9 +60,9 @@ final class APIClient {
         }
     }
 
-    /// 发起请求，返回原始响应 Data。
-    /// 若已注入 tokenManager 且 endpoint.skipAuth == false，自动注入 Bearer token
-    /// 并在鉴权失败（HTTP 401 / 业务 401xxx）时刷新 token 后重试一次。
+    /// Sends the request and returns the raw response Data.
+    /// If tokenManager is injected and endpoint.skipAuth == false, the Bearer token is injected automatically,
+    /// and on auth failure (HTTP 401 / business 401xxx) the token is refreshed and the request retried once.
     @discardableResult
     func send(_ endpoint: APIEndpoint) async throws -> Data {
         guard !endpoint.skipAuth, let tm = tokenManager else {
@@ -134,6 +151,12 @@ final class APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.rawValue
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        // World mode: the server uses it to forward the request to the Bailian gateway app route for that mode (models are split by mode).
+        // Carrying it in a header is this demo server's convention, not an SDK / open-platform contract — your own server can switch to
+        // query, body or per-mode paths by changing just this spot; see `modeHeaderField`.
+        if let mode = endpoint.mode {
+            request.setValue(String(mode.rawValue), forHTTPHeaderField: APIClient.modeHeaderField)
+        }
 
         if let body = endpoint.body {
             do {

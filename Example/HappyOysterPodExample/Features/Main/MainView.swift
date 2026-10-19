@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// 创建页：顶部 Segmented 切换 Wander / Story 模式，
-/// 各子页填写参数后点击创建，成功后 Toast 提示并跳转游玩 Tab。
+/// Create page: a segmented control at the top switches between Wander / Story / Acting modes.
+/// Fill in the parameters on each sub-page and tap Create; on success, show a toast and jump to the Play tab.
 struct MainView: View {
     @EnvironmentObject private var env: AppEnvironment
     @EnvironmentObject private var navigation: AppNavigation
@@ -11,35 +11,46 @@ struct MainView: View {
     @State private var errorMessage: String?
     @State private var toast: String?
 
-    // MARK: Wander 参数
+    // MARK: Wander parameters
     @State private var wanderPrompt = ""
     @State private var wanderPerspective: WorldPerspective = .thirdPerson
-    @State private var wanderUploadMode: WanderUploadMode = .firstFrame
-    /// first_frame 模式 — 首帧图 URL（直接透传，上传由调用方实现）
+    /// First-frame image URL (passed through as-is; uploading is up to the caller). Wander only supports `uploadMode=first_frame`,
+    /// and the first-frame image is required (either a URL or a locally picked image).
     @State private var firstFrameImageUrl = ""
-    /// scenario_role 模式 — 场景图 URL
-    @State private var sceneImageUrl = ""
-    /// scenario_role 模式 — 场景描述（最多 2000 字）
-    @State private var scenePromptText = ""
-    /// scenario_role 模式 — 角色图 URL
-    @State private var roleImageUrl = ""
-    /// scenario_role 模式 — 角色描述（最多 2000 字）
-    @State private var rolePromptText = ""
+    /// Local image pick state (mutually exclusive with the URL above; see `imageInputRow`)
+    @State private var firstFrameImagePick = LocalImagePickState()
 
-    // MARK: Story 参数
+    // MARK: Story parameters
     @State private var storyPrompt = ""
-    @State private var storyImageUrl = ""
+    /// Reference images for Story simple mode: 0 → not sent; 1 → goes to `firstFrameImage`; ≥2 → all go to `inputImages`
+    /// (mutually exclusive; see `storyImageFields()`). URL entries and local (base64) entries may be mixed in the list.
+    @State private var storyImageEntries: [StoryImageEntry] = []
+    @State private var storyImageUrlDraft = ""
+    @State private var storyImageError: String?
     @State private var storyResolution: StoryResolution = .r720p
-    @State private var storyNarrative: StoryNarrative = .normal
 
-    // MARK: Story - creationModel=scriptlist 子模式
+    // MARK: Acting (digital human, mode=3) parameters
+    @State private var actingPrompt = ""
+    /// First-frame image (URL and local pick are mutually exclusive; see `imageInputRow`). Acting only supports
+    /// `uploadMode=first_frame`, and the first-frame image is required.
+    @State private var actingFirstFrameUrl = ""
+    @State private var actingFirstFramePick = LocalImagePickState()
+    /// Server default is 480p (unlike Story, where it is required).
+    @State private var actingResolution: StoryResolution = .r480p
+    @State private var actingAspectRatio: ActingAspectRatio = .r9x16
+
+    // MARK: Story - creationModel=scriptlist sub-mode
     @State private var storyCreationModel: StoryCreationModel = .simple
     @State private var scriptFirstFrameUrl = ""
+    @State private var scriptFirstFramePick = LocalImagePickState()
     @State private var scriptListText = ""
     @State private var selectedPresetId: String?
     @State private var scriptPresets: [ScriptPreset] = []
+    /// A local first-frame image is already picked and another template is tapped: don't overwrite the image yet; ask the user to choose,
+    /// avoiding a UI/data mismatch where "the new template looks selected but the first frame is still the old local image".
+    @State private var pendingPresetImageReplacement: ScriptPreset?
 
-    // MARK: - 轮询状态（Wander / Story 各自独立）
+    // MARK: - Polling state (independent per mode: Wander / Story)
     @State private var wanderPollingId: String?
     @State private var wanderPollStatus: BuildStatusResponse?
     @State private var wanderPollTask: Task<Void, Never>?
@@ -48,18 +59,35 @@ struct MainView: View {
     @State private var storyPollStatus: BuildStatusResponse?
     @State private var storyPollTask: Task<Void, Never>?
 
-    private var currentPollingId: String?       { mode == .wander ? wanderPollingId   : storyPollingId }
-    private var currentPollStatus: BuildStatusResponse? { mode == .wander ? wanderPollStatus : storyPollStatus }
+    @State private var actingPollingId: String?
+    @State private var actingPollStatus: BuildStatusResponse?
+    @State private var actingPollTask: Task<Void, Never>?
 
-    // MARK: - 字数上限
+    private var currentPollingId: String? {
+        switch mode {
+        case .wander: return wanderPollingId
+        case .story:  return storyPollingId
+        case .acting: return actingPollingId
+        }
+    }
+    private var currentPollStatus: BuildStatusResponse? {
+        switch mode {
+        case .wander: return wanderPollStatus
+        case .story:  return storyPollStatus
+        case .acting: return actingPollStatus
+        }
+    }
+
+    // MARK: - Character limits
     private let promptLimitFirstFrame = 4000
-    private let promptLimitScenario   = 2000
+    /// Acting prompt limit (per API docs: natural language, max 2000).
+    private let promptLimitActing     = 2000
 
-    // MARK: - 焦点状态（用于 .focused() 绑定；收键盘统一走键盘工具栏「完成」按钮）
+    // MARK: - Focus state (for .focused() bindings; the keyboard is dismissed via the keyboard toolbar "Done" button)
     private enum Field: Hashable {
         case prompt, firstFrameImageUrl, storyImageUrl
-        case sceneImageUrl, scenePrompt, roleImageUrl, rolePrompt
         case scriptFirstFrameUrl, scriptListEditor
+        case actingFirstFrameUrl
     }
     @FocusState private var focusedField: Field?
 
@@ -74,21 +102,38 @@ struct MainView: View {
                 Spacer()
             }
             .background(Color(.systemGroupedBackground).ignoresSafeArea())
-            .navigationTitle("创建")
+            .navigationTitle("Create")
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottom) { toastBanner }
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("完成") { focusedField = nil }
+                    Button("Done") { focusedField = nil }
                 }
             }
             .task { await loadScriptPresetsIfNeeded() }
+            // Use `.alert` rather than `.confirmationDialog`: the latter shows as a popover on iPad,
+            // where the system treats the `.cancel`-role button as "tap outside to dismiss" and doesn't render it, so
+            // only one button shows and users think there's no "keep" option. `.alert` reliably shows
+            // both buttons on all devices.
+            .alert(
+                "This template includes a first-frame image",
+                isPresented: Binding(
+                    get: { pendingPresetImageReplacement != nil },
+                    set: { if !$0 { pendingPresetImageReplacement = nil } }
+                ),
+                presenting: pendingPresetImageReplacement
+            ) { preset in
+                Button("Yes, Replace") { replaceFirstFrameWithPresetImage(preset) }
+                Button("No, Keep Original", role: .cancel) { pendingPresetImageReplacement = nil }
+            } message: { _ in
+                Text("Replace the local image you selected?")
+            }
         }
         .navigationViewStyle(.stack)
     }
 
-    /// 首次进入 Story 剧本子模式前预取预置列表；已加载过则跳过。
+    /// Prefetch the preset list before first entering the Story script sub-mode; skip if already loaded.
     private func loadScriptPresetsIfNeeded() async {
         guard scriptPresets.isEmpty else { return }
         let presets = await ScriptPresetProvider().loadPresets()
@@ -98,21 +143,23 @@ struct MainView: View {
         }
     }
 
-    // MARK: - Global toolbar（固定在 picker 下方，位置不随表单内容变化）
+    // MARK: - Global toolbar (pinned below the picker; position doesn't change with form content)
 
+    @ViewBuilder
     private var globalToolbar: some View {
         HStack(spacing: 8) {
-            if mode == .wander {
+            switch mode {
+            case .wander:
+                // Wander only supports uploadMode=first_frame; there's no sub-mode to switch, so no pill.
                 perspectiveMenuButton(selection: $wanderPerspective)
-                uploadModeMenuButton
-            } else {
+            case .story:
                 creationModelMenuButton
-                if storyCreationModel == .simple {
-                    resolutionMenuButton
-                    narrativeMenuButton
-                } else {
-                    resolutionMenuButton
-                }
+                resolutionMenuButton(selection: $storyResolution)
+            case .acting:
+                // Acting has no scriptlist sub-mode and no layout;
+                // uploadMode is fixed to first_frame, so no pill either.
+                resolutionMenuButton(selection: $actingResolution)
+                actingAspectRatioMenuButton
             }
             Spacer()
         }
@@ -124,9 +171,10 @@ struct MainView: View {
     // MARK: - Mode picker
 
     private var modePicker: some View {
-        Picker("模式", selection: $mode) {
+        Picker("Mode", selection: $mode) {
             Text("Wander").tag(ServerWorldMode.wander)
             Text("Story").tag(ServerWorldMode.story)
+            Text("Acting").tag(ServerWorldMode.acting)
         }
         .pickerStyle(.segmented)
         .padding(.horizontal)
@@ -142,17 +190,18 @@ struct MainView: View {
             VStack(alignment: .leading, spacing: 20) {
                 if currentPollingId != nil {
                     buildingStatusView
-                } else if mode == .wander && wanderUploadMode == .scenarioRole {
-                    scenarioRoleSection
                 } else if mode == .story && storyCreationModel == .scriptlist {
                     scriptListSection
                 } else {
                     promptCard
-                    if mode == .wander && wanderUploadMode == .firstFrame {
+                    if mode == .wander {
                         firstFrameImageCard
                     }
                     if mode == .story {
                         storyImageCard
+                    }
+                    if mode == .acting {
+                        actingFirstFrameImageCard
                     }
                 }
                 if currentPollingId == nil {
@@ -169,18 +218,18 @@ struct MainView: View {
         }
     }
 
-    // MARK: - Building status view（轮询期间替换输入区域）
+    // MARK: - Building status view (replaces the input area while polling)
 
     @ViewBuilder
     private var buildingStatusView: some View {
         VStack(spacing: 16) {
-            // 预览图 / 占位渐变
+            // Preview image / placeholder gradient
             buildingPreview
                 .frame(height: 160)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .padding(.horizontal)
 
-            // 状态信息
+            // Status info
             VStack(spacing: 10) {
                 if let s = currentPollStatus {
                     if let name = s.name, !name.isEmpty {
@@ -197,18 +246,18 @@ struct MainView: View {
                     buildingStatusBadge(s.status)
                 } else {
                     ProgressView()
-                    Text("正在获取世界信息…")
+                    Text("Fetching world info…")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
             .frame(maxWidth: .infinity)
 
-            // 取消按钮
+            // Cancel button
             Button {
                 clearPolling(mode: mode)
             } label: {
-                Text("取消并返回")
+                Text("Cancel and Go Back")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -246,11 +295,7 @@ struct MainView: View {
 
     private var buildingGradient: some View {
         LinearGradient(
-            colors: mode == .wander
-                ? [Color(hue: 0.55, saturation: 0.5, brightness: 0.55),
-                   Color(hue: 0.65, saturation: 0.4, brightness: 0.4)]
-                : [Color(hue: 0.08, saturation: 0.5, brightness: 0.6),
-                   Color(hue: 0.03, saturation: 0.4, brightness: 0.45)],
+            colors: mode.cardGradientColors,
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
@@ -261,46 +306,48 @@ struct MainView: View {
             switch status {
             case .generating:
                 ProgressView().scaleEffect(0.7)
-                Text("生成中…")
+                Text("Generating…")
             case .ready:
                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-                Text("就绪")
+                Text("Ready")
             case .failed:
                 Image(systemName: "xmark.circle.fill").foregroundStyle(.red)
-                Text("生成失败")
+                Text("Generation Failed")
             }
         }
         .font(.subheadline)
         .foregroundStyle(.secondary)
     }
 
-    // MARK: - Prompt card（textOnly / firstFrame / Story 通用）
+    // MARK: - Prompt card (shared by textOnly / firstFrame / Story / Acting)
 
     private var promptCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("世界描述")
+                Text("World Description")
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)
                 Spacer()
-                if mode == .wander && wanderUploadMode == .firstFrame {
+                switch mode {
+                case .wander:
                     charCountLabel(wanderPrompt.count, limit: promptLimitFirstFrame)
-                } else if mode == .story {
+                case .story:
                     charCountLabel(storyPrompt.count, limit: promptLimitFirstFrame)
+                case .acting:
+                    charCountLabel(actingPrompt.count, limit: promptLimitActing)
                 }
             }
             .padding(.horizontal)
 
             VStack(spacing: 0) {
-                let binding = mode == .wander ? $wanderPrompt : $storyPrompt
-                TextEditor(text: binding)
+                TextEditor(text: promptBinding)
                     .focused($focusedField, equals: .prompt)
                     .font(.body)
                     .frame(minHeight: 120, maxHeight: 200)
                     .padding(12)
                     .overlay(alignment: .topLeading) {
-                        let prompt = mode == .wander ? wanderPrompt : storyPrompt
+                        let prompt = promptBinding.wrappedValue
                         if prompt.isEmpty {
                             Text(promptPlaceholder)
                                 .font(.body)
@@ -311,14 +358,18 @@ struct MainView: View {
                         }
                     }
                     .onChange(of: wanderPrompt, perform: { val in
-                        if mode == .wander && wanderUploadMode == .firstFrame
-                            && val.count > promptLimitFirstFrame {
+                        if mode == .wander && val.count > promptLimitFirstFrame {
                             wanderPrompt = String(val.prefix(promptLimitFirstFrame))
                         }
                     })
                     .onChange(of: storyPrompt, perform: { val in
                         if mode == .story && val.count > promptLimitFirstFrame {
                             storyPrompt = String(val.prefix(promptLimitFirstFrame))
+                        }
+                    })
+                    .onChange(of: actingPrompt, perform: { val in
+                        if mode == .acting && val.count > promptLimitActing {
+                            actingPrompt = String(val.prefix(promptLimitActing))
                         }
                     })
             }
@@ -329,28 +380,61 @@ struct MainView: View {
         }
     }
 
-    // MARK: - Story 参考图卡片
+    /// Prompt binding for the current mode.
+    private var promptBinding: Binding<String> {
+        switch mode {
+        case .wander: return $wanderPrompt
+        case .story:  return $storyPrompt
+        case .acting: return $actingPrompt
+        }
+    }
 
+    // MARK: - Reference image list card (shared by Story / Acting)
+
+    /// Reference image list for Story simple mode: 1 → `firstFrameImage`, ≥2 → `inputImages` (mutually exclusive).
     private var storyImageCard: some View {
+        imageListCard(
+            title: "Reference Images (multiple allowed)",
+            entries: $storyImageEntries,
+            urlDraft: $storyImageUrlDraft,
+            error: $storyImageError,
+            field: .storyImageUrl,
+            footnote: "Up to \(StoryImageLimit.maxCount) images (\(storyImageEntries.count)/\(StoryImageLimit.maxCount)), URLs and local images combined. A single image is used as the first frame; 2 or more all go to inputImages (mutually exclusive). URLs and local images (auto-encoded as base64) can be mixed in the list."
+        )
+    }
+
+    private func imageListCard(
+        title: LocalizedStringKey,
+        entries: Binding<[StoryImageEntry]>,
+        urlDraft: Binding<String>,
+        error: Binding<String?>,
+        field: Field,
+        footnote: LocalizedStringKey
+    ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("参考图")
+            Text(title)
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
 
             VStack(spacing: 0) {
-                HStack(spacing: 8) {
-                    Image(systemName: "photo")
-                        .foregroundStyle(.secondary)
-                        .font(.subheadline)
-                    TextField("图片 URL（可选）", text: $storyImageUrl)
-                        .focused($focusedField, equals: .storyImageUrl)
-                        .font(.body)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
+                ForEach(entries.wrappedValue) { entry in
+                    imageEntryRow(entry, entries: entries)
+                    Divider()
                 }
-                .padding(12)
+
+                if entries.wrappedValue.count < StoryImageLimit.maxCount {
+                    imageListAddRow(entries: entries, urlDraft: urlDraft, error: error, field: field)
+                }
+
+                if let message = error.wrappedValue {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 4)
+                }
 
                 Divider()
 
@@ -358,7 +442,7 @@ struct MainView: View {
                     Image(systemName: "info.circle")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("图片 URL 将直接透传至接口，图片上传及获取逻辑需客户自行实现")
+                    Text(footnote)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -372,7 +456,134 @@ struct MainView: View {
         }
     }
 
-    // MARK: - Story creationModel=scriptlist 表单
+    /// One added reference image: local images show a thumbnail, URL entries show the link text; both have a "Remove" button.
+    private func imageEntryRow(_ entry: StoryImageEntry, entries: Binding<[StoryImageEntry]>) -> some View {
+        HStack(spacing: 10) {
+            if let preview = entry.preview {
+                Image(uiImage: preview)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 36, height: 36)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                Text("Local image (converted to base64 on submit)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            } else {
+                Image(systemName: "link")
+                    .foregroundStyle(.secondary)
+                Text(entry.url ?? "")
+                    .font(.subheadline)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
+            Spacer()
+            Button("Remove") {
+                entries.wrappedValue.removeAll { $0.id == entry.id }
+            }
+            .font(.subheadline)
+        }
+        .padding(12)
+    }
+
+    /// Input row for adding a new entry: when the URL field loses focus (Return / switching fields / dismissing the keyboard) it's appended automatically,
+    /// with no extra "Add" tap — `focusedField` changing from this row's `field` to anything else counts as losing focus; Return goes through
+    /// `onSubmit` and adds immediately. Both paths call the same `addImageURL(...)`, which is idempotent for an empty draft.
+    private func imageListAddRow(
+        entries: Binding<[StoryImageEntry]>,
+        urlDraft: Binding<String>,
+        error: Binding<String?>,
+        field: Field
+    ) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "photo")
+                .foregroundStyle(.secondary)
+                .font(.subheadline)
+            TextField("Image URL (optional, added automatically when focus leaves)", text: urlDraft)
+                .focused($focusedField, equals: field)
+                .font(.body)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .onSubmit { addImageURL(entries: entries, urlDraft: urlDraft, error: error) }
+                .onChange(of: focusedField, perform: { newValue in
+                    if newValue != field {
+                        addImageURL(entries: entries, urlDraft: urlDraft, error: error)
+                    }
+                })
+            MultiPhotoPickerButton(selectionLimit: StoryImageLimit.maxCount - entries.wrappedValue.count) { items in
+                applyLocalImages(items, entries: entries, error: error)
+            } onFailure: { failureCount, firstReason in
+                showToast(failureCount > 1 ? String(localized: "Failed to read \(failureCount) images. One of them: \(firstReason)") : String(localized: "Failed to pick image: \(firstReason)"))
+            }
+        }
+        .padding(12)
+    }
+
+    /// Append the URL in the draft field as a new reference image entry; reject if the count limit (URL and local images combined) is reached.
+    private func addImageURL(
+        entries: Binding<[StoryImageEntry]>,
+        urlDraft: Binding<String>,
+        error: Binding<String?>
+    ) {
+        let trimmed = urlDraft.wrappedValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        guard entries.wrappedValue.count < StoryImageLimit.maxCount else {
+            error.wrappedValue = String(localized: "You can add up to \(StoryImageLimit.maxCount) reference images")
+            return
+        }
+        error.wrappedValue = nil
+        entries.wrappedValue.append(StoryImageEntry(url: trimmed))
+        urlDraft.wrappedValue = ""
+    }
+
+    /// Validate each locally multi-picked image's size (≤10MB, no compression or transcoding) and append it as an entry, subject to the total limit
+    /// (shares the same `StoryImageLimit.maxCount` with URL entries regardless of source); oversized images and those beyond the count limit
+    /// are skipped with a notice, without affecting the other images that were added successfully.
+    private func applyLocalImages(
+        _ items: [(data: Data, preview: UIImage)],
+        entries: Binding<[StoryImageEntry]>,
+        error: Binding<String?>
+    ) {
+        appLog("[MainView] applyLocalImages items.count=\(items.count) existing=\(entries.wrappedValue.count)")
+        error.wrappedValue = nil
+        var oversized = 0
+        var overLimit = 0
+        for (index, item) in items.enumerated() {
+            guard entries.wrappedValue.count < StoryImageLimit.maxCount else {
+                appLog("[MainView] ⚠️ image #\(index + 1) exceeds the count limit, skipping")
+                overLimit += 1
+                continue
+            }
+            guard item.data.count <= LocalImageLimit.maxBytes else {
+                appLog("[MainView] ⚠️ image #\(index + 1) exceeds 10MB (\(item.data.count) bytes), skipping")
+                oversized += 1
+                continue
+            }
+            entries.wrappedValue.append(StoryImageEntry(base64: item.data.base64EncodedString(), preview: item.preview))
+            appLog("[MainView] ✅ image #\(index + 1) added to list data.count=\(item.data.count)")
+        }
+        var messages: [String] = []
+        if oversized > 0 { messages.append(String(localized: "\(oversized) images exceed 10MB")) }
+        if overLimit > 0 { messages.append(String(localized: "\(overLimit) images exceed the \(StoryImageLimit.maxCount)-image limit")) }
+        if !messages.isEmpty {
+            let joined = messages.joined(separator: String(localized: ", ", comment: "List separator between skipped-image reasons"))
+            error.wrappedValue = String(localized: "\(joined), skipped")
+        }
+        appLog("[MainView] applyLocalImages done, total after adding=\(entries.wrappedValue.count)")
+    }
+
+    /// Map Story simple-mode reference images: 0 → not sent; 1 → `firstFrameImage`; ≥2 → all to `inputImages`
+    /// (mutually exclusive; sending both conflicts at the API level). Wander / acting don't follow this rule — they only support
+    /// `uploadMode=first_frame`, where the first-frame image is a separate required input card.
+    private func storyImageFields() -> (firstFrameImage: ImageRef?, inputImages: [ImageRef]?) {
+        let refs = storyImageEntries.map { $0.imageRef }
+        if refs.count <= 1 {
+            return (refs.first, nil)
+        }
+        return (nil, refs)
+    }
+
+    // MARK: - Story creationModel=scriptlist form
 
     private var scriptListSection: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -382,10 +593,10 @@ struct MainView: View {
         }
     }
 
-    /// 剧本模板下拉：选中后将对应 `scriptList` 填入下方 JSON 编辑器。
+    /// Script template menu: selecting one fills its `scriptList` into the JSON editor below.
     private var scriptPresetPickerCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("剧本模板")
+            Text("Script Template")
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
@@ -404,7 +615,7 @@ struct MainView: View {
                 }
             } label: {
                 HStack {
-                    Text(scriptPresets.first(where: { $0.id == selectedPresetId })?.label ?? "选择模板")
+                    Text(scriptPresets.first(where: { $0.id == selectedPresetId })?.label ?? String(localized: "Select Template"))
                         .foregroundStyle(selectedPresetId == nil ? Color(.placeholderText) : Color.primary)
                     Spacer()
                     Image(systemName: "chevron.up.chevron.down")
@@ -424,33 +635,46 @@ struct MainView: View {
     private func applyScriptPreset(_ preset: ScriptPreset) {
         selectedPresetId = preset.id
         scriptListText = preset.scriptListJSON
-        if let url = preset.firstFrameImageUrl, !url.isEmpty {
+        errorMessage = nil
+
+        guard let url = preset.firstFrameImageUrl, !url.isEmpty else { return }
+
+        if scriptFirstFramePick.base64 != nil {
+            // A local first-frame image is already picked: leave it alone until the user explicitly chooses "Replace" or "Keep" in the alert,
+            // avoiding a mismatch where the template menu shows "selected" but the first frame is still the old image.
+            pendingPresetImageReplacement = preset
+        } else {
             scriptFirstFrameUrl = url
         }
-        errorMessage = nil
     }
 
-    /// 首帧图 URL 卡片（必填，仅校验合法 http(s)），样式对齐 `firstFrameImageCard`。
+    /// The user chose "replace with the template's first frame" in the alert: clear the local image state and use the template's URL.
+    private func replaceFirstFrameWithPresetImage(_ preset: ScriptPreset) {
+        guard let url = preset.firstFrameImageUrl, !url.isEmpty else {
+            pendingPresetImageReplacement = nil
+            return
+        }
+        scriptFirstFramePick = LocalImagePickState()
+        scriptFirstFrameUrl = url
+        pendingPresetImageReplacement = nil
+    }
+
+    /// First-frame image URL card (required; only validates a well-formed http(s) URL); styled like `firstFrameImageCard`.
     private var scriptFirstFrameImageCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("首帧图（必填）")
+            Text("First-Frame Image (required)")
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
 
             VStack(spacing: 0) {
-                HStack(spacing: 8) {
-                    Image(systemName: "photo")
-                        .foregroundStyle(.secondary)
-                        .font(.subheadline)
-                    TextField("首帧图 URL（http/https）", text: $scriptFirstFrameUrl)
-                        .focused($focusedField, equals: .scriptFirstFrameUrl)
-                        .font(.body)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                }
-                .padding(12)
+                imageInputRow(
+                    placeholder: "First-frame image URL (http/https)",
+                    urlText: $scriptFirstFrameUrl,
+                    pick: $scriptFirstFramePick,
+                    focusField: .scriptFirstFrameUrl
+                )
 
                 Divider()
 
@@ -458,7 +682,7 @@ struct MainView: View {
                     Image(systemName: "info.circle")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("直接复用为世界首帧，跳过 AI 首帧生成；图片上传逻辑需客户自行实现")
+                    Text("Used directly as the world's first frame, skipping AI first-frame generation. You can also tap the icon on the right to pick from your photo library; the app encodes it as base64 and submits it.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -472,10 +696,10 @@ struct MainView: View {
         }
     }
 
-    /// scriptList JSON 大文本编辑器（预填预置），等宽字体便于阅读。
+    /// Large text editor for scriptList JSON (prefilled from the preset), monospaced for readability.
     private var scriptListEditorCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("剧本 scriptList（JSON，必填）")
+            Text("Script scriptList (JSON, required)")
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
@@ -493,28 +717,106 @@ struct MainView: View {
         }
     }
 
-    // MARK: - First frame 图片卡片
+    // MARK: - Image input (URL or local pick; shared by all `firstFrameImage` inputs)
+
+    /// Image input row: a URL text field + a "pick local image" button on the right; once a local image is picked, the URL input is hidden
+    /// and replaced with a thumbnail + Remove button. The UI state switch keeps `ImageRef.url`/`base64` mutually exclusive, with no extra
+    /// two-way clearing logic.
+    private func imageInputRow(
+        placeholder: LocalizedStringKey,
+        urlText: Binding<String>,
+        pick: Binding<LocalImagePickState>,
+        focusField: Field
+    ) -> some View {
+        Group {
+            if let preview = pick.wrappedValue.preview {
+                HStack(spacing: 10) {
+                    Image(uiImage: preview)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 36, height: 36)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                    Text("Local image selected (converted to base64 on submit)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                    Spacer()
+                    Button("Remove") { pick.wrappedValue = LocalImagePickState() }
+                        .font(.subheadline)
+                }
+                .padding(12)
+            } else {
+                HStack(spacing: 8) {
+                    Image(systemName: "photo")
+                        .foregroundStyle(.secondary)
+                        .font(.subheadline)
+                    TextField(placeholder, text: urlText)
+                        .focused($focusedField, equals: focusField)
+                        .font(.body)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    PhotoPickerButton(
+                        onPick: { data, preview in applyLocalImage(data: data, preview: preview, urlText: urlText, to: pick) },
+                        onFailure: { reason in showToast(String(localized: "Failed to pick image: \(reason)")) }
+                    )
+                }
+                .padding(12)
+            }
+            if let err = pick.wrappedValue.error {
+                Text(err)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 6)
+            }
+        }
+    }
+
+    /// After picking a local image, convert it to base64 as-is (no transcoding or compression); only check the decoded (original file) size ≤10MB, otherwise ask for another image.
+    /// Also clears the URL field — the two are mutually exclusive, so a hidden stale URL shouldn't linger once a local image is picked.
+    private func applyLocalImage(data: Data, preview: UIImage, urlText: Binding<String>, to pick: Binding<LocalImagePickState>) {
+        appLog("[MainView] applyLocalImage data.count=\(data.count)")
+        guard data.count <= LocalImageLimit.maxBytes else {
+            appLog("[MainView] ❌ applyLocalImage exceeds 10MB, not setting input state")
+            pick.wrappedValue = LocalImagePickState(error: String(localized: "Image exceeds 10MB. Please choose another one."))
+            return
+        }
+        urlText.wrappedValue = ""
+        let base64 = data.base64EncodedString()
+        pick.wrappedValue = LocalImagePickState(base64: base64, preview: preview)
+        appLog("[MainView] ✅ applyLocalImage set input state base64.count=\(base64.count)")
+    }
+
+    /// Build an `ImageRef` from the URL text + local pick state: the local image wins (`imageInputRow` already keeps them mutually exclusive);
+    /// returns nil if both are empty (for optional fields, meaning the field isn't sent).
+    private func imageRef(url: String, pick: LocalImagePickState) -> ImageRef? {
+        if let base64 = pick.base64 { return ImageRef(base64: base64) }
+        let trimmed = url.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : ImageRef(url: trimmed)
+    }
+
+    /// Whether the required first-frame image is provided: either a URL or a local pick counts.
+    private func hasImage(url: String, pick: LocalImagePickState) -> Bool {
+        imageRef(url: url, pick: pick) != nil
+    }
+
+    // MARK: - First frame image card
 
     private var firstFrameImageCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("首帧图")
+            Text("First-Frame Image (required)")
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
 
             VStack(spacing: 0) {
-                HStack(spacing: 8) {
-                    Image(systemName: "photo")
-                        .foregroundStyle(.secondary)
-                        .font(.subheadline)
-                    TextField("图片 URL（可选）", text: $firstFrameImageUrl)
-                        .focused($focusedField, equals: .firstFrameImageUrl)
-                        .font(.body)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                }
-                .padding(12)
+                imageInputRow(
+                    placeholder: "Image URL (required)",
+                    urlText: $firstFrameImageUrl,
+                    pick: $firstFrameImagePick,
+                    focusField: .firstFrameImageUrl
+                )
 
                 Divider()
 
@@ -522,7 +824,7 @@ struct MainView: View {
                     Image(systemName: "info.circle")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("图片 URL 将直接透传至接口，图片上传及获取逻辑需客户自行实现")
+                    Text("First-frame image required: enter a URL to pass directly to the API, or tap the icon on the right to pick from your photo library; the app encodes it as base64 and submits it.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -536,102 +838,33 @@ struct MainView: View {
         }
     }
 
-    // MARK: - Scenario role 场景 + 角色双卡片
-
-    private var scenarioRoleSection: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            imagePromptCard(
-                title: "场景",
-                imageUrl: $sceneImageUrl,
-                promptText: $scenePromptText,
-                promptLimit: promptLimitScenario,
-                imagePlaceholder: "场景图片 URL（可选）",
-                promptPlaceholder: "场景描述（可选），例如：废弃的深海科研站…",
-                imageField: .sceneImageUrl,
-                promptField: .scenePrompt
-            )
-            imagePromptCard(
-                title: "角色",
-                imageUrl: $roleImageUrl,
-                promptText: $rolePromptText,
-                promptLimit: promptLimitScenario,
-                imagePlaceholder: "角色图片 URL（可选）",
-                promptPlaceholder: "角色描述（可选），例如：宇宙探险家…",
-                imageField: .roleImageUrl,
-                promptField: .rolePrompt
-            )
-        }
-    }
-
-    /// 图片 URL + 文字描述复合卡片（scene / role 共用）
-    private func imagePromptCard(
-        title: String,
-        imageUrl: Binding<String>,
-        promptText: Binding<String>,
-        promptLimit: Int,
-        imagePlaceholder: String,
-        promptPlaceholder: String,
-        imageField: Field,
-        promptField: Field
-    ) -> some View {
+    /// Acting first-frame image (required). The server validates its aspect ratio against the current frame format;
+    /// for local picks the app checks first (see `validateActingFirstFrameAspectRatio()`) to avoid a wasted 400000 round trip.
+    private var actingFirstFrameImageCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
+            Text("First-Frame Image firstFrameImage (required)")
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
 
             VStack(spacing: 0) {
-                // 图片 URL 输入
-                HStack(spacing: 8) {
-                    Image(systemName: "photo")
+                imageInputRow(
+                    placeholder: "Image URL (required)",
+                    urlText: $actingFirstFrameUrl,
+                    pick: $actingFirstFramePick,
+                    focusField: .actingFirstFrameUrl
+                )
+
+                Divider()
+
+                HStack(spacing: 6) {
+                    Image(systemName: "info.circle")
+                        .font(.caption)
                         .foregroundStyle(.secondary)
-                        .font(.subheadline)
-                    TextField(imagePlaceholder, text: imageUrl)
-                        .focused($focusedField, equals: imageField)
-                        .font(.body)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                }
-                .padding(12)
-
-                Divider()
-
-                // 文字描述输入（可选）
-                ZStack(alignment: .topLeading) {
-                    if promptText.wrappedValue.isEmpty {
-                        Text(promptPlaceholder)
-                            .font(.body)
-                            .foregroundStyle(Color(.placeholderText))
-                            .padding(.horizontal, 16)
-                            .padding(.top, 12)
-                            .allowsHitTesting(false)
-                    }
-                    TextEditor(text: promptText)
-                        .focused($focusedField, equals: promptField)
-                        .font(.body)
-                        .frame(minHeight: 80, maxHeight: 120)
-                        .padding(12)
-                        .onChange(of: promptText.wrappedValue, perform: { val in
-                            if val.count > promptLimit {
-                                promptText.wrappedValue = String(val.prefix(promptLimit))
-                            }
-                        })
-                }
-
-                Divider()
-
-                HStack {
-                    HStack(spacing: 6) {
-                        Image(systemName: "info.circle")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Text("图片 URL 将直接透传至接口，图片上传及获取逻辑需客户自行实现")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    charCountLabel(promptText.wrappedValue.count, limit: promptLimit)
+                    Text("First-frame image required; it is reused as the world's first frame. The server validates the aspect ratio against the current format \(actingAspectRatio.rawValue) (\(actingAspectRatio.ratioHint)) and returns 400000 if it doesn't match.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
@@ -643,7 +876,7 @@ struct MainView: View {
         }
     }
 
-    // MARK: - 工具栏按钮
+    // MARK: - Toolbar buttons
 
     private func perspectiveMenuButton(selection: Binding<WorldPerspective>) -> some View {
         Menu {
@@ -662,37 +895,44 @@ struct MainView: View {
         }
     }
 
-    private var uploadModeMenuButton: some View {
-        Menu {
-            ForEach(WanderUploadMode.allCases) { m in
-                Button {
-                    wanderUploadMode = m
-                } label: {
-                    HStack {
-                        Text(m.label)
-                        if wanderUploadMode == m { Image(systemName: "checkmark") }
-                    }
-                }
-            }
-        } label: {
-            toolbarPill(icon: "photo", title: wanderUploadMode.label)
-        }
-    }
-
-    private var resolutionMenuButton: some View {
+    /// Resolution pill. Story and Acting each hold their own state (different defaults: Story 720p / Acting 480p),
+    /// so it's passed in as a binding, following the same pattern as `perspectiveMenuButton(selection:)`.
+    private func resolutionMenuButton(selection: Binding<StoryResolution>) -> some View {
         Menu {
             ForEach(StoryResolution.allCases) { r in
                 Button {
-                    storyResolution = r
+                    selection.wrappedValue = r
                 } label: {
                     HStack {
                         Text(r.label)
-                        if storyResolution == r { Image(systemName: "checkmark") }
+                        if selection.wrappedValue == r { Image(systemName: "checkmark") }
                     }
                 }
             }
         } label: {
-            toolbarPill(icon: "aspectratio", title: storyResolution.label)
+            toolbarPill(icon: "arrow.up.left.and.arrow.down.right", title: selection.wrappedValue.label)
+        }
+    }
+
+    /// Acting frame-format pill (`aspectRatio`). The icon follows the current value's orientation; values come from the enum,
+    /// so adding 3:4 / 4:3 later only requires extending the enum, not changing this.
+    private var actingAspectRatioMenuButton: some View {
+        Menu {
+            ForEach(ActingAspectRatio.allCases) { r in
+                Button {
+                    actingAspectRatio = r
+                } label: {
+                    HStack {
+                        Text(r.label)
+                        if actingAspectRatio == r { Image(systemName: "checkmark") }
+                    }
+                }
+            }
+        } label: {
+            toolbarPill(
+                icon: actingAspectRatio.isPortrait ? "rectangle.portrait" : "rectangle",
+                title: actingAspectRatio.label
+            )
         }
     }
 
@@ -714,23 +954,6 @@ struct MainView: View {
         }
     }
 
-    private var narrativeMenuButton: some View {
-        Menu {
-            ForEach(StoryNarrative.allCases) { n in
-                Button {
-                    storyNarrative = n
-                } label: {
-                    HStack {
-                        Text(n.label)
-                        if storyNarrative == n { Image(systemName: "checkmark") }
-                    }
-                }
-            }
-        } label: {
-            toolbarPill(icon: "theatermasks", title: storyNarrative.label)
-        }
-    }
-
     private func toolbarPill(icon: String, title: String) -> some View {
         HStack(spacing: 4) {
             Image(systemName: icon)
@@ -746,20 +969,20 @@ struct MainView: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .background(Color(.secondarySystemFill), in: Capsule())
-        // transaction 优先级高于父层 withAnimation（包括 Menu 内部触发的动画），
-        // 确保标签文字宽度变化时 Capsule 背景直接跳变，不出现截断过渡帧。
+        // The transaction takes priority over a parent withAnimation (including animations triggered inside Menu),
+        // so the Capsule background jumps immediately when the label width changes, without truncated transition frames.
         .transaction { $0.animation = nil }
     }
 
-    // MARK: - 字数计数器
+    // MARK: - Character counter
 
     private func charCountLabel(_ count: Int, limit: Int) -> some View {
-        Text("\(count) / \(limit)")
+        Text(verbatim: "\(count) / \(limit)")
             .font(.caption.monospacedDigit())
             .foregroundStyle(count > limit ? Color.red : Color(.tertiaryLabel))
     }
 
-    // MARK: - 创建按钮
+    // MARK: - Create button
 
     private var createButton: some View {
         let disabled = isCreateDisabled
@@ -768,7 +991,7 @@ struct MainView: View {
                 if isCreating {
                     ProgressView().scaleEffect(0.85).tint(.white)
                 }
-                Text(isCreating ? "创建中…" : "创建世界")
+                (isCreating ? Text("Creating…") : Text("Create World"))
                     .fontWeight(.semibold)
             }
             .frame(maxWidth: .infinity)
@@ -781,28 +1004,28 @@ struct MainView: View {
         .disabled(disabled)
     }
 
-    /// 各模式的启用条件：必填项不为空即可点击创建。
+    /// Enable condition per mode: Create is tappable once required fields are non-empty.
     private var isCreateDisabled: Bool {
         if isCreating { return true }
         switch mode {
         case .story:
             if storyCreationModel == .scriptlist {
-                // 细粒度错误在点击时由 validateScriptList() 给出，这里只做粗粒度非空判断。
-                return scriptListText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                    || scriptFirstFrameUrl.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                // Fine-grained errors come from validateScriptList() on tap; this is only a coarse non-empty check.
+                // First-frame URL or local pick: either being non-empty counts as filled.
+                let hasFirstFrame = !scriptFirstFrameUrl.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                    || scriptFirstFramePick.base64 != nil
+                return scriptListText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !hasFirstFrame
             }
-            // prompt 必填，参考图可选
+            // Prompt is required; reference images are optional
             return storyPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        case .acting:
+            // Acting only has the first_frame sub-mode: both prompt and first-frame image are required.
+            return actingPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                || !hasImage(url: actingFirstFrameUrl, pick: actingFirstFramePick)
         case .wander:
-            switch wanderUploadMode {
-            case .firstFrame:
-                // prompt 必填，首帧图可选
-                return wanderPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            case .scenarioRole:
-                // 图片均可选，场景描述和角色描述至少填写其中一项
-                return scenePromptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                    && rolePromptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            }
+            // Wander only has the first_frame sub-mode: both prompt and first-frame image are required.
+            return wanderPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                || !hasImage(url: firstFrameImageUrl, pick: firstFrameImagePick)
         }
     }
 
@@ -827,16 +1050,14 @@ struct MainView: View {
     // MARK: - Helpers
 
     private var promptPlaceholder: String {
-        if mode == .wander && wanderUploadMode == .firstFrame {
-            return "描述你的世界场景，例如：一座漂浮在云端的古城…"
-        }
         switch mode {
-        case .wander: return "描述你的世界场景，例如：一座漂浮在云端的古城…"
-        case .story:  return "描述故事背景，例如：在遥远的未来，人类移居火星…"
+        case .wander: return String(localized: "Describe your world, e.g. an ancient city floating above the clouds…")
+        case .story:  return String(localized: "Describe the story background, e.g. in the distant future, humanity has moved to Mars…")
+        case .acting: return String(localized: "Describe the digital human's persona and scene, e.g. a late-night video call with a quiet girl…")
         }
     }
 
-    // MARK: - 创建请求
+    // MARK: - Create request
 
     private func createWorld() {
         guard !isCreateDisabled else { return }
@@ -852,60 +1073,19 @@ struct MainView: View {
             }
         }
 
+        // Local aspect-ratio check for the acting first frame: local picks have real dimensions, so catch it early and save a guaranteed 400000 round trip.
+        if let aspectRatioError = validateActingFirstFrameAspectRatio() {
+            errorMessage = aspectRatioError
+            return
+        }
+
         isCreating = true
         errorMessage = nil
 
         Task {
             defer { isCreating = false }
             do {
-                let isWander = mode == .wander
-
-                // scenario_role 模式：用 scenePromptText 兜底，其次 rolePromptText，都空时传 null。
-                // 其余模式：用户未填写时传 null（服务端接受字段缺失，但不接受空字符串）。
-                let prompt: String? = {
-                    if isWander && wanderUploadMode == .scenarioRole {
-                        let scene = scenePromptText.trimmingCharacters(in: .whitespacesAndNewlines)
-                        let role  = rolePromptText.trimmingCharacters(in: .whitespacesAndNewlines)
-                        return scene.isEmpty ? (role.isEmpty ? nil : role) : scene
-                    }
-                    return (isWander ? wanderPrompt : storyPrompt)
-                        .trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
-                }()
-
-                let body = CreateWorldRequest(
-                    mode: mode.rawValue,
-                    async_: true,
-                    prompt: prompt,
-                    eventStyle: nil,
-                    refWorldId: nil,
-                    perspective: isWander ? wanderPerspective.apiValue : nil,
-                    uploadMode: isWander ? wanderUploadMode.apiValue : nil,
-                    firstFrameImage: {
-                        let wanderUrl = firstFrameImageUrl.trimmingCharacters(in: .whitespacesAndNewlines)
-                        let storyUrl  = storyImageUrl.trimmingCharacters(in: .whitespacesAndNewlines)
-                        if isWander && wanderUploadMode == .firstFrame && !wanderUrl.isEmpty {
-                            return ImageRef(url: wanderUrl)
-                        } else if !isWander && !storyUrl.isEmpty {
-                            return ImageRef(url: storyUrl)
-                        }
-                        return nil
-                    }(),
-                    sceneImage: (isWander && wanderUploadMode == .scenarioRole && !sceneImageUrl.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        ? ImageRef(url: sceneImageUrl.trimmingCharacters(in: .whitespacesAndNewlines))
-                        : nil,
-                    scenePrompt: (isWander && wanderUploadMode == .scenarioRole)
-                        ? scenePromptText.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
-                        : nil,
-                    roleImage: (isWander && wanderUploadMode == .scenarioRole && !roleImageUrl.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        ? ImageRef(url: roleImageUrl.trimmingCharacters(in: .whitespacesAndNewlines))
-                        : nil,
-                    rolePrompt: (isWander && wanderUploadMode == .scenarioRole)
-                        ? rolePromptText.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
-                        : nil,
-                    resolution: isWander ? nil : storyResolution.apiValue,
-                    layout: isWander ? nil : "Stable",
-                    narrative: isWander ? nil : storyNarrative.apiValue
-                )
+                let body = makeCreateWorldRequest()
                 if let bodyData = try? JSONEncoder().encode(body),
                    let bodyStr = String(data: bodyData, encoding: .utf8) {
                     appLog("[Create] → request body: \(bodyStr)")
@@ -923,7 +1103,84 @@ struct MainView: View {
         }
     }
 
-    // MARK: - creationModel=scriptlist 提交与校验
+    /// Build the create request body per mode. **Every optional field is resolved via `switch mode`**, not a binary "not wander means story"
+    /// check — the three modes have different field whitelists, and a binary check would make acting silently inherit Story's
+    /// `layout`, which the server rejects with 400000.
+    private func makeCreateWorldRequest() -> CreateWorldRequest {
+        let isWander = mode == .wander
+
+        // Send null when the user left it empty (the server accepts a missing field but not an empty string).
+        let prompt: String? = promptBinding.wrappedValue
+            .trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
+
+        // Story's two reference image fields are mutually exclusive (1 → first frame / ≥2 → inputImages);
+        // wander / acting only support first_frame, always submit firstFrameImage, and never send inputImages.
+        let storyImages = mode == .story ? storyImageFields() : (firstFrameImage: nil, inputImages: nil)
+
+        let firstFrameImage: ImageRef? = {
+            switch mode {
+            case .wander:
+                return imageRef(url: firstFrameImageUrl, pick: firstFrameImagePick)
+            case .story:
+                return storyImages.firstFrameImage
+            case .acting:
+                return imageRef(url: actingFirstFrameUrl, pick: actingFirstFramePick)
+            }
+        }()
+
+        // Wander / acting are fixed to the first_frame sub-mode; Story doesn't accept uploadMode.
+        let uploadMode: String? = mode == .story ? nil : "first_frame"
+
+        let resolution: String? = {
+            switch mode {
+            case .wander: return nil
+            case .story:  return storyResolution.apiValue
+            case .acting: return actingResolution.apiValue
+            }
+        }()
+
+        return CreateWorldRequest(
+            mode: mode.rawValue,
+            async_: true,
+            prompt: prompt,
+            // Acting must not send eventStyle: it would block the server's uploadMode → eventStyle mapping.
+            eventStyle: nil,
+            refWorldId: nil,
+            perspective: isWander ? wanderPerspective.apiValue : nil,
+            uploadMode: uploadMode,
+            firstFrameImage: firstFrameImage,
+            // scenario_role fields are no longer supported by the demo (wander only uses first_frame).
+            sceneImage: nil,
+            scenePrompt: nil,
+            roleImage: nil,
+            rolePrompt: nil,
+            inputImages: storyImages.inputImages,
+            resolution: resolution,
+            // layout is Story-only: sending it for acting is rejected as invalid parameters.
+            layout: mode == .story ? "Stable" : nil,
+            // aspectRatio only applies to acting; not sent for other modes.
+            aspectRatio: mode == .acting ? actingAspectRatio.apiValue : nil
+        )
+    }
+
+    /// When acting uses a **local image**, validate the first frame's aspect ratio against the current frame format
+    /// (server rule: `16:9` → 1.5~2.0, `9:16` → 0.5~0.667, otherwise 400000).
+    /// URL images have no known size, so the server decides; returning nil means pass.
+    private func validateActingFirstFrameAspectRatio() -> String? {
+        guard mode == .acting,
+              let preview = actingFirstFramePick.preview else { return nil }
+        let size = preview.size
+        guard size.height > 0 else { return nil }
+        let ratio = size.width / size.height
+        let range = actingAspectRatio.allowedRatioRange
+        guard !range.contains(ratio) else { return nil }
+        return String(
+            format: String(localized: "First-frame aspect ratio %.2f doesn't meet the %@ format requirement (%@). Please change the image or switch the format."),
+            ratio, actingAspectRatio.rawValue, actingAspectRatio.ratioHint
+        )
+    }
+
+    // MARK: - creationModel=scriptlist submission and validation
 
     private func createScriptListWorld(scriptList: JSONValue) {
         isCreating = true
@@ -937,7 +1194,8 @@ struct MainView: View {
                     asyncFlag: true,
                     creationModel: "scriptlist",
                     resolution: storyResolution.apiValue,
-                    firstFrameImage: ImageRef(url: scriptFirstFrameUrl.trimmingCharacters(in: .whitespacesAndNewlines)),
+                    firstFrameImage: imageRef(url: scriptFirstFrameUrl, pick: scriptFirstFramePick)
+                        ?? ImageRef(url: scriptFirstFrameUrl.trimmingCharacters(in: .whitespacesAndNewlines)),
                     scriptList: scriptList
                 )
                 if let bodyData = try? JSONEncoder().encode(body),
@@ -957,18 +1215,21 @@ struct MainView: View {
         }
     }
 
-    /// 提交前本地预校验，对齐服务端强校验（创建独有的首帧图校验 + 共用的 scriptList 结构校验，
-    /// 见 `ScriptListJSONValidator`）；校验通过时把已解析的 `JSONValue` 一并带出，提交时直接复用。
+    /// Local pre-validation before submitting, matching the server's strict checks (create-only first-frame check + shared scriptList structure check,
+    /// see `ScriptListJSONValidator`); on success the parsed `JSONValue` is returned and reused for submission.
     private func validateScriptList() -> ScriptListJSONValidation {
-        let firstFrameUrl = scriptFirstFrameUrl.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let url = URL(string: firstFrameUrl),
-              let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https" else {
-            return .failure(message: "首帧图需为合法 http(s) URL")
+        // Skip URL format validation when a local image (base64) is picked; they're mutually exclusive and `imageInputRow` ensures both aren't set.
+        if scriptFirstFramePick.base64 == nil {
+            let firstFrameUrl = scriptFirstFrameUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard let url = URL(string: firstFrameUrl),
+                  let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https" else {
+                return .failure(message: String(localized: "The first-frame image must be a valid http(s) URL, or pick one from your photo library instead."))
+            }
         }
         return ScriptListJSONValidator.validate(text: scriptListText)
     }
 
-    // MARK: - 轮询逻辑
+    // MARK: - Polling logic
 
     private func startPolling(worldId: String, mode: ServerWorldMode) {
         switch mode {
@@ -982,6 +1243,11 @@ struct MainView: View {
             storyPollingId  = worldId
             storyPollStatus = nil
             storyPollTask   = Task { await pollUntilReady(worldId: worldId, mode: .story) }
+        case .acting:
+            actingPollTask?.cancel()
+            actingPollingId  = worldId
+            actingPollStatus = nil
+            actingPollTask   = Task { await pollUntilReady(worldId: worldId, mode: .acting) }
         }
     }
 
@@ -989,22 +1255,25 @@ struct MainView: View {
     private func pollUntilReady(worldId: String, mode: ServerWorldMode) async {
         while !Task.isCancelled {
             do {
-                let s = try await env.apiClient.worldBuildStatus(encryptedWorldId: worldId)
-                appLog("[Poll] \(mode == .wander ? "wander" : "story") status=\(s.status)")
+                let s = try await env.apiClient.worldBuildStatus(encryptedWorldId: worldId, mode: mode)
+                appLog("[Poll] \(mode.badgeLabel) status=\(s.status)")
                 switch mode {
                 case .wander: wanderPollStatus = s
                 case .story:  storyPollStatus  = s
+                case .acting: actingPollStatus = s
                 }
                 switch s.status {
                 case .ready:
-                    showToast("世界已就绪！")
+                    showToast(String(localized: "World is ready!"))
                     try? await Task.sleep(nanoseconds: 800_000_000)
                     clearPolling(mode: mode)
-                    navigation.switchTo(.play)
+                    // Pass the new world's mode: the Play page filter has no "All", so without it the page stays on
+                    // the last selected mode and the user wouldn't see the world just created.
+                    navigation.switchToPlay(mode: mode)
                     return
                 case .failed:
                     clearPolling(mode: mode)
-                    errorMessage = "世界生成失败，请重试"
+                    errorMessage = String(localized: "World generation failed. Please try again.")
                     return
                 case .generating:
                     break
@@ -1026,6 +1295,10 @@ struct MainView: View {
             storyPollTask?.cancel(); storyPollTask = nil
             storyPollingId  = nil
             storyPollStatus = nil
+        case .acting:
+            actingPollTask?.cancel(); actingPollTask = nil
+            actingPollingId  = nil
+            actingPollStatus = nil
         }
     }
 
@@ -1040,21 +1313,23 @@ struct MainView: View {
     private func errorDescription(_ error: APIError) -> String {
         switch error {
         case .business(let code, let msg, let rid):
-            if code == 403003 { return "该操作需要主 API Key，临时 Key 无权限（403003）" }
-            if code == 403004 { return "内容审核未通过：涉及违规内容（403004）" }
-            if code == 403005 { return "内容审核未通过：涉及版权/IP 违规（403005）" }
+            if code == 403003 { return String(localized: "This action requires the primary API key; temporary keys aren't permitted (403003)") }
+            if code == 403004 { return String(localized: "Content moderation failed: prohibited content (403004)") }
+            if code == 403005 { return String(localized: "Content moderation failed: copyright/IP violation (403005)") }
+            if code == 403007 { return String(localized: "This tier isn't enabled: Acting mode is globally disabled or not enabled for this account (403007)") }
             let ridSuffix = rid.map { " [req:\($0)]" } ?? ""
-            return (msg ?? "业务错误 \(code)") + ridSuffix
+            return (msg ?? String(localized: "Business error \(code)")) + ridSuffix
         case .gateway(let code, let msg, let rid):
             let ridSuffix = rid.map { " [req:\($0)]" } ?? ""
-            return "网关错误 \(code)：\(msg ?? "")\(ridSuffix)"
+            let message = msg ?? ""
+            return String(localized: "Gateway error \(code): \(message)\(ridSuffix)")
         default:
             return error.localizedDescription
         }
     }
 }
 
-// MARK: - 参数枚举
+// MARK: - Parameter enums
 
 enum WorldPerspective: String, CaseIterable, Identifiable {
     case firstPerson
@@ -1064,12 +1339,12 @@ enum WorldPerspective: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .firstPerson: return "第一人称"
-        case .thirdPerson: return "第三人称"
+        case .firstPerson: return String(localized: "First Person")
+        case .thirdPerson: return String(localized: "Third Person")
         }
     }
 
-    /// 服务端要求 snake_case（与 `OysterWorldSpec.Perspective` 对齐）。
+    /// The server requires snake_case (aligned with `OysterWorldSpec.Perspective`).
     var apiValue: String {
         switch self {
         case .firstPerson: return "first_person"
@@ -1087,62 +1362,51 @@ enum StoryResolution: String, CaseIterable, Identifiable {
     var apiValue: String { rawValue }
 }
 
-/// Wander 图片子模式（`uploadMode` 字段）。
-enum WanderUploadMode: String, CaseIterable, Identifiable {
-    /// 首帧图模式（`uploadMode=first_frame`）：可选传一张参考图作为视觉锚点。
-    case firstFrame
-    /// 场景角色模式（`uploadMode=scenario_role`）：分别提供场景与角色图。
-    case scenarioRole
+/// Acting frame aspect ratio (`aspectRatio` field, only effective for `mode=3`).
+/// Named by the ratio itself rather than portrait/landscape: when the server adds `3:4` / `4:3`, just add a case —
+/// orientation, icon, and validation range are all derived from the ratio, so UI and submission logic stay unchanged.
+enum ActingAspectRatio: String, CaseIterable, Identifiable {
+    case r9x16 = "9:16"
+    case r16x9 = "16:9"
 
     var id: String { rawValue }
+    var apiValue: String { rawValue }
 
-    var label: String {
-        switch self {
-        case .firstFrame:   return "首帧图"
-        case .scenarioRole: return "场景角色"
-        }
+    /// Width / height.
+    private var ratio: Double {
+        let parts = rawValue.split(separator: ":").compactMap { Double($0) }
+        guard parts.count == 2, parts[1] > 0 else { return 1 }
+        return parts[0] / parts[1]
     }
 
-    /// 传给服务端的 `uploadMode` 值。
-    var apiValue: String? {
-        switch self {
-        case .firstFrame:   return "first_frame"
-        case .scenarioRole: return "scenario_role"
-        }
+    var isPortrait: Bool { ratio < 1 }
+
+    var label: String { isPortrait ? String(localized: "\(rawValue) Portrait") : String(localized: "\(rawValue) Landscape") }
+
+    /// Server-allowed range for the first frame's aspect ratio: `16:9` → 1.5~2.0, `9:16` → 0.5~0.667.
+    /// Derived from the nominal ratio, so new ratios don't need entries here.
+    var allowedRatioRange: ClosedRange<Double> {
+        isPortrait ? 0.5...0.667 : 1.5...2.0
+    }
+
+    var ratioHint: String {
+        String(format: String(localized: "W/H %.2f ~ %.2f"), allowedRatioRange.lowerBound, allowedRatioRange.upperBound)
     }
 }
 
 // MARK: - String helper
 
 private extension String {
-    /// 空字符串返回 nil，用于可选字段的空值裁剪。
+    /// Returns nil for an empty string; used to trim empty optional fields.
     var nilIfEmpty: String? { isEmpty ? nil : self }
 }
 
-/// Story 创建方式（本地 UI 概念，不直接对应服务端字段；scriptlist 提交时才带
-/// `creationModel="scriptlist"`，simple 不发该字段，服务端默认视为 simple）。
+/// Story creation method (a local UI concept, not a direct server field; only scriptlist submissions include
+/// `creationModel="scriptlist"`; simple omits the field and the server treats it as simple by default).
 enum StoryCreationModel: String, CaseIterable, Identifiable {
     case simple = "simple"
     case scriptlist = "scriptlist"
     var id: String { rawValue }
-    var label: String { self == .simple ? "简单" : "剧本" }
+    var label: String { self == .simple ? String(localized: "Simple") : String(localized: "Script") }
 }
 
-/// Story 叙事风格（`narrative` 字段）。
-enum StoryNarrative: String, CaseIterable, Identifiable {
-    case calm     = "Calm"
-    case dramatic = "Dramatic"
-    case normal   = "Normal"
-
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .calm:     return "平静"
-        case .dramatic: return "戏剧性"
-        case .normal:   return "标准"
-        }
-    }
-
-    var apiValue: String { rawValue }
-}

@@ -15,11 +15,11 @@ use_frameworks!
 
 target 'HappyOysterPodExample' do
   # 聚合入口（Core + World），import HappyOysterSDK 一行即用。
-  pod 'HappyOysterSDK', '1.0.3'
+  pod 'HappyOysterSDK', '0.1.7'
   # 默认 UI 组件（视频视图、操控 HUD）。
-  pod 'HappyOysterSDK/UI', '1.0.3'
+  pod 'HappyOysterSDK/UI', '0.1.7'
   # 视频流 + AliRTC 引擎适配器（已依赖 Stream，无需单独声明）。
-  pod 'HappyOysterSDK/StreamAliRTC', '1.0.3'
+  pod 'HappyOysterSDK/StreamAliRTC', '0.1.7'
 
   # RTC 厂商二进制：SDK 弱引用、不随 SDK 分发，由集成方自行引入（CocoaPods 公开源）。
   pod 'AliVCSDK_ARTC', '7.11.0'

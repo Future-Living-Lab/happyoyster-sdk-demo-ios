@@ -2,7 +2,7 @@ import SwiftUI
 import AVKit
 import Photos
 
-// MARK: - 历史主页（旅途列表）
+// MARK: - History home (travel list)
 
 struct HistoryView: View {
     @EnvironmentObject private var env: AppEnvironment
@@ -11,11 +11,15 @@ struct HistoryView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var hasLoaded = false
-    /// nil = 全部；有值时只展示对应状态
+    /// nil = all; when set, only travels with that status are shown
     @State private var filterStatus: TravelStatus? = nil
+    /// The world mode currently shown. **There is no "All"**: since models are split by mode, the history
+    /// list request must carry one concrete mode (the server uses it to pick the gateway route), so "All" can't be expressed.
+    /// How it is passed is a convention of this demo's server; see `APIClient.modeHeaderField`.
+    @State private var filterMode: ServerWorldMode = .wander
     @State private var travelToShowDetail: TravelListItem? = nil
 
-    // MARK: 分页
+    // MARK: Pagination
     private let pageSize = 20
     @State private var currentPage = 1
     @State private var hasMore = false
@@ -36,9 +40,12 @@ struct HistoryView: View {
                     gridView
                 }
             }
-            .navigationTitle("历史")
+            .navigationTitle("History")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    modePicker
+                }
                 ToolbarItem(placement: .navigationBarLeading) {
                     filterPicker
                 }
@@ -57,6 +64,34 @@ struct HistoryView: View {
         .navigationViewStyle(.stack)
     }
 
+    // MARK: - Mode picker
+
+    /// World mode picker. Sits next to the status filter but works differently: status is a pure display filter,
+    /// while mode decides which gateway route the request hits, so there is no "All" option.
+    private var modePicker: some View {
+        Menu {
+            ForEach(ServerWorldMode.allCases, id: \.self) { mode in
+                Button {
+                    guard filterMode != mode else { return }
+                    filterMode = mode
+                    Task { await load() }
+                } label: {
+                    HStack {
+                        Text(mode.badgeLabel)
+                        if filterMode == mode { Image(systemName: "checkmark") }
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "square.stack.3d.up")
+                Text(filterMode.badgeLabel)
+                    .font(.subheadline)
+            }
+            .foregroundStyle(Color.accentColor)
+        }
+    }
+
     // MARK: - Filter picker
 
     private var filterPicker: some View {
@@ -67,7 +102,7 @@ struct HistoryView: View {
                 Task { await load() }
             } label: {
                 HStack {
-                    Text("全部")
+                    Text("All")
                     if filterStatus == nil { Image(systemName: "checkmark") }
                 }
             }
@@ -87,7 +122,7 @@ struct HistoryView: View {
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: "line.3.horizontal.decrease.circle")
-                Text(filterStatus.map { statusLabel($0) } ?? "全部")
+                Text(filterStatus.map { statusLabel($0) } ?? String(localized: "All"))
                     .font(.subheadline)
             }
             .foregroundStyle(filterStatus == nil ? AnyShapeStyle(.secondary) : AnyShapeStyle(Color.accentColor))
@@ -96,12 +131,12 @@ struct HistoryView: View {
 
     private func statusLabel(_ status: TravelStatus) -> String {
         switch status {
-        case .`init`:    return "初始化"
-        case .pending:   return "等待中"
-        case .running:   return "进行中"
-        case .completed: return "已完成"
-        case .failed:    return "失败"
-        case .paused:    return "已暂停"
+        case .`init`:    return String(localized: "Initializing")
+        case .pending:   return String(localized: "Pending")
+        case .running:   return String(localized: "Running")
+        case .completed: return String(localized: "Completed")
+        case .failed:    return String(localized: "Failed")
+        case .paused:    return String(localized: "Paused")
         }
     }
 
@@ -112,7 +147,7 @@ struct HistoryView: View {
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(items, id: \.encryptedTravelId) { item in
                     NavigationLink {
-                        TravelArtifactsView(travel: item, client: env.apiClient)
+                        TravelArtifactsView(travel: item, client: env.apiClient, listMode: filterMode)
                     } label: {
                         TravelCard(item: item)
                     }
@@ -121,7 +156,7 @@ struct HistoryView: View {
                         Button {
                             travelToShowDetail = item
                         } label: {
-                            Label("查看详情", systemImage: "info.circle")
+                            Label("View Details", systemImage: "info.circle")
                         }
                     }
                     .onAppear {
@@ -151,7 +186,7 @@ struct HistoryView: View {
     private var loadingView: some View {
         VStack(spacing: 12) {
             ProgressView()
-            Text("加载中…").font(.subheadline).foregroundStyle(.secondary)
+            Text("Loading…").font(.subheadline).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -159,7 +194,7 @@ struct HistoryView: View {
     private var emptyView: some View {
         VStack(spacing: 12) {
             Image(systemName: "map").font(.system(size: 48)).foregroundStyle(.tertiary)
-            Text("暂无旅途记录").foregroundStyle(.secondary)
+            Text("No travel records yet").foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -168,7 +203,7 @@ struct HistoryView: View {
         VStack(spacing: 16) {
             Image(systemName: "exclamationmark.triangle").font(.system(size: 40)).foregroundStyle(.orange)
             Text(msg).font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center)
-            Button("重试") { Task { await load() } }.buttonStyle(.bordered)
+            Button("Retry") { Task { await load() } }.buttonStyle(.bordered)
         }
         .padding(.horizontal, 40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -176,14 +211,14 @@ struct HistoryView: View {
 
     // MARK: Load
 
-    /// 重置到第一页（下拉刷新、切换筛选时调用）
+    /// Reset to the first page (called on pull-to-refresh and filter changes)
     @MainActor private func load() async {
         isLoading = true
         errorMessage = nil
         defer { isLoading = false; hasLoaded = true }
         do {
             let result = try await env.apiClient.listTravels(
-                page: 1, pageSize: pageSize, status: filterStatus
+                page: 1, pageSize: pageSize, status: filterStatus, mode: filterMode
             )
             items = result.items
             currentPage = 1
@@ -193,7 +228,7 @@ struct HistoryView: View {
         }
     }
 
-    /// 加载下一页（滚动到底部时调用）
+    /// Load the next page (called when scrolling to the bottom)
     @MainActor private func loadMore() async {
         guard hasMore, !isLoadingMore, !isLoading else { return }
         isLoadingMore = true
@@ -201,7 +236,7 @@ struct HistoryView: View {
         do {
             let nextPage = currentPage + 1
             let result = try await env.apiClient.listTravels(
-                page: nextPage, pageSize: pageSize, status: filterStatus
+                page: nextPage, pageSize: pageSize, status: filterStatus, mode: filterMode
             )
             let existingIds = Set(items.map(\.encryptedTravelId))
             let newItems = result.items.filter { !existingIds.contains($0.encryptedTravelId) }
@@ -209,12 +244,12 @@ struct HistoryView: View {
             currentPage = nextPage
             hasMore = result.pagination.hasMore
         } catch {
-            // 加载更多失败不覆盖已有列表，保留 hasMore 以便下次重试
+            // A failed load-more doesn't replace the existing list; keep hasMore so it can retry next time
         }
     }
 }
 
-// MARK: - 旅途卡片
+// MARK: - Travel card
 
 private struct TravelCard: View {
     let item: TravelListItem
@@ -238,9 +273,9 @@ private struct TravelCard: View {
                     Text(date).font(.system(size: 10)).foregroundStyle(.tertiary)
                 }
                 Divider().padding(.vertical, 2)
-                // Travel ID（截断中间）
+                // Travel ID (truncated in the middle)
                 HStack(spacing: 4) {
-                    Text("ID")
+                    Text(verbatim: "ID")
                         .font(.system(size: 9, weight: .bold, design: .monospaced))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 4).padding(.vertical, 2)
@@ -253,9 +288,24 @@ private struct TravelCard: View {
                 }
                 // Mode
                 if let mode = item.mode {
-                    Text(mode == .wander ? "Wander" : "Story")
+                    Text(mode.badgeLabel)
                         .font(.system(size: 9, weight: .medium))
                         .foregroundStyle(.tertiary)
+                }
+                // Failure info (API items[].errorCode / errorMessage)
+                if let failure = item.failureText {
+                    HStack(alignment: .top, spacing: 4) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 9))
+                        Text(failure)
+                            .font(.system(size: 10))
+                            .lineLimit(3)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .foregroundStyle(.red)
+                    .padding(.horizontal, 6).padding(.vertical, 4)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.red.opacity(0.1), in: RoundedRectangle(cornerRadius: 6))
                 }
             }
             .padding(.horizontal, 10)
@@ -268,21 +318,19 @@ private struct TravelCard: View {
 
     private var placeholderGradient: some View {
         LinearGradient(
-            colors: item.mode == .some(.wander)
-                ? [Color(hue: 0.55, saturation: 0.5, brightness: 0.65),
-                   Color(hue: 0.65, saturation: 0.4, brightness: 0.45)]
-                : [Color(hue: 0.08, saturation: 0.5, brightness: 0.7),
-                   Color(hue: 0.03, saturation: 0.4, brightness: 0.5)],
+            colors: item.mode?.cardGradientColors
+                ?? [Color(hue: 0, saturation: 0, brightness: 0.6),
+                    Color(hue: 0, saturation: 0, brightness: 0.4)],
             startPoint: .topLeading, endPoint: .bottomTrailing
         )
         .overlay {
-            Image(systemName: item.mode == .some(.wander) ? "wind" : "book.pages")
+            Image(systemName: item.mode?.cardIconName ?? "questionmark")
                 .font(.system(size: 24)).foregroundStyle(.white.opacity(0.45))
         }
     }
 
     private var modeBadge: some View {
-        Text(item.mode == .some(.wander) ? "Wander" : item.mode == .some(.story) ? "Story" : "—")
+        Text(item.mode?.badgeLabel ?? "—")
             .font(.system(size: 9, weight: .semibold)).foregroundStyle(.white)
             .padding(.horizontal, 6).padding(.vertical, 3)
             .background(.ultraThinMaterial, in: Capsule())
@@ -300,12 +348,12 @@ private struct TravelCard: View {
 
     private var statusLabel: String {
         switch item.status {
-        case .`init`:    return "初始化"
-        case .pending:   return "等待中"
-        case .running:   return "进行中"
-        case .completed: return "已完成"
-        case .failed:    return "失败"
-        case .paused:    return "已暂停"
+        case .`init`:    return String(localized: "Initializing")
+        case .pending:   return String(localized: "Pending")
+        case .running:   return String(localized: "Running")
+        case .completed: return String(localized: "Completed")
+        case .failed:    return String(localized: "Failed")
+        case .paused:    return String(localized: "Paused")
         }
     }
 
@@ -324,14 +372,17 @@ private struct TravelCard: View {
     }
 }
 
-// MARK: - 产物子页面
+// MARK: - Artifacts subpage
 
 struct TravelArtifactsView: View {
     let travel: TravelListItem
     let client: APIClient
+    /// The world mode the list belongs to, used as a fallback when `travel.mode` is missing: the list itself
+    /// was fetched with this mode, so every item in it belongs to it.
+    let listMode: ServerWorldMode
 
     @State private var artifact: TravelArtifactsResponse?
-    /// 拆包/解码前的完整响应 JSON，随产物一起往下传，供详情页底部展示。
+    /// The full response JSON before unwrapping/decoding, passed down with the artifacts for display at the bottom of the detail page.
     @State private var artifactRawJSON: String?
     @State private var isLoading = false
     @State private var errorMessage: String?
@@ -343,7 +394,7 @@ struct TravelArtifactsView: View {
             if isLoading {
                 VStack(spacing: 12) {
                     ProgressView()
-                    Text("加载产物…").font(.subheadline).foregroundStyle(.secondary)
+                    Text("Loading artifacts…").font(.subheadline).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if let err = errorMessage {
@@ -352,7 +403,7 @@ struct TravelArtifactsView: View {
                         .font(.system(size: 40)).foregroundStyle(.orange)
                     Text(err).font(.subheadline).foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                    Button("重试") { Task { await load() } }.buttonStyle(.bordered)
+                    Button("Retry") { Task { await load() } }.buttonStyle(.bordered)
                 }
                 .padding(.horizontal, 40)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -370,12 +421,12 @@ struct TravelArtifactsView: View {
                 VStack(spacing: 12) {
                     Image(systemName: "photo.on.rectangle.angled")
                         .font(.system(size: 48)).foregroundStyle(.tertiary)
-                    Text("暂无产物").foregroundStyle(.secondary)
+                    Text("No artifacts yet").foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .navigationTitle("旅途产物")
+        .navigationTitle("Travel Artifacts")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
     }
@@ -385,7 +436,10 @@ struct TravelArtifactsView: View {
         errorMessage = nil
         defer { isLoading = false }
         do {
-            let result = try await client.travelArtifactsWithRaw(encryptedTravelId: travel.encryptedTravelId)
+            let result = try await client.travelArtifactsWithRaw(
+                encryptedTravelId: travel.encryptedTravelId,
+                mode: travel.mode ?? listMode
+            )
             artifact = result.value
             artifactRawJSON = result.rawJSON
         } catch {
@@ -394,7 +448,7 @@ struct TravelArtifactsView: View {
     }
 }
 
-// MARK: - 产物视频卡片
+// MARK: - Artifact video card
 
 private struct ArtifactVideoCard: View {
     let key: String
@@ -472,10 +526,10 @@ private struct ArtifactVideoCard: View {
 
     private func videoKeyLabel(_ k: String) -> String {
         switch k {
-        case "original":                   return "原始"
-        case "withWatermark":              return "含水印"
-        case "withInstruction":            return "含指令"
-        case "withInstructionAndWatermark": return "含指令+水印"
+        case "original":                   return String(localized: "Original")
+        case "withWatermark":              return String(localized: "Watermarked")
+        case "withInstruction":            return String(localized: "With Instructions")
+        case "withInstructionAndWatermark": return String(localized: "With Instructions + Watermark")
         default: return k
         }
     }
@@ -486,13 +540,13 @@ private struct ArtifactVideoCard: View {
     }
 }
 
-// MARK: - 产物视频详情（竖屏，上半播放器 + 下半信息 + 下载）
+// MARK: - Artifact video detail (portrait: player on top, info + download below)
 
 private struct ArtifactVideoDetailView: View {
     let key: String
     let video: TravelArtifactVideo
     let travel: TravelListItem
-    /// 拆包/解码前的产物接口完整响应 JSON；nil 表示上一层没能带下来（理论上不会发生）。
+    /// The full artifact API response JSON before unwrapping/decoding; nil means the parent couldn't pass it down (shouldn't happen in theory).
     let artifactRawJSON: String?
 
     @Environment(\.dismiss) private var dismiss
@@ -503,17 +557,17 @@ private struct ArtifactVideoDetailView: View {
 
     private var keyLabel: String {
         switch key {
-        case "original":                    return "原始"
-        case "withWatermark":               return "含水印"
-        case "withInstruction":             return "含指令"
-        case "withInstructionAndWatermark": return "含指令+水印"
+        case "original":                    return String(localized: "Original")
+        case "withWatermark":               return String(localized: "Watermarked")
+        case "withInstruction":             return String(localized: "With Instructions")
+        case "withInstructionAndWatermark": return String(localized: "With Instructions + Watermark")
         default: return key
         }
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            // 顶部导航栏
+            // Top navigation bar
             HStack {
                 Text(keyLabel).font(.headline)
                 Spacer()
@@ -528,7 +582,7 @@ private struct ArtifactVideoDetailView: View {
             .padding(.top, 20)
             .padding(.bottom, 12)
 
-            // 视频播放器（上半部分，16:9 比例）
+            // Video player (top half, 16:9)
             if let p = player {
                 VideoPlayerEmbedded(player: p)
                     .aspectRatio(16 / 9, contentMode: .fit)
@@ -537,20 +591,20 @@ private struct ArtifactVideoDetailView: View {
                     .padding(.horizontal, 16)
             }
 
-            // 下半部分：产物信息 + 下载
+            // Bottom half: artifact info + download
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    // 基本信息
+                    // Basic info
                     infoSection
 
                     Divider()
 
-                    // 下载区域
+                    // Download area
                     downloadSection
 
                     Divider()
 
-                    // 调试信息：完整 travel 信息 + 产物接口原始响应，排查问题不用再翻控制台日志
+                    // Debug info: full travel info + raw artifact API response, so debugging doesn't require digging through console logs
                     debugSection
                 }
                 .padding(20)
@@ -571,20 +625,20 @@ private struct ArtifactVideoDetailView: View {
 
     private var infoSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("产物信息")
+            Text("Artifact Info")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundStyle(.secondary)
 
-            infoRow(label: "类型", value: keyLabel)
+            infoRow(label: String(localized: "Type"), value: keyLabel)
             if let res = video.resolution {
-                infoRow(label: "分辨率", value: res)
+                infoRow(label: String(localized: "Resolution"), value: res)
             }
             if let dur = video.durationSec {
                 let m = dur / 60; let s = dur % 60
-                infoRow(label: "时长", value: m > 0 ? "\(m)m \(s)s" : "\(s)s")
+                infoRow(label: String(localized: "Duration"), value: m > 0 ? "\(m)m \(s)s" : "\(s)s")
             }
-            infoRow(label: "状态", value: video.status ?? "ready")
+            infoRow(label: String(localized: "Status"), value: video.status ?? "ready")
         }
     }
 
@@ -613,21 +667,21 @@ private struct ArtifactVideoDetailView: View {
             if isDownloading {
                 HStack(spacing: 10) {
                     ProgressView()
-                    Text("下载中…")
+                    Text("Downloading…")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14)
             } else if downloadDone {
-                Label("已保存到相册", systemImage: "checkmark.circle.fill")
+                Label("Saved to Photos", systemImage: "checkmark.circle.fill")
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(.green)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
             } else {
                 Button(action: downloadVideo) {
-                    Label("下载视频", systemImage: "arrow.down.circle")
+                    Label("Download Video", systemImage: "arrow.down.circle")
                         .font(.system(size: 16, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -642,7 +696,7 @@ private struct ArtifactVideoDetailView: View {
 
     private var debugSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("调试信息")
+            Text("Debug Info")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundStyle(.secondary)
@@ -657,8 +711,8 @@ private struct ArtifactVideoDetailView: View {
                 debugRow("endedAt", travel.endedAt ?? "—")
             }
 
-            debugSubsection(title: "产物接口原始响应") {
-                Text(artifactRawJSON ?? "<无>")
+            debugSubsection(title: String(localized: "Raw Artifact API Response")) {
+                Text(artifactRawJSON ?? String(localized: "<none>"))
                     .font(.system(.caption2, design: .monospaced))
                     .foregroundStyle(.primary)
                     .textSelection(.enabled)
@@ -700,7 +754,7 @@ private struct ArtifactVideoDetailView: View {
 
         Task {
             do {
-                // 下载到临时文件
+                // Download to a temporary file
                 let (localURL, _) = try await URLSession.shared.download(from: url)
                 let ext = url.pathExtension.isEmpty ? "mp4" : url.pathExtension
                 let dest = FileManager.default.temporaryDirectory
@@ -708,11 +762,11 @@ private struct ArtifactVideoDetailView: View {
                 try? FileManager.default.removeItem(at: dest)
                 try FileManager.default.moveItem(at: localURL, to: dest)
 
-                // 请求相册权限并保存
+                // Request photo library permission and save
                 let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
                 guard status == .authorized || status == .limited else {
                     throw NSError(domain: "Photos", code: -1,
-                                  userInfo: [NSLocalizedDescriptionKey: "未获得相册写入权限，请在「设置」中开启"])
+                                  userInfo: [NSLocalizedDescriptionKey: String(localized: "Photo library write access was not granted. Please enable it in Settings.")])
                 }
                 try await PHPhotoLibrary.shared().performChanges {
                     PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: dest)
@@ -726,14 +780,14 @@ private struct ArtifactVideoDetailView: View {
             } catch {
                 await MainActor.run {
                     isDownloading = false
-                    downloadError = "下载失败：\(error.localizedDescription)"
+                    downloadError = String(localized: "Download failed: \(error.localizedDescription)")
                 }
             }
         }
     }
 }
 
-// MARK: - 嵌入式视频播放器（不强制全屏）
+// MARK: - Embedded video player (doesn't force fullscreen)
 
 private struct VideoPlayerEmbedded: UIViewControllerRepresentable {
     let player: AVPlayer
@@ -751,7 +805,7 @@ private struct VideoPlayerEmbedded: UIViewControllerRepresentable {
     }
 }
 
-// MARK: - 旅途详情 Sheet
+// MARK: - Travel detail sheet
 
 private struct TravelDetailSheet: View {
     let travel: TravelListItem
@@ -764,21 +818,27 @@ private struct TravelDetailSheet: View {
                     detailRow("Travel ID", value: travel.encryptedTravelId)
                     detailRow("World ID",  value: travel.encryptedWorldId)
                 }
-                Section("状态") {
+                Section("Status") {
                     detailRow("Status",   value: travel.status.rawValue)
-                    detailRow("Mode",     value: travel.mode.map { $0 == .wander ? "Wander (1)" : "Story (2)" } ?? "—")
+                    detailRow("Mode",     value: travel.mode.map { "\($0.badgeLabel) (\($0.rawValue))" } ?? "—")
                 }
-                Section("时间") {
-                    detailRow("创建时间", value: travel.createdAt ?? "—")
-                    detailRow("结束时间", value: travel.endedAt   ?? "—")
-                    detailRow("时长",     value: travel.durationSec.map { formatDuration($0) } ?? "—")
+                if travel.hasFailureInfo {
+                    Section("Failure Info") {
+                        detailRow("ErrorCode",    value: travel.errorCodeText ?? "—")
+                        detailRow("ErrorMessage", value: travel.errorMessage ?? "—")
+                    }
+                }
+                Section("Time") {
+                    detailRow(String(localized: "Created At"), value: travel.createdAt ?? "—")
+                    detailRow(String(localized: "Ended At"), value: travel.endedAt   ?? "—")
+                    detailRow(String(localized: "Duration"),   value: travel.durationSec.map { formatDuration($0) } ?? "—")
                 }
             }
-            .navigationTitle("旅途详情")
+            .navigationTitle("Travel Details")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("关闭") { dismiss() }
+                    Button("Close") { dismiss() }
                 }
             }
         }
@@ -803,7 +863,7 @@ private struct TravelDetailSheet: View {
     }
 }
 
-// TravelListItem 需要 Identifiable 供 .sheet(item:) 使用
+// TravelListItem needs Identifiable for .sheet(item:)
 extension TravelListItem: Identifiable {
     public var id: String { encryptedTravelId }
 }

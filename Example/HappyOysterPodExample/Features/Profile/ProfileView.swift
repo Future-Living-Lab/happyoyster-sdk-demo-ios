@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// 个人页：展示从本地服务获取的百炼临时 Token，以及下次自动刷新时间。
-/// onAppear 读取 TokenManager 缓存（不强制重请求）；刷新按钮才触发 invalidateAndRefresh。
+/// Profile page: shows the Bailian temporary token fetched from the local service and the next auto-refresh time.
+/// onAppear reads the TokenManager cache (no forced re-request); only the refresh button triggers invalidateAndRefresh.
 struct ProfileView: View {
     @EnvironmentObject private var session: AppSession
     @EnvironmentObject private var env: AppEnvironment
@@ -11,13 +11,14 @@ struct ProfileView: View {
     @State private var errorMessage: String?
     @State private var showServerConfig = false
     @State private var showSdkUrlEdit = false
+    @State private var showSdkModelEdit = false
     @State private var isCleaningUp = false
     @State private var cleanupResult: String?
 
     private enum TokenField: Hashable { case expireSeconds, refreshLeeway }
     @FocusState private var focusedTokenField: TokenField?
 
-    /// 与 TokenManager.leeway 保持一致：到期前 30s 触发自动刷新。
+    /// Kept in sync with TokenManager.leeway: auto-refresh fires 30s before expiry.
     private var leeway: TimeInterval { TimeInterval(env.tokenRefreshLeeway) }
 
     var body: some View {
@@ -28,16 +29,17 @@ struct ProfileView: View {
                 playSettingsSection
                 devToolsSection
             }
-            .navigationTitle("配置")
+            .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
-            // List 场景没有可靠的"点背景收起"手势（List 铺满行内容，没有真正意义上的
-            // 空白背景区），键盘工具栏「完成」按钮是唯一不依赖手势命中测试的可靠路径。
-            // 直接清空 @FocusState 而不是调 UIKit 的 resignFirstResponder：焦点状态
-            // 只有一个事实源，SwiftUI 侧清空后会自动同步收起键盘。
+            // A List has no reliable "tap background to dismiss" gesture (rows fill the List, so there
+            // is no real blank background area); the keyboard toolbar "Done" button is the only reliable
+            // path that doesn't depend on gesture hit-testing.
+            // Clear @FocusState directly instead of calling UIKit's resignFirstResponder: focus state has
+            // a single source of truth, and clearing it on the SwiftUI side dismisses the keyboard automatically.
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("完成") { focusedTokenField = nil }
+                    Button("Done") { focusedTokenField = nil }
                 }
             }
             .sheet(isPresented: $showServerConfig) {
@@ -45,6 +47,9 @@ struct ProfileView: View {
                 }
             .sheet(isPresented: $showSdkUrlEdit) {
                     SdkUrlEditView().environmentObject(env)
+                }
+            .sheet(isPresented: $showSdkModelEdit) {
+                    SdkModelEditView().environmentObject(env)
                 }
             .onAppear { loadFromCache() }
         }
@@ -55,12 +60,12 @@ struct ProfileView: View {
 
     private var tokenSection: some View {
         Section {
-            // Token 文本
+            // Token text
             Group {
                 if isLoading {
                     HStack {
                         ProgressView()
-                        Text("获取中…")
+                        Text("Fetching…")
                             .foregroundStyle(.secondary)
                             .padding(.leading, 8)
                     }
@@ -76,19 +81,19 @@ struct ProfileView: View {
                         .font(.footnote)
                         .foregroundStyle(.red)
                 } else {
-                    Text("暂无 Token")
+                    Text("No token yet")
                         .foregroundStyle(.secondary)
                 }
             }
             .padding(.vertical, 4)
 
-            // 下次自动刷新时间
+            // Next auto-refresh time
             if let info = tokenInfo {
                 let refreshAt = info.expiresAt.addingTimeInterval(-leeway)
                 HStack {
                     Image(systemName: "arrow.clockwise.circle")
                         .foregroundStyle(.secondary)
-                    Text("下次自动刷新")
+                    Text("Next auto-refresh")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                     Spacer()
@@ -98,36 +103,36 @@ struct ProfileView: View {
                 }
             }
 
-            // 刷新按钮
+            // Refresh button
             Button(action: forceRefresh) {
                 HStack {
                     if isLoading { ProgressView().scaleEffect(0.8) }
                     Image(systemName: "arrow.clockwise")
-                    Text("立即刷新")
+                    Text("Refresh now")
                 }
             }
             .disabled(isLoading)
         } header: {
-            Text("临时 Token")
+            Text("Temporary Token")
         } footer: {
             let autoDesc = env.tokenAutoRefresh
-                ? "到期前 \(env.tokenRefreshLeeway)s 自动续期"
-                : "自动刷新已关闭"
-            Text("来自本地服务 POST /server-api/temp-api-key（有效期 \(env.tokenExpireSeconds)s），\(autoDesc)。")
+                ? String(localized: "auto-renews \(env.tokenRefreshLeeway)s before expiry")
+                : String(localized: "auto-refresh is off")
+            Text("From local service POST /server-api/temp-api-key (valid for \(env.tokenExpireSeconds)s), \(autoDesc).")
         }
     }
 
     // MARK: - Token settings section
 
     private var tokenSettingsSection: some View {
-        // 不依赖"点空白处收起"这套在 List 场景下容易跟行内控件（Button/Toggle）
-        // 打架的手势方案——收起键盘统一交给键盘工具栏的「完成」按钮（见 body 里的
-        // .toolbar(placement: .keyboard)），对 first responder 100% 可靠，不用
-        // 跟 hitTest/手势识别器优先级较劲。
+        // Avoid the "tap blank area to dismiss" gesture approach, which tends to fight with in-row
+        // controls (Button/Toggle) in a List. Keyboard dismissal is handled solely by the keyboard
+        // toolbar "Done" button (see .toolbar(placement: .keyboard) in body), which is 100% reliable
+        // for the first responder and avoids wrestling with hitTest/gesture recognizer priority.
         Section {
-            // 有效期
+            // Validity period
             HStack {
-                Label("有效期", systemImage: "clock")
+                Label("Validity", systemImage: "clock")
                     .font(.subheadline)
                 Spacer()
                 TextField("1800", value: $env.tokenExpireSeconds, formatter: secondsFormatter)
@@ -137,21 +142,21 @@ struct ProfileView: View {
                     .frame(width: 70)
                     .font(.system(.subheadline, design: .monospaced))
                     .foregroundStyle(.secondary)
-                Text("秒")
+                Text("sec")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
 
-            // 自动刷新开关
+            // Auto-refresh toggle
             Toggle(isOn: $env.tokenAutoRefresh) {
-                Label("自动刷新", systemImage: "arrow.clockwise.circle")
+                Label("Auto-refresh", systemImage: "arrow.clockwise.circle")
                     .font(.subheadline)
             }
 
-            // 提前刷新间隔（仅自动刷新开启时有意义）
+            // Refresh lead time (only meaningful when auto-refresh is on)
             if env.tokenAutoRefresh {
                 HStack {
-                    Label("提前刷新", systemImage: "timer")
+                    Label("Refresh early", systemImage: "timer")
                         .font(.subheadline)
                     Spacer()
                     TextField("30", value: $env.tokenRefreshLeeway, formatter: secondsFormatter)
@@ -161,15 +166,15 @@ struct ProfileView: View {
                         .frame(width: 55)
                         .font(.system(.subheadline, design: .monospaced))
                         .foregroundStyle(.secondary)
-                    Text("秒前")
+                    Text("sec before")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
         } header: {
-            Text("Token 设置")
+            Text("Token Settings")
         } footer: {
-            Text("有效期范围 1–1800 秒。提前刷新：到期前该秒数触发静默续期。")
+            Text("Validity range is 1–1800 seconds. Refresh early: silently renews this many seconds before expiry.")
         }
     }
 
@@ -186,17 +191,17 @@ struct ProfileView: View {
     private var playSettingsSection: some View {
         Section {
             Picker(selection: $env.maxExperienceTimeSec) {
-                Text("60 秒").tag(60)
-                Text("90 秒").tag(90)
-                Text("120 秒").tag(120)
+                Text("60 sec").tag(60)
+                Text("90 sec").tag(90)
+                Text("120 sec").tag(120)
             } label: {
-                Label("游玩时间", systemImage: "timer")
+                Label("Play Time", systemImage: "timer")
             }
             .pickerStyle(.menu)
         } header: {
-            Text("游玩设置")
+            Text("Play Settings")
         } footer: {
-            Text("游玩时间只影响冒险模式。")
+            Text("Play time only affects Adventure mode.")
         }
     }
 
@@ -206,7 +211,7 @@ struct ProfileView: View {
         Section {
             Button { showServerConfig = true } label: {
                 HStack {
-                    Label("服务器配置", systemImage: "server.rack")
+                    Label("Server Configuration", systemImage: "server.rack")
                     Spacer()
                     Text(env.localServerAddress)
                         .font(.footnote)
@@ -216,9 +221,9 @@ struct ProfileView: View {
 
             Button { showSdkUrlEdit = true } label: {
                 HStack {
-                    Label("百炼 APIHost", systemImage: "network")
+                    Label("Bailian APIHost", systemImage: "network")
                     Spacer()
-                    Text(env.apiHost.isEmpty ? "未配置" : env.apiHost)
+                    Text(env.apiHost.isEmpty ? String(localized: "Not configured") : env.apiHost)
                         .font(.footnote)
                         .foregroundStyle(env.apiHost.isEmpty ? .orange : .secondary)
                         .lineLimit(1)
@@ -227,7 +232,30 @@ struct ProfileView: View {
                 }
             }
 
-            // SDK 引擎重置按钮
+            Button { showSdkModelEdit = true } label: {
+                HStack(alignment: .firstTextBaseline) {
+                    Label("Bailian Model", systemImage: "cpu")
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text(env.model.isEmpty ? String(localized: "Not configured") : env.model)
+                            .font(.footnote)
+                            .foregroundStyle(env.model.isEmpty ? .orange : .secondary)
+                        // Entering a world auto-switches to the sibling model for that world's mode, so the
+                        // running model may differ from the one configured here. The demo doesn't hide this
+                        // and shows the effective model as well.
+                        if let active = session.activeModel, active != env.model {
+                            Text("Running: \(active)")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .frame(maxWidth: 220, alignment: .trailing)
+                }
+            }
+
+            // SDK engine reset button
             Button(action: performCleanup) {
                 HStack {
                     if isCleaningUp {
@@ -235,7 +263,7 @@ struct ProfileView: View {
                     } else {
                         Image(systemName: "arrow.triangle.2.circlepath")
                     }
-                    Text("重置 SDK 引擎")
+                    Text("Reset SDK Engine")
                     Spacer()
                     if let result = cleanupResult {
                         Text(result)
@@ -247,9 +275,9 @@ struct ProfileView: View {
             .disabled(isCleaningUp)
             .foregroundColor(isCleaningUp ? .secondary : .red)
         } header: {
-            Text("开发工具")
+            Text("Developer Tools")
         } footer: {
-            Text("重置引擎：依次执行 cleanup() → initialize() → token 刷新。\n适用场景：切换百炼 APIHost、彻底清除 RTC/tokenStore 状态、排查引擎初始化问题。正常游玩结束无需执行此操作。")
+            Text("Reset engine: runs cleanup() → initialize() → token refresh in order.\nUse it when switching the Bailian APIHost, fully clearing RTC/tokenStore state, or troubleshooting engine initialization. Not needed after a normal play session.")
         }
     }
 
@@ -293,19 +321,19 @@ struct ProfileView: View {
             isCleaningUp = true
             defer { isCleaningUp = false }
             await session.cleanupAndReinitialize()
-            // 刷新页面上展示的 token 信息
+            // Refresh the token info shown on the page
             if let cached = await session.tokenManager?.currentInfo {
                 tokenInfo = cached
             }
-            cleanupResult = "已重置"
-            // 3 秒后清除提示
+            cleanupResult = String(localized: "Reset done")
+            // Clear the hint after 3 seconds
             try? await Task.sleep(nanoseconds: 3_000_000_000)
             cleanupResult = nil
         }
     }
 }
 
-// MARK: - SDK 网关 URL 编辑页
+// MARK: - SDK gateway URL editor
 
 @available(iOS 15.0, *)
 private struct SdkUrlEditView: View {
@@ -326,27 +354,27 @@ private struct SdkUrlEditView: View {
                         .textInputAutocapitalization(.never)
                         .frame(minHeight: 80)
                 } header: {
-                    Text("百炼 APIHost")
+                    Text("Bailian APIHost")
                 } footer: {
-                    Text("只填域名/host 部分；无内置默认值，必须手动填写；未带 http(s):// 前缀时保存后自动补全 https://。修改后需在配置页点击「重置 SDK 引擎」才能生效。")
+                    Text("Enter only the domain/host part. There is no built-in default, so it must be filled in manually; if the http(s):// prefix is omitted, https:// is added automatically on save. After changing it, tap \"Reset SDK Engine\" on the Settings page for it to take effect.")
                         .font(.footnote)
                 }
             }
-            .navigationTitle("百炼 APIHost")
+            .navigationTitle("Bailian APIHost")
             .navigationBarTitleDisplayMode(.inline)
-            // 收起键盘统一走键盘工具栏「完成」按钮，不用容器级手势跟 TextEditor
-            // 抢占命中测试。
+            // Keyboard dismissal goes through the keyboard toolbar "Done" button only; no container-level
+            // gesture competing with TextEditor for hit-testing.
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("取消") { dismiss() }
+                    Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") { save() }
+                    Button("Save") { save() }
                         .disabled(urlText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("完成") { isUrlFieldFocused = false }
+                    Button("Done") { isUrlFieldFocused = false }
                 }
             }
             .onAppear { urlText = env.apiHost }
@@ -357,6 +385,91 @@ private struct SdkUrlEditView: View {
         let trimmed = urlText.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return }
         env.apiHost = trimmed
+        dismiss()
+    }
+}
+
+// MARK: - SDK model editor
+
+/// Editor for the Bailian model name (including version).
+/// happyoyster is split into per-mode sub-models, and the SDK's `OysterConfig.model` has no default and must be set
+/// explicitly, so this page offers both free input and a quick-fill list of common values (`ModelPreset`) to avoid typing long model names.
+@available(iOS 15.0, *)
+private struct SdkModelEditView: View {
+    @EnvironmentObject private var env: AppEnvironment
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var modelText: String = ""
+    @FocusState private var isModelFieldFocused: Bool
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section {
+                    TextField("happyoyster-1.0-adventure", text: $modelText)
+                        .focused($isModelFieldFocused)
+                        .font(.system(.footnote, design: .monospaced))
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                } header: {
+                    Text("Bailian Model")
+                } footer: {
+                    Text("Model name including version; the SDK uses it to build the gateway path /api/v2/apps/{model}/openapi/v1. There is no built-in default, so it must be filled in manually. It must match the APIHost; a wrong value is rejected by the gateway with AccessDenied (106003). After changing it, tap \"Reset SDK Engine\" on the Settings page for it to take effect.\n\nModels are split by mode, and one initialization serves worlds of only one mode. If you pick any preset below, entering a world automatically switches to the model serving that world's mode (e.g. if Adventure is selected but you enter an Acting world, happyoyster-1.0-acting is used automatically). Manually entered legacy unsplit models or custom values are used as-is without conversion.")
+                        .font(.footnote)
+                }
+
+                presetSection
+            }
+            .navigationTitle("Bailian Model")
+            .navigationBarTitleDisplayMode(.inline)
+            // Keyboard dismissal goes through the keyboard toolbar "Done" button only; no container-level gesture competing with TextField for hit-testing.
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") { save() }
+                        .disabled(modelText.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { isModelFieldFocused = false }
+                }
+            }
+            .onAppear { modelText = env.model }
+        }
+    }
+
+    /// Quick-fill section: a tap only fills the model name into the field above; it still needs "Save" to persist.
+    private var presetSection: some View {
+        Section("Quick Fill") {
+            ForEach(ModelPreset.all) { preset in
+                Button {
+                    modelText = preset.name
+                    isModelFieldFocused = false
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(preset.mode.badgeLabel)
+                            Text(preset.name)
+                                .font(.system(.caption2, design: .monospaced))
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if modelText.trimmingCharacters(in: .whitespaces) == preset.name {
+                            Image(systemName: "checkmark").foregroundStyle(.tint)
+                        }
+                    }
+                }
+                .foregroundStyle(.primary)
+            }
+        }
+    }
+
+    private func save() {
+        let trimmed = modelText.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        env.model = trimmed
         dismiss()
     }
 }

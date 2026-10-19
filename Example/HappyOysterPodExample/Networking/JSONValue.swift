@@ -1,7 +1,7 @@
 import Foundation
 
-/// 任意 JSON 值的 Codable 表示，用于原样透传用户编辑的 `scriptList` JSON blob
-/// （键名/大小写/结构完全不做转换），同时提供便捷访问器支撑客户端本地预校验遍历。
+/// Codable representation of an arbitrary JSON value, used to pass through the user-edited `scriptList` JSON blob verbatim
+/// (no conversion of key names / casing / structure), while also providing convenience accessors for client-side local pre-validation traversal.
 enum JSONValue: Codable {
     case object([String: JSONValue])
     case array([JSONValue])
@@ -15,7 +15,7 @@ enum JSONValue: Codable {
         if container.decodeNil() {
             self = .null
         } else if let v = try? container.decode(Bool.self) {
-            // 先试 bool 再试 number：避免 true/false 被当成数值解码。
+            // Try bool before number: prevents true/false from being decoded as numbers.
             self = .bool(v)
         } else if let v = try? container.decode(Double.self) {
             self = .number(v)
@@ -28,7 +28,7 @@ enum JSONValue: Codable {
         } else {
             throw DecodingError.dataCorruptedError(
                 in: container,
-                debugDescription: "无法解析为已知 JSON 类型"
+                debugDescription: "Cannot be decoded as a known JSON type"
             )
         }
     }
@@ -45,7 +45,7 @@ enum JSONValue: Codable {
         }
     }
 
-    // MARK: - 便捷访问器（本地校验遍历用）
+    // MARK: - Convenience accessors (for local validation traversal)
 
     var objectValue: [String: JSONValue]? {
         if case .object(let dict) = self { return dict }
@@ -67,8 +67,8 @@ enum JSONValue: Codable {
         return nil
     }
 
-    /// `turn` 等整数字段：JSON 无 int/double 之分，`number` 统一存 `Double`。
-    /// 仅当数值为整值且落在 `Int` 范围内才返回，否则视为非法（如 1.5、"3"）。
+    /// For integer fields such as `turn`: JSON has no int/double distinction, so `number` always stores `Double`.
+    /// Returns a value only when the number is integral and within `Int` range; otherwise it is treated as invalid (e.g. 1.5, "3").
     var intValue: Int? {
         guard let d = numberValue, d.rounded() == d,
               d >= Double(Int.min), d <= Double(Int.max) else { return nil }

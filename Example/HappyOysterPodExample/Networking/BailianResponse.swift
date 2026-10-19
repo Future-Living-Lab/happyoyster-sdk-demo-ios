@@ -1,45 +1,45 @@
 import Foundation
 
-// MARK: - 百炼 app 网关响应信封
+// MARK: - Bailian app gateway response envelope
 
-/// 代理路由的顶层包装：`{ request_id, output }`。
-/// temp-api-key 直接返回 DashScope 格式，不走此类型。
+/// Top-level wrapper of proxied routes: `{ request_id, output }`.
+/// temp-api-key returns the DashScope format directly and does not use this type.
 struct BailianResponse<T: Decodable>: Decodable {
     let requestId: String
     let output: BailianOutput<T>
 }
 
-/// 业务信封：`{ code, message, data }`。
-/// `code == 0` 表示成功；非 0 为业务错误码（见 APIError.business）。
+/// Business envelope: `{ code, message, data }`.
+/// `code == 0` means success; non-zero is a business error code (see APIError.business).
 struct BailianOutput<T: Decodable>: Decodable {
     let code: Int
     let message: String?
     let data: T?
 }
 
-/// 代理 / 网关层错误响应：`{ request_id, code: String, message }`。
-/// 与业务信封互斥——`code` 为字符串时是代理层错误，数值时是业务码。
+/// Proxy / gateway-level error response: `{ request_id, code: String, message }`.
+/// Mutually exclusive with the business envelope — a string `code` means a proxy-level error, a numeric one is a business code.
 private struct BailianGatewayError: Decodable {
     let requestId: String?
     let code: String
     let message: String?
 }
 
-// MARK: - APIClient 拆包扩展
+// MARK: - APIClient unwrapping extension
 
 extension APIClient {
 
-    /// 发起请求并拆包百炼信封，返回 `output.data`。
-    /// - 自动处理代理层错误（字符串 code）→ `APIError.gateway`
-    /// - 自动处理业务错误（code != 0）→ `APIError.business`
-    /// - `logRawResponse == true` 时无条件打印原始响应体（不管解码成功与否），
-    ///   用于排查"字段解析没问题但内容不对"这类光看 decode 结果看不出来的场景。
+    /// Sends the request, unwraps the Bailian envelope and returns `output.data`.
+    /// - Automatically handles proxy-level errors (string code) → `APIError.gateway`
+    /// - Automatically handles business errors (code != 0) → `APIError.business`
+    /// - When `logRawResponse == true`, unconditionally prints the raw response body (whether decoding succeeds or not),
+    ///   for diagnosing "fields parse fine but the content is wrong" cases that the decode result alone can't reveal.
     func requestBailian<T: Decodable>(_ endpoint: APIEndpoint, logRawResponse: Bool = false) async throws -> T {
         try await requestBailianWithRaw(endpoint, logRawResponse: logRawResponse).value
     }
 
-    /// 与 `requestBailian` 同逻辑，额外把原始响应体（拆包/解码前的完整 JSON 字符串）一起带出来，
-    /// 供 UI 侧直接展示（如产物详情页底部的调试信息区），不用再单独翻控制台日志。
+    /// Same logic as `requestBailian`, but also returns the raw response body (the full JSON string before unwrapping/decoding),
+    /// so the UI can display it directly (e.g. the debug info section at the bottom of the artifact detail page) without digging through console logs.
     func requestBailianWithRaw<T: Decodable>(
         _ endpoint: APIEndpoint, logRawResponse: Bool = false
     ) async throws -> (value: T, rawJSON: String) {
@@ -50,7 +50,7 @@ extension APIClient {
             appLog("[APIClient] 📦 raw response for \(endpoint.path): \(raw)")
         }
 
-        // 先尝试解析为代理层错误（code 为 String）
+        // First try to parse it as a proxy-level error (code is a String)
         if let gateway = try? JSONDecoder().decode(BailianGatewayError.self, from: data),
            !gateway.code.isEmpty,
            Int(gateway.code) == nil {
@@ -88,7 +88,7 @@ extension APIClient {
     }
 }
 
-// MARK: - 通用分页
+// MARK: - Generic pagination
 
 struct PaginatedResponse<Item: Decodable>: Decodable {
     let items: [Item]

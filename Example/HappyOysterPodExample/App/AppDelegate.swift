@@ -1,51 +1,73 @@
 import UIKit
 
-/// 全局方向锁定管理器：通过 AppDelegate 的 supportedInterfaceOrientations 控制旋转。
-/// TravelView 进入时锁横屏，离开时解锁。
+/// Global orientation lock manager: controls rotation via AppDelegate's supportedInterfaceOrientations.
+/// TravelView locks to landscape or portrait based on the world's aspect ratio on entry, and unlocks on exit.
 final class OrientationLock {
     static let shared = OrientationLock()
     private init() {}
 
-    private(set) var mask: UIInterfaceOrientationMask = .allButUpsideDown
+    /// Orientation required by the player page. Acting worlds default to 9:16 and use `.portrait`; wander / story use `.landscape`.
+    enum Orientation {
+        case landscape
+        case portrait
+        /// Unlocked: restore the system default (everything except upside-down).
+        case unlocked
 
-    func lock(toLandscape: Bool) {
-        mask = toLandscape ? .landscape : .allButUpsideDown
-        applyRotation(toLandscape: toLandscape)
+        var mask: UIInterfaceOrientationMask {
+            switch self {
+            case .landscape: return .landscape
+            case .portrait:  return .portrait
+            case .unlocked:  return .allButUpsideDown
+            }
+        }
+
+        /// Target orientation used when manually setting `UIDevice.orientation` on iOS 15.
+        var legacyValue: Int {
+            switch self {
+            case .landscape: return UIInterfaceOrientation.landscapeRight.rawValue
+            case .portrait, .unlocked: return UIInterfaceOrientation.portrait.rawValue
+            }
+        }
     }
 
-    private func applyRotation(toLandscape: Bool) {
+    private(set) var mask: UIInterfaceOrientationMask = .allButUpsideDown
+
+    func lock(to orientation: Orientation) {
+        mask = orientation.mask
+        applyRotation(orientation)
+    }
+
+    private func applyRotation(_ orientation: Orientation) {
         if #available(iOS 16.0, *) {
             let scene = UIApplication.shared.connectedScenes
                 .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
             scene?.requestGeometryUpdate(.iOS(interfaceOrientations: mask))
-            // 遍历 VC 链，确保当前可见的 VC 都收到旋转通知
+            // Walk the VC chain so the currently visible VC receives the rotation update
             var vc = scene?.keyWindow?.rootViewController
             while let presented = vc?.presentedViewController {
                 vc = presented
             }
             vc?.setNeedsUpdateOfSupportedInterfaceOrientations()
         } else {
-            let value = toLandscape
-                ? UIInterfaceOrientation.landscapeRight.rawValue
-                : UIInterfaceOrientation.portrait.rawValue
-            UIDevice.current.setValue(value, forKey: "orientation")
+            UIDevice.current.setValue(orientation.legacyValue, forKey: "orientation")
             UIViewController.attemptRotationToDeviceOrientation()
         }
     }
 }
 
-/// 键盘收起助手：监听键盘展示/收起系统通知，在键盘弹出时往当前 `keyWindow` 上挂
-/// `cancelsTouchesInView = false` 的点击/拖动手势，收起时摘掉——挂/摘动作是纯 UIKit 操作
-/// （`UIWindow.addGestureRecognizer`，不插入/移除任何 view），跟 SwiftUI 的视图树结构 diff
-/// 完全无关，不会触发"结构位置偏移→子树判定为新增/销毁"的重建链路，因此不会影响正在编辑的
-/// 输入框的 first responder 状态。
+/// Keyboard dismiss helper: observes keyboard show/hide system notifications, attaches tap/pan gestures with
+/// `cancelsTouchesInView = false` to the current `keyWindow` when the keyboard appears, and removes them when it hides.
+/// Attaching/removing is a pure UIKit operation (`UIWindow.addGestureRecognizer`, no views inserted/removed), entirely
+/// unrelated to SwiftUI's view-tree diffing, so it never triggers the "structural position shift -> subtree treated as
+/// inserted/destroyed" rebuild chain and therefore doesn't affect the first responder state of the field being edited.
 ///
-/// 有意不在 App 启动时全局常驻，而是提供 `start()`/`stop()` 由具体页面按自己的呈现生命周期
-/// 显式接入（目前只接给 `TravelView` 的剧本编辑面板验证）——先小范围验证这套机制在真机上
-/// 确实不影响聚焦，再决定要不要推广替换首页/设置页现有的做法。
+/// Intentionally not installed globally at app launch; instead `start()`/`stop()` let specific pages opt in explicitly
+/// according to their own presentation lifecycle (currently only wired to `TravelView`'s script editor panel for
+/// validation). We first verify on real devices, at small scale, that this mechanism really doesn't affect focus,
+/// then decide whether to roll it out to replace the existing approach on the home/settings pages.
 ///
-/// 需要继承 `NSObject`：`UIGestureRecognizerDelegate` 要求遵从 `NSObjectProtocol`，纯 Swift 类
-/// 挂 `@objc` 方法（target-action、通知回调）本身没问题，但接协议必须是 `NSObject` 子类。
+/// Must subclass `NSObject`: `UIGestureRecognizerDelegate` requires `NSObjectProtocol` conformance. A pure Swift class
+/// can host `@objc` methods (target-action, notification callbacks) fine, but adopting the protocol requires an `NSObject` subclass.
 final class KeyboardDismissAssistant: NSObject {
     static let shared = KeyboardDismissAssistant()
     private override init() { super.init() }
@@ -55,10 +77,10 @@ final class KeyboardDismissAssistant: NSObject {
     private var pan: UIPanGestureRecognizer?
     private var isObserving = false
 
-    /// 当前需要排除在"点哪都能收键盘"之外的范围（window/`.global` 坐标）。由呈现方（目前是
-    /// `ScriptListTextEditor`）通过 `GeometryReader` 实时回填自己的真实 frame，不靠遍历视图树、
-    /// 也不靠按 `touch.view` 的类型猜测——这个场景里唯一需要特殊处理的就是输入框本身，直接校验
-    /// 它汇报的真实范围，比类型判断更精确，也不用穷举 `UIControl`/`UITextView` 等各种子类。
+    /// The area currently excluded from "tap anywhere to dismiss the keyboard" (window/`.global` coordinates). The presenter
+    /// (currently `ScriptListTextEditor`) reports its real frame live via `GeometryReader`, instead of walking the view tree
+    /// or guessing from the type of `touch.view`. The only thing needing special handling here is the input field itself;
+    /// checking the real frame it reports is more precise than type checks and avoids enumerating `UIControl`/`UITextView` subclasses.
     var excludedRect: CGRect?
 
     func start() {
@@ -108,11 +130,11 @@ final class KeyboardDismissAssistant: NSObject {
         attachedWindow = nil
     }
 
-    /// `UITapGestureRecognizer` 的 action 只在识别成功那一刻调用一次，无需额外过滤；但
-    /// `UIPanGestureRecognizer` 的 target-action 会在手势的每个状态（`.began`/`.changed`/
-    /// `.ended`/`.cancelled`）都被调用一次，`.changed` 在拖动过程中会连续触发多次——只要一开始
-    /// 拖动就已经达到"收键盘"的目的，只在 `.began` 这一次真正执行，避免同一次拖动手势里反复
-    /// 对响应链发送 `resignFirstResponder`（对已失焦的输入框是空操作，但没必要重复发）。
+    /// `UITapGestureRecognizer`'s action fires only once at recognition, so no extra filtering is needed; but
+    /// `UIPanGestureRecognizer`'s target-action fires for every gesture state (`.began`/`.changed`/
+    /// `.ended`/`.cancelled`), and `.changed` fires repeatedly while dragging. Starting the drag already achieves
+    /// "dismiss the keyboard", so only act on `.began` to avoid repeatedly sending `resignFirstResponder` down the
+    /// responder chain within one drag (a no-op for an already-unfocused field, but no need to repeat it).
     @objc private func handle(_ gesture: UIGestureRecognizer) {
         if let pan = gesture as? UIPanGestureRecognizer, pan.state != .began {
             return
@@ -122,16 +144,16 @@ final class KeyboardDismissAssistant: NSObject {
 }
 
 extension KeyboardDismissAssistant: UIGestureRecognizerDelegate {
-    /// 触摸落在 `excludedRect` 范围内（当前就是输入框的真实 frame）时直接拒收，这次触摸压根不会
-    /// 进入我们的手势识别流程——不影响输入框自己内部"点击定位光标"等手势的识别，也不需要跟它们
-    /// 抢时序。范围之外维持原样，照常识别、照常收键盘。
+    /// Touches inside `excludedRect` (currently the input field's real frame) are rejected outright, so they never enter
+    /// our gesture recognition at all. This doesn't affect the field's own gestures such as "tap to position the cursor",
+    /// and there's no need to race them. Outside that area, recognition and keyboard dismissal work as usual.
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         guard let window = attachedWindow, let rect = excludedRect else { return true }
         return !rect.contains(touch.location(in: window))
     }
 }
 
-/// 注入到 SwiftUI App 生命周期，用于控制设备方向。
+/// Injected into the SwiftUI App lifecycle to control device orientation.
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
         _ application: UIApplication,

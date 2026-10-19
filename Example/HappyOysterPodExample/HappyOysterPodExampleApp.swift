@@ -2,15 +2,15 @@ import SwiftUI
 import HappyOysterSDK
 import os
 
-/// SDK 日志接到 Apple 统一日志（os.Logger）：subsystem 固定，每个模块 tag = 一个 category，
-/// 可在 Console.app / Xcode 控制台按 category 勾选过滤，无需子串搜索。
+/// Route SDK logs to Apple unified logging (os.Logger): fixed subsystem, one category per module tag,
+/// so you can filter by category in Console.app / the Xcode console without substring searches.
 let appLogSubsystem = "com.happyoyster.podexample"
 
-/// App 自有日志（category = "app"），用于 TravelViewModel / MainView 等业务层。
+/// The app's own logs (category = "app"), used by business layers such as TravelViewModel / MainView.
 let appLogger = Logger(subsystem: appLogSubsystem, category: "app")
 
-/// 统一日志函数：走 os.Logger，Xcode 控制台与 Console.app 均可见，
-/// 无需额外 print（Xcode 会直接展示 os_log 输出，print 会造成重复）。
+/// Unified log function: goes through os.Logger, visible in both the Xcode console and Console.app,
+/// no extra print needed (Xcode shows os_log output directly; print would duplicate it).
 func appLog(_ message: @autoclosure () -> String) {
     let msg = message()
     appLogger.notice("\(msg, privacy: .public)")
@@ -29,10 +29,10 @@ struct HappyOysterPodExampleApp: App {
     @StateObject private var navigation = AppNavigation()
 
     init() {
-        // 拖拽滚动时自动收起键盘（interactive = 可反悔往上拉回来）。
+        // Auto-dismiss the keyboard when drag-scrolling (interactive = can be pulled back up to cancel).
         UIScrollView.appearance().keyboardDismissMode = .interactive
 
-        // 流引擎注册由 HappyOysterEngine.initialize 内部完成，这里只接日志。
+        // Stream engine registration is done inside HappyOysterEngine.initialize; only logging is hooked up here.
         OysterLog.setHandler { level, tag, message in
             let logger = oysterLoggers[tag] ?? Logger(subsystem: appLogSubsystem, category: tag)
             switch level {
@@ -51,7 +51,7 @@ struct HappyOysterPodExampleApp: App {
                 .environmentObject(session)
                 .environmentObject(navigation)
                 .task {
-                    // TokenManager 与 APIClient 一次性连接（幂等，重复调用无效）
+                    // One-time wiring of TokenManager and APIClient (idempotent; repeated calls are no-ops)
                     session.configure(environment: environment)
                 }
         }

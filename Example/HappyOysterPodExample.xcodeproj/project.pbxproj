@@ -19,6 +19,7 @@
 		487E6B9FF168437C8095A4DA /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E01C2089A4F41FCA3F44BAA /* JSONValue.swift */; };
 		4B76E7DB94A1A9F767A3FCA4 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D49E1BD77ECEC196040E93 /* APIError.swift */; };
 		51405601B8B23143DCEA8D85 /* ServerConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B4B3C0AB3CEC141CF282A6 /* ServerConfigView.swift */; };
+		54DF8DCAFE5A43D5859AA797 /* LocalImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A568B2EEF005421380DF9698 /* LocalImagePicker.swift */; };
 		591A6D1A4354EC823DBA1D42 /* TravelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85E32CBBEF838424905A307 /* TravelView.swift */; };
 		5EBAE54993BB06D9367EE13D /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CF928795068DF4CD9FAEFD /* RootTabView.swift */; };
 		67B51E74CF0602F3BC0D167F /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA18D1BE19ECFD2ECF1D627F /* HTTPMethod.swift */; };
@@ -28,12 +29,15 @@
 		97DAE9509C6176BC60381D4C /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DBA35C5559540C3D5B193F /* APIEndpoint.swift */; };
 		A75E5943B1C513DB8BD041E4 /* BailianResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A421BC72B3A277407C846E /* BailianResponse.swift */; };
 		B8E4407A99C21698AC14351C /* TempApiKeyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8BB64A39ADDB180C862157 /* TempApiKeyAPI.swift */; };
+		BE54EB97304ED8F1000E1875 /* ModelPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE54EB96304ED8F1000E1875 /* ModelPreset.swift */; };
 		C043A2C6A14944AEA449C70C /* Pods_HappyOysterPodExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC44406171B7E00226B8CC3 /* Pods_HappyOysterPodExample.framework */; };
 		CA2C1DE77EAC5EE504EDB6F0 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544A2FA4A949352984D07873 /* APIClient.swift */; };
 		E246C7D4BD8A1BA6AD73DDAF /* AppNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670EBC937FDA24260A99337E /* AppNavigation.swift */; };
 		ED66E0D70165195068E0458F /* TravelAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CBEC83CEB4D5173C799804 /* TravelAPI.swift */; };
 		F27F2C4B129345F3EBFC6402 /* WorldAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98DE970110DD96DB1945646E /* WorldAPI.swift */; };
 		F74FCEFBB6FE3592C237329E /* TravelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E49DABBE6B5DCCD22DE09B0 /* TravelViewModel.swift */; };
+		C0FFEE0000000000000000B1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C0FFEE0000000000000000A1 /* Localizable.xcstrings */; };
+		C0FFEE0000000000000000B2 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C0FFEE0000000000000000A2 /* InfoPlist.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,11 +60,13 @@
 		99DCC116AA6E499BA1CAB706 /* ScriptPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptPreset.swift; sourceTree = "<group>"; };
 		B2C3D4E5F60718293A4B5C6D7 /* scriptlist_presets.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = scriptlist_presets.json; sourceTree = "<group>"; };
 		9D711AD8C8DD39A6EAB7EEE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A568B2EEF005421380DF9698 /* LocalImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagePicker.swift; sourceTree = "<group>"; };
 		A60190A7B0BC3BECF953D85A /* Pods-HappyOysterPodExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HappyOysterPodExample.release.xcconfig"; path = "Target Support Files/Pods-HappyOysterPodExample/Pods-HappyOysterPodExample.release.xcconfig"; sourceTree = "<group>"; };
 		A732ED46716A62AEC92F888D /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		B1D49E1BD77ECEC196040E93 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		B31B0D38E65C623812D8D92B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		B6CF928795068DF4CD9FAEFD /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
+		BE54EB96304ED8F1000E1875 /* ModelPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPreset.swift; sourceTree = "<group>"; };
 		C3B4B3C0AB3CEC141CF282A6 /* ServerConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfigView.swift; sourceTree = "<group>"; };
 		C5CBEC83CEB4D5173C799804 /* TravelAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelAPI.swift; sourceTree = "<group>"; };
 		C68336C81ED50F7F519E826F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -68,6 +74,8 @@
 		EA18D1BE19ECFD2ECF1D627F /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		F574789B889F7F6761F5E919 /* HappyOysterPodExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HappyOysterPodExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F85E32CBBEF838424905A307 /* TravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelView.swift; sourceTree = "<group>"; };
+		C0FFEE0000000000000000A1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		C0FFEE0000000000000000A2 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +93,7 @@
 		07BA856EA26899B08A93FD9E /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				BE54EB96304ED8F1000E1875 /* ModelPreset.swift */,
 				A732ED46716A62AEC92F888D /* AppEnvironment.swift */,
 				CFE9B2510A99303CA547FEEB /* AppSession.swift */,
 			);
@@ -189,6 +198,8 @@
 			children = (
 				62C0CB5B82FECC603D1AE829 /* HappyOysterPodExampleApp.swift */,
 				9D711AD8C8DD39A6EAB7EEE2 /* Info.plist */,
+				C0FFEE0000000000000000A2 /* InfoPlist.xcstrings */,
+				C0FFEE0000000000000000A1 /* Localizable.xcstrings */,
 				B2C3D4E5F60718293A4B5C6D7 /* scriptlist_presets.json */,
 				52B9B557FE4C88411D599517 /* App */,
 				07BA856EA26899B08A93FD9E /* Configuration */,
@@ -203,6 +214,7 @@
 			children = (
 				B31B0D38E65C623812D8D92B /* MainView.swift */,
 				99DCC116AA6E499BA1CAB706 /* ScriptPreset.swift */,
+				A568B2EEF005421380DF9698 /* LocalImagePicker.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -258,6 +270,8 @@
 			knownRegions = (
 				Base,
 				en,
+				"zh-Hans",
+				"zh-Hant",
 			);
 			mainGroup = 50D4C2E722F7EBE60D2820C2;
 			minimizedProjectReferenceProxies = 1;
@@ -270,6 +284,19 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9A2B3C4D5E6F708192A3B4C5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60718293A4B5C /* scriptlist_presets.json in Resources */,
+				C0FFEE0000000000000000B1 /* Localizable.xcstrings in Resources */,
+				C0FFEE0000000000000000B2 /* InfoPlist.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		97982876646E859200DE6686 /* [CP] Embed Pods Frameworks */ = {
@@ -333,10 +360,12 @@
 				7971B098649BE8E888C1CE55 /* MainView.swift in Sources */,
 				487E6B9FF168437C8095A4DA /* JSONValue.swift in Sources */,
 				28927698C2544FAB8112B3C4 /* ScriptPreset.swift in Sources */,
+				54DF8DCAFE5A43D5859AA797 /* LocalImagePicker.swift in Sources */,
 				3BBDEA75DBA07726F7EAFEAD /* ProfileView.swift in Sources */,
 				5EBAE54993BB06D9367EE13D /* RootTabView.swift in Sources */,
 				6AD4BDC8299C107DBE9702E2 /* SecondaryView.swift in Sources */,
 				51405601B8B23143DCEA8D85 /* ServerConfigView.swift in Sources */,
+				BE54EB97304ED8F1000E1875 /* ModelPreset.swift in Sources */,
 				B8E4407A99C21698AC14351C /* TempApiKeyAPI.swift in Sources */,
 				3A14F63D27B326CEB1603042 /* TokenManager.swift in Sources */,
 				ED66E0D70165195068E0458F /* TravelAPI.swift in Sources */,
@@ -347,17 +376,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXResourcesBuildPhase section */
-		9A2B3C4D5E6F708192A3B4C5 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A1B2C3D4E5F60718293A4B5C /* scriptlist_presets.json in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		09D01D3BADA7623A86C0238C /* Debug */ = {

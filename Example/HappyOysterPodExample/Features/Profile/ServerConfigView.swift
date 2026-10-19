@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 服务器配置弹窗：输入本地服务器 HOST / 可选 PORT / scheme，保存到 AppEnvironment。
+/// Server configuration sheet: enter the local server HOST / optional PORT / scheme and save to AppEnvironment.
 struct ServerConfigView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
@@ -43,35 +43,35 @@ struct ServerConfigView: View {
                     HStack {
                         Text("PORT")
                         Spacer()
-                        TextField("可不填", text: $portText)
+                        TextField("Optional", text: $portText)
                             .focused($focusedField, equals: .port)
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.numberPad)
                             .frame(maxWidth: 100)
                     }
                 } header: {
-                    Text("本地服务器")
+                    Text("Local Server")
                 } footer: {
-                    Text("PORT 可不填，留空时使用协议默认端口。\n当前地址：\(env.localServerAddress)")
+                    Text("PORT is optional; when empty, the protocol's default port is used.\nCurrent address: \(env.localServerAddress)")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                 }
             }
-            .navigationTitle("服务器配置")
+            .navigationTitle("Server Configuration")
             .navigationBarTitleDisplayMode(.inline)
-            // 收起键盘统一走键盘工具栏「完成」按钮，不用容器级手势跟 TextField/Picker
-            // 抢占命中测试。
+            // Keyboard dismissal goes through the keyboard toolbar "Done" button only; no container-level
+            // gesture competing with TextField/Picker for hit-testing.
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("取消") { dismiss() }
+                    Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") { save() }
+                    Button("Save") { save() }
                         .disabled(!isValid)
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("完成") { focusedField = nil }
+                    Button("Done") { focusedField = nil }
                 }
             }
             .onAppear { loadCurrentValues() }
